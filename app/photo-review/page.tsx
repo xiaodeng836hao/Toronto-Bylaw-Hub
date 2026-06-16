@@ -1,0 +1,349 @@
+"use client";
+import { useState, useRef } from "react";
+import Link from "next/link";
+import {
+  Camera, Upload, X, ExternalLink, Loader2, FileImage,
+  Info, CheckCircle2, ChevronDown, Clock, SearchCheck,
+} from "lucide-react";
+import { photoReviewIssues, getPhotoIssue, OFFICIAL_311_URL } from "@/lib/mock-data";
+
+export default function PhotoReviewPage() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [issueType, setIssueType] = useState("");
+  const [description, setDescription] = useState("");
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const selectedIssue = issueType ? getPhotoIssue(issueType) : undefined;
+  const isNoise = selectedIssue?.comingSoon === true;
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setReviewed(false);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setReviewed(false);
+  }
+
+  function handleClear() {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setReviewed(false);
+    setIssueType("");
+    setDescription("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  async function handleReview() {
+    if (!issueType) return;
+    setReviewed(false);
+    setIsReviewing(true);
+    // Brief delay for a considered feel — this is a rules-based reference match, not AI analysis.
+    await new Promise((r) => setTimeout(r, 1200));
+    setIsReviewing(false);
+    setReviewed(true);
+  }
+
+  const steps = [
+    { n: 1, label: "Upload photo", done: !!selectedFile },
+    { n: 2, label: "Choose issue type", done: !!issueType },
+    { n: 3, label: "Review match", done: reviewed || isNoise },
+  ];
+
+  const canReview = !!issueType && !isReviewing;
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-medium mb-4">
+          <Camera className="w-3.5 h-3.5" aria-hidden="true" />
+          Preliminary Reference Helper
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Photo Review Helper</h1>
+        <p className="text-gray-500 max-w-2xl">
+          Upload a photo and select an issue type to see a <strong>possible</strong> bylaw match with an evidence checklist and a link to Toronto 311. This is a preliminary reference tool — not an official determination.
+        </p>
+      </div>
+
+      {/* Progress steps */}
+      <ol className="flex items-center gap-2 mb-8" aria-label="Steps">
+        {steps.map((s, i) => (
+          <li key={s.n} className="flex items-center gap-2">
+            <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              s.done ? "bg-violet-600 text-white" : "bg-gray-100 text-gray-500"
+            }`}>
+              {s.done ? <CheckCircle2 className="w-3 h-3" aria-hidden="true" /> : <span className="w-3 h-3 text-center leading-3">{s.n}</span>}
+              {s.label}
+            </span>
+            {i < steps.length - 1 && <span className="w-6 h-px bg-gray-200" aria-hidden="true" />}
+          </li>
+        ))}
+      </ol>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        {/* Left: Upload + Options */}
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          {/* Drop zone */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            onClick={() => !previewUrl && fileInputRef.current?.click()}
+            className={`relative border-2 border-dashed rounded-2xl overflow-hidden transition-colors ${
+              previewUrl
+                ? "border-violet-200 bg-violet-50/20"
+                : "border-gray-200 bg-gray-50 hover:border-violet-300 hover:bg-violet-50/20 cursor-pointer"
+            }`}
+            style={{ minHeight: 220 }}
+          >
+            {previewUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={previewUrl} alt="Your uploaded photo preview" className="w-full h-full object-cover max-h-56" />
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleClear(); }}
+                  className="absolute top-2 right-2 w-7 h-7 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center hover:bg-red-50 hover:border-red-200 transition-colors"
+                  aria-label="Remove image"
+                >
+                  <X className="w-3.5 h-3.5 text-gray-500" />
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full py-12 gap-3 px-6 text-center">
+                <div className="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center">
+                  <Upload className="w-6 h-6 text-violet-500" aria-hidden="true" />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-700 text-sm">Drop an image here</p>
+                  <p className="text-xs text-gray-400 mt-1">or click to browse · PNG, JPG, WEBP</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" aria-label="Upload a photo" />
+
+          {!previewUrl && (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+            >
+              <FileImage className="w-4 h-4" aria-hidden="true" />
+              Browse Files
+            </button>
+          )}
+
+          {selectedFile && (
+            <p className="text-xs text-gray-400 text-center truncate px-2">{selectedFile.name} · {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+          )}
+
+          {/* Issue type selector */}
+          <div>
+            <label htmlFor="issue-type" className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+              Possible Issue Type <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                id="issue-type"
+                value={issueType}
+                onChange={(e) => { setIssueType(e.target.value); setReviewed(false); }}
+                className="w-full appearance-none border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/20 focus-visible:border-violet-400 transition-colors pr-8"
+              >
+                <option value="">Select an issue type…</option>
+                {photoReviewIssues.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" aria-hidden="true" />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="description" className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+              Description <span className="text-gray-400 font-normal normal-case">(optional)</span>
+            </label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what you see — e.g. 'The cladding is peeling off the east wall, exposing bare wood.'"
+              rows={3}
+              maxLength={500}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/20 focus-visible:border-violet-400 transition-colors resize-none"
+            />
+            <p className="text-xs text-gray-400 mt-1">{description.length}/500</p>
+          </div>
+
+          {/* Review button */}
+          {!reviewed && !isNoise && (
+            <button
+              onClick={handleReview}
+              disabled={!canReview}
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 text-white font-medium rounded-xl hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            >
+              {isReviewing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                  Matching reference bylaws…
+                </>
+              ) : (
+                <>
+                  <SearchCheck className="w-4 h-4" aria-hidden="true" />
+                  Review Possible Bylaw Match
+                </>
+              )}
+            </button>
+          )}
+
+          {(reviewed || isNoise) && (
+            <button
+              onClick={handleClear}
+              className="flex items-center justify-center gap-2 px-6 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
+            >
+              Start Over
+            </button>
+          )}
+        </div>
+
+        {/* Right: Results */}
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          {/* Empty state */}
+          {!reviewed && !isReviewing && !isNoise && (
+            <div className="bg-gray-50 rounded-2xl border border-gray-100 p-8 flex flex-col items-center justify-center text-center h-full min-h-[320px]">
+              <Camera className="w-12 h-12 text-gray-200 mb-4" aria-hidden="true" />
+              <p className="font-medium text-gray-500 mb-1">Your reference result will appear here</p>
+              <p className="text-sm text-gray-400 max-w-xs">
+                {issueType ? "Click “Review Possible Bylaw Match” to continue." : "Choose an issue type to get started."}
+              </p>
+            </div>
+          )}
+
+          {/* Loading */}
+          {isReviewing && (
+            <div className="bg-violet-50 rounded-2xl border border-violet-100 p-8 flex flex-col items-center justify-center h-full min-h-[320px]">
+              <Loader2 className="w-10 h-10 text-violet-400 animate-spin mb-4" aria-hidden="true" />
+              <p className="text-sm text-violet-700 font-semibold mb-1">Matching to reference bylaws…</p>
+              <p className="text-xs text-violet-400">Comparing your selected issue to Toronto bylaw chapters</p>
+            </div>
+          )}
+
+          {/* Noise — Coming Soon */}
+          {isNoise && (
+            <div className="bg-white rounded-2xl border border-amber-100 subtle-shadow overflow-hidden">
+              <div className="bg-amber-50 px-5 py-4 flex items-center gap-3 border-b border-amber-100">
+                <Clock className="w-5 h-5 text-amber-600 flex-shrink-0" aria-hidden="true" />
+                <div>
+                  <p className="font-semibold text-sm text-amber-900">Noise Complaints — Coming Soon</p>
+                  <p className="text-xs text-amber-700">Content Under Development</p>
+                </div>
+              </div>
+              <div className="p-5 flex flex-col gap-4">
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Noise-related content is currently under development and is not yet available here. For now, please use the official City of Toronto resources for noise concerns.
+                </p>
+                <a
+                  href={OFFICIAL_311_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-amber-600 text-white font-medium text-sm rounded-xl hover:bg-amber-700 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                  Visit Official City Resources
+                </a>
+                <Link href="/noise-complaints" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                  Learn more about Noise Complaints status →
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Result card */}
+          {reviewed && selectedIssue?.result && (
+            <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow overflow-hidden flex flex-col">
+              <div className="px-5 py-4 flex items-center gap-3 bg-violet-50 border-b border-violet-100">
+                <SearchCheck className="w-5 h-5 text-violet-600 flex-shrink-0" aria-hidden="true" />
+                <div className="flex-1">
+                  <p className="font-semibold text-sm text-violet-900">Possible Issue Match</p>
+                  <p className="text-xs text-violet-600">Preliminary reference result</p>
+                </div>
+              </div>
+
+              <div className="p-5 flex flex-col gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Possible Issue</p>
+                    <p className="font-semibold text-gray-900 text-sm">{selectedIssue.result.possibleIssue}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Related Chapter</p>
+                    {selectedIssue.result.chapter && selectedIssue.result.chapterSlug ? (
+                      <Link href={`/tmc-chapters/${selectedIssue.result.chapterSlug}`} className="text-sm text-blue-600 font-medium hover:text-blue-700">
+                        {selectedIssue.result.chapter}
+                      </Link>
+                    ) : (
+                      <p className="text-sm text-gray-500">{selectedIssue.result.chapter ?? "—"}</p>
+                    )}
+                    {selectedIssue.result.section && <p className="text-xs text-gray-400 mt-0.5">{selectedIssue.result.section}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Plain-Language Explanation</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{selectedIssue.result.explanation}</p>
+                </div>
+
+                {selectedIssue.result.evidenceChecklist.length > 0 && (
+                  <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
+                    <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Evidence Checklist</p>
+                    <ul className="flex flex-col gap-1.5">
+                      {selectedIssue.result.evidenceChecklist.map((ev) => (
+                        <li key={ev} className="flex items-start gap-2 text-sm text-amber-900">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                          {ev}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="p-3.5 bg-blue-50 rounded-xl">
+                  <p className="text-xs font-semibold text-blue-700 mb-1">Recommended Next Step</p>
+                  <p className="text-sm text-blue-800">{selectedIssue.result.nextStep}</p>
+                </div>
+
+                <a
+                  href={OFFICIAL_311_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-violet-600 text-white font-medium text-sm rounded-xl hover:bg-violet-700 transition-colors"
+                >
+                  <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                  Report through City of Toronto 311
+                </a>
+
+                <div className="flex items-start gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                  <Info className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="text-xs text-gray-500">
+                    This is a <strong>preliminary reference result</strong> based on the issue type you selected — not real image analysis, an official enforcement finding, or a City of Toronto decision. Always verify concerns through Toronto 311.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,383 @@
+"use client";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import {
+  zoningTopics, type ZoningTopic, OFFICIAL_311_URL,
+  ZONING_MAP_VIEWER_URL, OFFICIAL_ZONING_SOURCE_URL,
+} from "@/lib/mock-data";
+import {
+  searchChapter10, type ChapterProvision, CHAPTER_10_SOURCE_URL,
+} from "@/lib/zoning-chapter10";
+import {
+  Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
+  ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
+} from "lucide-react";
+
+const quickSearches = [
+  "parking", "setback", "deck", "detached garage",
+  "air conditioner", "Permitted Use", "landscaping", "Permitted Encroachments",
+];
+
+export default function ZoningClient() {
+  const searchParams = useSearchParams();
+  const initialTopic = searchParams.get("topic");
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const [expandedId, setExpandedId] = useState<string | null>(initialTopic);
+
+  // Deep-link: if arriving with ?topic=, expand and scroll to it.
+  useEffect(() => {
+    if (initialTopic) {
+      setExpandedId(initialTopic);
+      const el = document.getElementById(`topic-${initialTopic}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [initialTopic]);
+
+  const term = query.trim();
+  const provisionResults = useMemo(() => searchChapter10(term), [term]);
+  const filteredTopics = useMemo(() => {
+    const t = term.toLowerCase();
+    if (!t) return zoningTopics;
+    return zoningTopics.filter(
+      (topic) =>
+        topic.topic.toLowerCase().includes(t) ||
+        topic.plainExplanation.toLowerCase().includes(t) ||
+        topic.commonQuestion.toLowerCase().includes(t) ||
+        topic.bylawConsideration.toLowerCase().includes(t) ||
+        topic.keywords.some((k) => k.toLowerCase().includes(t))
+    );
+  }, [term]);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium mb-4">
+          <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
+          By-law 569-2013
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Zoning Bylaw Guide</h1>
+        <p className="text-gray-500 max-w-2xl">
+          Plain-language answers to common Toronto zoning questions, plus a keyword search to help locate relevant provisions in Chapter 10 (Residential). Zoning is property-specific, so always confirm details with official City resources.
+        </p>
+      </div>
+
+      {/* About Zoning + official links */}
+      <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-6">
+        <div className="flex items-start gap-3">
+          <Building2 className="w-6 h-6 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <h2 className="font-bold text-gray-900 mb-2">About Toronto Zoning By-law 569-2013</h2>
+            <p className="text-sm text-gray-600 leading-relaxed mb-3">
+              Toronto&apos;s city-wide Zoning By-law 569-2013 controls how land can be used, what can be built, and how structures are positioned. It covers residential, commercial, and mixed-use zones across the city.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={OFFICIAL_ZONING_SOURCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-lg hover:bg-emerald-100 transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                Official Zoning By-law &amp; Preliminary Reviews
+              </a>
+              <a
+                href={ZONING_MAP_VIEWER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+              >
+                <Map className="w-3.5 h-3.5" aria-hidden="true" />
+                Open Zoning Map Viewer
+              </a>
+              <a
+                href={CHAPTER_10_SOURCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+              >
+                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                Chapter 10 (Residential)
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Reliability notice */}
+      <div className="mb-8 p-4 rounded-xl border border-blue-100 bg-blue-50/60 flex gap-3">
+        <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="text-sm text-blue-900 space-y-1.5">
+          <p>
+            This zoning search is a reference tool only. It helps locate possible sections in the City of Toronto Zoning By-law. It does not provide a legal zoning interpretation or property-specific determination.
+          </p>
+          <p>
+            For accurate property-specific zoning information, use the official{" "}
+            <a href={ZONING_MAP_VIEWER_URL} target="_blank" rel="noopener noreferrer" className="font-medium underline hover:text-blue-700">Zoning Map Viewer</a>{" "}
+            or consult City of Toronto zoning resources.
+          </p>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-8">
+        <h2 className="font-semibold text-gray-900 mb-1">Find a Zoning Topic</h2>
+        <p className="text-sm text-gray-500 mb-4">Search residential zoning provisions by keyword and read the verbatim by-law text. These Chapter 10.5 general regulations apply across the Residential Zone (R) and Residential Detached Zone (RD).</p>
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
+          <label htmlFor="zoning-search" className="sr-only">Search zoning provisions</label>
+          <input
+            id="zoning-search"
+            type="search"
+            placeholder="e.g. front yard parking, building height, lot coverage, deck…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-400 transition-colors"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="text-xs text-gray-400 self-center">Quick:</span>
+          {quickSearches.map((qs) => (
+            <button
+              key={qs}
+              onClick={() => setQuery(qs)}
+              className="px-3 py-1 bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors"
+            >
+              {qs}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chapter 10 provision results (only when searching) */}
+      {term && (
+        <section aria-labelledby="provision-heading" className="mb-10">
+          <h2 id="provision-heading" className="text-xl font-bold text-gray-900 mb-1">
+            Zoning By-law matches
+          </h2>
+          <p className="text-sm text-gray-500 mb-5" aria-live="polite">
+            {provisionResults.length} provision{provisionResults.length !== 1 ? "s" : ""} in Chapter 10 for &ldquo;{term}&rdquo;
+          </p>
+
+          {provisionResults.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+              <Search className="w-10 h-10 text-gray-200 mx-auto mb-3" aria-hidden="true" />
+              <p className="text-gray-500 font-medium mb-1">No matching Chapter 10 provisions</p>
+              <p className="text-sm text-gray-400">Try a term like &ldquo;setback&rdquo;, &ldquo;height&rdquo;, &ldquo;lot coverage&rdquo;, or &ldquo;driveway&rdquo;.</p>
+            </div>
+          ) : (
+            <ul className="grid grid-cols-1 gap-4">
+              {provisionResults.map((p) => (
+                <ProvisionCard key={p.id} provision={p} matched={term} />
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {/* Topics */}
+      <h2 className="text-xl font-bold text-gray-900 mb-5">
+        {term ? `Related zoning topics (${filteredTopics.length})` : "Common Zoning Topics"}
+      </h2>
+
+      {filteredTopics.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+          <p className="text-gray-500 font-medium mb-1">No matching topics</p>
+          <p className="text-sm text-gray-400">Try a different keyword, or browse the provision results above.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filteredTopics.map((topic) => (
+            <ZoningTopicCard
+              key={topic.id}
+              topic={topic}
+              isExpanded={expandedId === topic.id}
+              onToggle={() => setExpandedId(expandedId === topic.id ? null : topic.id)}
+              onSearch={setQuery}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Property-specific disclaimer */}
+      <div className="mt-10 p-5 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
+        <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <p className="text-sm text-amber-800">
+          Zoning rules are property-specific. Always confirm requirements using the official Zoning By-law, Zoning Map Viewer, or City staff.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ProvisionCard({ provision, matched }: { provision: ChapterProvision; matched: string }) {
+  return (
+    <li className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5 flex flex-col">
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
+          <Landmark className="w-3 h-3" aria-hidden="true" /> {provision.appliesTo}
+        </span>
+        <span className="text-xs font-medium text-gray-500">{provision.chapter}</span>
+        <span className="font-mono text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded">{provision.section}</span>
+      </div>
+
+      <h3 className="font-semibold text-gray-900 mb-1.5">{provision.title}</h3>
+      <p className="text-sm text-gray-600 leading-relaxed mb-3">{provision.plainExplanation}</p>
+
+      {/* Verbatim by-law text */}
+      <div className="mb-3">
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <FileText className="w-3 h-3" aria-hidden="true" /> By-law text (verbatim — By-law 569-2013)
+        </p>
+        <pre className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap font-sans bg-gray-50 border border-gray-100 rounded-lg p-3 max-h-72 overflow-y-auto">{provision.bylawText}</pre>
+      </div>
+
+      {/* Plain-language interpretation */}
+      <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 mb-3">
+        <p className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide mb-1">Summarized provision (plain language)</p>
+        <p className="text-sm text-gray-700 leading-relaxed">{provision.provisionSummary}</p>
+      </div>
+
+      <div className="mt-auto flex items-center justify-between gap-2 pt-1">
+        <span className="inline-flex items-center gap-1 text-xs text-gray-400 min-w-0">
+          <Tag className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
+          <span className="truncate">Matched: {matched}</span>
+        </span>
+        <a
+          href={provision.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+        >
+          <FileText className="w-3.5 h-3.5" aria-hidden="true" />
+          View Official Chapter 10 Source
+        </a>
+      </div>
+    </li>
+  );
+}
+
+function ZoningTopicCard({
+  topic,
+  isExpanded,
+  onToggle,
+  onSearch,
+}: {
+  topic: ZoningTopic;
+  isExpanded: boolean;
+  onToggle: () => void;
+  onSearch: (q: string) => void;
+}) {
+  return (
+    <div id={`topic-${topic.id}`} className={`bg-white rounded-2xl border transition-all scroll-mt-24 ${isExpanded ? "border-emerald-200 subtle-shadow" : "border-gray-100 hover:border-gray-200"}`}>
+      <button
+        onClick={onToggle}
+        aria-expanded={isExpanded}
+        className="w-full text-left p-5 flex items-start gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-inset rounded-2xl"
+      >
+        <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center flex-shrink-0">
+          <MapPin className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-gray-900">{topic.topic}</h3>
+          <p className="text-sm text-gray-500 mt-0.5 line-clamp-2">{topic.plainExplanation}</p>
+        </div>
+        {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400 flex-shrink-0" aria-hidden="true" /> : <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" aria-hidden="true" />}
+      </button>
+
+      {isExpanded && (
+        <div className="px-5 pb-5 border-t border-gray-50 pt-5 flex flex-col gap-5">
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">What It Means</p>
+            <p className="text-sm text-gray-700 leading-relaxed">{topic.plainExplanation}</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> Common Resident Question
+              </p>
+              <p className="text-sm text-gray-600 italic">&ldquo;{topic.commonQuestion}&rdquo;</p>
+            </div>
+            <div>
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                <Scale className="w-3.5 h-3.5 text-blue-500" aria-hidden="true" /> Possible Bylaw Consideration
+              </p>
+              <p className="text-sm text-blue-700 font-medium">{topic.bylawConsideration}</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              <ClipboardList className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" /> What Information to Prepare
+            </p>
+            <ul className="flex flex-col gap-1.5">
+              {topic.whatToPrepare.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 mt-1.5" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Suggested search keywords */}
+          <div>
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              <Tag className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" /> Suggested Search Keywords
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {topic.keywords.map((kw) => (
+                <button
+                  key={kw}
+                  type="button"
+                  onClick={() => { onSearch(kw); if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                  className="px-2.5 py-1 bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors"
+                >
+                  {kw}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+            <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wide mb-1">When to Use Official City Resources</p>
+            <p className="text-sm text-emerald-900">{topic.whenOfficial}</p>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            <a
+              href={topic.officialUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+              Official Zoning By-law &amp; Preliminary Reviews
+            </a>
+            <a
+              href={ZONING_MAP_VIEWER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <Map className="w-3.5 h-3.5" aria-hidden="true" />
+              Open Zoning Map Viewer
+            </a>
+            {topic.show311 && (
+              <a
+                href={OFFICIAL_311_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <Phone className="w-3.5 h-3.5" aria-hidden="true" />
+                Report through 311
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

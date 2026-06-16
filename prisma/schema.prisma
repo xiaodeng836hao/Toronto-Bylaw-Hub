@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model BylawChapter {
+  id                   String   @id @default(cuid())
+  chapterNumber        String   @unique
+  title                String
+  plainLanguageSummary String
+  category             String
+  officialUrl          String?
+  pdfUrl               String?
+  tags                 String[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Feedback {
+  id           String   @id @default(cuid())
+  email        String?
+  userType     String
+  feedbackType String
+  message      String
+  createdAt    DateTime @default(now())
+}
+
+model PhotoAnalysis {
+  id              String   @id @default(cuid())
+  imageUrl        String?
+  detectedIssue   String?
+  relevantChapter String?
+  relevantSection String?
+  confidence      String?
+  createdAt       DateTime @default(now())
+}
+
+model ChecklistItem {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  category    String
+  isRequired  Boolean @default(true)
+}
