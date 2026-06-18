@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://toronto-bylaw-hub.example.ca";
+import { SITE_URL as BASE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {

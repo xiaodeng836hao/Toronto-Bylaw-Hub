@@ -8,6 +8,15 @@
   --muted: #6b7280;
   --accent: #1a56db;
   --accent-light: #eff4ff;
+
+  /* System font stack — no external (Google Fonts) requests at build or
+     runtime, so the site renders identically on restricted networks. Variable
+     names are kept so the Tailwind theme and `body` font-family still resolve. */
+  --font-geist-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", sans-serif;
+  --font-geist-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
 @theme inline {

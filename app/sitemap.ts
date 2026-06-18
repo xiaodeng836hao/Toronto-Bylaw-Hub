@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { bylawChapters } from "@/lib/mock-data";
 import { prohibitedPlants } from "@/lib/prohibited-plants";
-
-const BASE_URL = "https://toronto-bylaw-hub.example.ca";
+import { SITE_URL as BASE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
