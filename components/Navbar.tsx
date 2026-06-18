@@ -39,10 +39,10 @@ export default function Navbar() {
           aria-label="Toronto Bylaw Guide — home"
         >
           <Image
-            src="/logo.png"
+            src="/logo.svg"
             alt="Toronto Bylaw Guide logo"
-            width={52}
-            height={52}
+            width={40}
+            height={40}
             className="object-contain"
             priority
           />

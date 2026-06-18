@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shield, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,9 +8,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                <Shield className="w-3.5 h-3.5 text-white" />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="" width={28} height={28} className="rounded-md" />
               <span className="font-semibold text-gray-900">Toronto Bylaw Guide</span>
             </div>
             <p className="text-xs text-gray-500 leading-relaxed max-w-sm">

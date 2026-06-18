@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tbg-grad" x1="6" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563eb" />
+      <stop offset="1" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#tbg-grad)" />
+  <g fill="#ffffff">
+    <rect x="14" y="33" width="6" height="13" rx="1" />
+    <rect x="21" y="28" width="6" height="18" rx="1" />
+    <rect x="37" y="26" width="6" height="20" rx="1" />
+    <rect x="44" y="31" width="6" height="15" rx="1" />
+    <rect x="30.5" y="18" width="3" height="28" rx="1.2" />
+    <rect x="31.2" y="11" width="1.6" height="9" rx="0.8" />
+    <ellipse cx="32" cy="24" rx="4" ry="2.3" />
+  </g>
+  <g fill="#ffffff">
+    <path d="M11 45 Q21 41.5 31 44.5 L31 54 Q21 51 11 54.8 Z" />
+    <path d="M33 44.5 Q43 41.5 53 45 L53 54.8 Q43 51 33 54 Z" />
+  </g>
+</svg>
