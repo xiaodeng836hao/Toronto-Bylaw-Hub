@@ -1,24 +1,10 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-// pdf-parse v1 is a CommonJS module; use require to avoid ESM/CJS interop issues in Next.js
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfParse = require("pdf-parse") as (buf: Buffer) => Promise<{ text: string }>;
+import sectionsData from "@/lib/bylaw-sections.json";
 
-const PDF_SOURCES = [
-  { file: "ch629.pdf", chapterNumber: "629", chapterTitle: "Property Standards" },
-  { file: "ch447.pdf", chapterNumber: "447", chapterTitle: "Fences" },
-  { file: "ch485.pdf", chapterNumber: "485", chapterTitle: "Graffiti" },
-  { file: "ch489.pdf", chapterNumber: "489", chapterTitle: "Grass and Weeds" },
-  { file: "ch497.pdf", chapterNumber: "497", chapterTitle: "Heating" },
-  { file: "ch548.pdf", chapterNumber: "548", chapterTitle: "Littering and Dumping of Refuse" },
-  { file: "ch632.pdf", chapterNumber: "632", chapterTitle: "Vacant or Hazardous Buildings" },
-  { file: "ch395.pdf", chapterNumber: "395", chapterTitle: "Clothing Drop Boxes" },
-  { file: "ch480.pdf", chapterNumber: "480", chapterTitle: "Garage Sales" },
-  { file: "ch841.pdf", chapterNumber: "841", chapterTitle: "Waste Collection – Commercial" },
-  { file: "ch846.pdf", chapterNumber: "846", chapterTitle: "Waste Collection – Residential" },
-  { file: "ch417.pdf", chapterNumber: "417", chapterTitle: "Dust" },
-];
+// Section index is pre-built at dev time by scripts/build-bylaw-index.mjs
+// (run `npm run build:bylaw-index` when the PDFs in /public/pdfs change).
+// The runtime no longer loads `pdf-parse` or reads any PDF — it just searches
+// this in-memory JSON, which keeps requests fast and memory low on shared hosting.
 
 export interface BylawSection {
   chapterNumber: string;
@@ -30,83 +16,16 @@ export interface BylawSection {
   score: number;
 }
 
-// Module-level cache: parsed once per server lifetime
-let sectionCache: CachedSection[] | null = null;
-let cacheLoading = false;
-
-interface CachedSection {
+interface IndexedSection {
   chapterNumber: string;
   chapterTitle: string;
   sectionCode: string;
   sectionTitle: string;
   pdfFile: string;
-  _body: string;
+  body: string;
 }
 
-function parseSectionsFromText(
-  text: string,
-  chapterNumber: string,
-  chapterTitle: string,
-  pdfFile: string
-): CachedSection[] {
-  const results: CachedSection[] = [];
-
-  // Split on § markers — handles § 629-1. and § 629-1A. etc.
-  // Also handle en-dash variants
-  const parts = text.split(/(?=§\s*\d+[-–]\d+[A-Z]?\.)/);
-
-  for (const part of parts) {
-    const headerMatch = part.match(/§\s*(\d+[-–]\d+[A-Z]?)\.\s*([^\n]{3,120})/);
-    if (!headerMatch) continue;
-
-    const rawCode = headerMatch[1].replace("–", "-");
-    const sectionCode = `§ ${rawCode}`;
-    const sectionTitle = headerMatch[2].trim().replace(/\.$/, "");
-    const body = part.slice(headerMatch[0].length).trim();
-
-    if (sectionTitle.length < 4) continue;
-
-    results.push({ chapterNumber, chapterTitle, sectionCode, sectionTitle, pdfFile, _body: body });
-  }
-
-  return results;
-}
-
-async function buildCache(): Promise<CachedSection[]> {
-  const all: CachedSection[] = [];
-
-  for (const { file, chapterNumber, chapterTitle } of PDF_SOURCES) {
-    const pdfPath = path.join(process.cwd(), "public", "pdfs", file);
-    if (!fs.existsSync(pdfPath)) continue;
-
-    try {
-      const buffer = fs.readFileSync(pdfPath);
-      const { text } = await pdfParse(buffer);
-      all.push(...parseSectionsFromText(text, chapterNumber, chapterTitle, file));
-    } catch (err) {
-      console.error(`[bylaw-search] Failed to parse ${file}:`, err);
-    }
-  }
-
-  console.log(`[bylaw-search] Cache built: ${all.length} sections from ${PDF_SOURCES.length} PDFs`);
-  return all;
-}
-
-async function getCache(): Promise<CachedSection[]> {
-  if (sectionCache) return sectionCache;
-  if (cacheLoading) {
-    await new Promise<void>((res) => {
-      const check = setInterval(() => {
-        if (sectionCache) { clearInterval(check); res(); }
-      }, 100);
-    });
-    return sectionCache!;
-  }
-  cacheLoading = true;
-  sectionCache = await buildCache();
-  cacheLoading = false;
-  return sectionCache;
-}
+const sections = sectionsData as IndexedSection[];
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -134,8 +53,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ results: [], total: 0 });
   }
 
-  const cache = await getCache();
-
   const terms = query
     .toLowerCase()
     .split(/\s+/)
@@ -147,13 +64,13 @@ export async function GET(req: Request) {
 
   const scored: Array<BylawSection> = [];
 
-  for (const section of cache) {
-    const body = section._body ?? "";
+  for (const section of sections) {
+    const body = section.body ?? "";
     const searchText = `${section.sectionTitle} ${body}`.toLowerCase();
 
     let score = 0;
     for (const term of terms) {
-      const matches = (searchText.match(new RegExp(term, "g")) ?? []).length;
+      const matches = (searchText.match(new RegExp(escapeRegExp(term), "g")) ?? []).length;
       score += matches;
       if (section.sectionTitle.toLowerCase().includes(term)) score += 8;
       if (body.toLowerCase().includes(query.toLowerCase())) score += 5;
