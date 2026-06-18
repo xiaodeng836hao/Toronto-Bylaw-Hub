@@ -52,21 +52,35 @@ body {
   background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 40%, #fafbff 100%);
 }
 
-/* Print: show only the designated print area (e.g. the pool fence checklist). */
+/* Compact margins for any printed page. */
+@page {
+  margin: 14mm;
+}
+
+/* Print: show only the designated print area (e.g. the pool fence checklist).
+   The on-screen page content is marked `print:hidden` and the print-only block
+   is `print:block`, so the printed document contains only the checklist — no
+   tall hidden content creating blank pages. */
 @media print {
-  body * {
-    visibility: hidden !important;
+  header,
+  footer {
+    display: none !important;
   }
-  .print-area,
-  .print-area * {
-    visibility: visible !important;
+  html,
+  body {
+    background: #ffffff !important;
+    height: auto !important;
   }
   .print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
+    display: block !important;
     width: 100%;
-    padding: 24px;
+    padding: 0 !important;
+    color: #111;
+  }
+  /* Keep each checklist item (box + comment line) together on one page. */
+  .pf-print-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 

@@ -806,19 +806,32 @@ export const zoningTopics: ZoningTopic[] = [
 
 // ─── Pool Fence Checklist ───────────────────────────────────────────────────────
 
-export const poolFenceChecklist = [
-  { id: "1", title: "Permit Obtained", description: "A building permit has been issued by Toronto Building before constructing the pool enclosure.", category: "Permits", isRequired: true },
-  { id: "2", title: "Fence Height ≥ 1.2 m", description: "The pool enclosure is at least 1.2 metres (about 4 feet) high on all sides.", category: "Structure", isRequired: true },
-  { id: "3", title: "No Large Openings", description: "No opening allows passage of a sphere greater than 100 mm (about 4 inches).", category: "Structure", isRequired: true },
-  { id: "4", title: "Gate is Self-Closing", description: "Every gate returns to the closed position on its own, without manual help.", category: "Gates", isRequired: true },
-  { id: "5", title: "Gate is Self-Latching", description: "Every gate latches automatically when it closes.", category: "Gates", isRequired: true },
-  { id: "6", title: "Latch Located Correctly", description: "The latch is on the pool side and high on the gate, or enclosed to prevent reach-around access.", category: "Gates", isRequired: true },
-  { id: "7", title: "No Climbable Objects Within 1.2 m", description: "No furniture, equipment, or structures that could aid climbing are within 1.2 m of the enclosure.", category: "Structure", isRequired: true },
-  { id: "8", title: "Pool Area Fully Enclosed", description: "The enclosure fully surrounds the pool and prevents direct access from outside.", category: "Structure", isRequired: true },
-  { id: "9", title: "Inspection Completed", description: "A required inspection by Toronto Building has been completed and approved.", category: "Permits", isRequired: true },
-  { id: "10", title: "Gate Swings Outward from Pool", description: "Gates are hinged to swing away from the pool to discourage children pushing through.", category: "Gates", isRequired: false },
-  { id: "11", title: "No Gaps at Bottom of Fence", description: "The gap between the bottom of the fence and the ground is no larger than 100 mm.", category: "Structure", isRequired: true },
-  { id: "12", title: "Horizontal Members Restricted", description: "Any horizontal members are on the inside (pool side) so they can't be used as footholds.", category: "Structure", isRequired: true },
+export interface PoolFenceChecklistItem {
+  id: string;
+  title: string;
+  description: string;
+  category: "Structure" | "Gates" | "Permits";
+}
+
+/** Reference checklist based on Toronto Municipal Code Chapter 447 (§ 447-1.3). */
+export const poolFenceChecklist: PoolFenceChecklistItem[] = [
+  { id: "1", title: "Pool enclosure completely surrounds the pool area", description: "The enclosure fully encloses the area where the pool is located, with no way around it. (§ 447-1.3A)", category: "Structure" },
+  { id: "2", title: "No openings except a compliant gate", description: "There are no gaps or openings other than a gate that meets the bylaw. (§ 447-1.3A)", category: "Structure" },
+  { id: "3", title: "Minimum enclosure height appears to meet the required height", description: "Generally 1.2 m for a single residential property; 1.8 m for multiple-residential or non-residential property. (§ 447-1.3D)", category: "Structure" },
+  { id: "4", title: "Fence is at least 1.2 m from the pool edge", description: "The enclosure is no closer than 1.2 m horizontally to the water's edge. (§ 447-1.3E)", category: "Structure" },
+  { id: "5", title: "Fence is at least 1 m from easily climbable objects", description: "No closer than 1 m to anything that may help climbing (e.g. trees), unless the fence is ≥ 1.8 m for 1 m each side. (§ 447-1.3E)", category: "Structure" },
+  { id: "6", title: "Exterior side is non-climbable", description: "The outside face has non-climbable material and no footholds. (§ 447-1.3E)", category: "Structure" },
+  { id: "7", title: "No climbable objects or horizontal features between 10 cm and 1.2 m above grade", description: "Nothing on the outside between 100 mm and 1.2 m above the ground that could help climbing. (§ 447-1.3E)", category: "Structure" },
+  { id: "8", title: "Gate is self-closing", description: "When released, the gate closes on its own without being pushed. (§ 447-1.3C)", category: "Gates" },
+  { id: "9", title: "Gate is self-latching", description: "When the gate closes, the latch engages automatically. (§ 447-1.3C)", category: "Gates" },
+  { id: "10", title: "Gate is kept locked when the pool area is not in use", description: "The gate is not left unlocked or unsecured when no one is using the pool. (§ 447-1.3C)", category: "Gates" },
+  { id: "11", title: "Gate hinges and hardware are secure", description: "The gate is on substantial hinges and the latch/hardware are sound and properly maintained. (§ 447-1.3C)", category: "Gates" },
+  { id: "12", title: "Double gate has a lockable drop bolt (where applicable)", description: "On a double gate, the second leaf has a lockable drop bolt and both leaves stay secure. (§ 447-1.3C)", category: "Gates" },
+  { id: "13", title: "No direct access from the house into the pool area where prohibited", description: "Building entrances are outside the enclosure; if a wall forms part of it, there is no door/access through it into the pool area. (§ 447-1.3C)", category: "Structure" },
+  { id: "14", title: "Pool visibility from main-living-area windows/doors is not blocked", description: "Where a fence separates the pool from the home, open-mesh/open construction keeps the pool visible. (§ 447-1.3E)", category: "Structure" },
+  { id: "15", title: "Fence material appears to be a permitted type", description: "Chain-link, wood, metal picket, glass panel, or masonry wall built to the chapter's standards. (§ 447-1.3E)", category: "Structure" },
+  { id: "16", title: "Permit / Zoning Certificate documents are available", description: "The Zoning Certificate and Pool Fence Enclosure Permit documents are on hand. (§ 447-1.3B)", category: "Permits" },
+  { id: "17", title: "Pool has not been filled or used before the required City inspection", description: "The pool is not filled/used until an officer inspects and confirms a compliant permanent enclosure. (§ 447-1.3B)", category: "Permits" },
 ];
 
 // ─── Photo Review Helper — issue types & reference results ──────────────────────
