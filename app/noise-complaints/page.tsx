@@ -6,7 +6,7 @@ import { Volume2, Clock, ExternalLink, ArrowLeft, Hammer } from "lucide-react";
 export const metadata: Metadata = {
   title: "Noise Complaints — Coming Soon",
   description:
-    "Noise-related content for the Toronto Bylaw Hub is under development. For now, use official City of Toronto resources for noise concerns.",
+    "Noise-related content for the Toronto Bylaw Guide is under development. For now, use official City of Toronto resources for noise concerns.",
 };
 
 export default function NoiseComplaintsPage() {

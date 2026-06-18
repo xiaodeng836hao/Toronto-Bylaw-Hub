@@ -11,7 +11,7 @@ export default function Footer() {
               <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
                 <Shield className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Toronto Bylaw Hub</span>
+              <span className="font-semibold text-gray-900">Toronto Bylaw Guide</span>
             </div>
             <p className="text-xs text-gray-500 leading-relaxed max-w-sm">
               This website is not an official City of Toronto legal service. Information is provided for general reference purposes only. Always confirm requirements through the official City of Toronto Municipal Code, Toronto 311, Toronto Building, or applicable City procedures.
@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <p className="text-xs text-gray-400">© {new Date().getFullYear()} Toronto Bylaw Hub. Informational reference tool only.</p>
+          <p className="text-xs text-gray-400">© {new Date().getFullYear()} Toronto Bylaw Guide. Informational reference tool only.</p>
           <p className="text-xs text-gray-400">Not affiliated with the City of Toronto.</p>
         </div>
       </div>

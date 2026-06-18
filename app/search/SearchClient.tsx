@@ -46,7 +46,7 @@ export default function SearchClient() {
           <Search className="w-3.5 h-3.5" aria-hidden="true" />
           Site-wide Search
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Search Toronto Bylaw Hub</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Search Toronto Bylaw Guide</h1>
         <p className="text-gray-500 max-w-2xl">
           Search across Municipal Code chapters, zoning topics, prohibited plants, the pool fence guide, and the photo review helper.
         </p>

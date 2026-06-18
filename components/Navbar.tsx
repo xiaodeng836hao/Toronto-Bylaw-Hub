@@ -36,17 +36,17 @@ export default function Navbar() {
         <Link
           href="/"
           className="flex items-center gap-2.5 rounded-md hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          aria-label="Toronto Bylaw Hub — home"
+          aria-label="Toronto Bylaw Guide — home"
         >
           <Image
             src="/logo.png"
-            alt="Toronto Bylaw Hub logo"
+            alt="Toronto Bylaw Guide logo"
             width={52}
             height={52}
             className="object-contain"
             priority
           />
-          <span className="text-base font-semibold tracking-tight text-gray-900 hidden sm:block">Toronto Bylaw Hub</span>
+          <span className="text-base font-semibold tracking-tight text-gray-900 hidden sm:block">Toronto Bylaw Guide</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import SearchBar from "@/components/SearchBar";
 import { OFFICIAL_311_URL } from "@/lib/mock-data";
 import {
@@ -87,25 +86,70 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative border-b border-blue-100/60 overflow-hidden" aria-label="Introduction">
-        <Image
-          src="/hero-bg.png"
-          alt="Toronto skyline — the all-in-one Toronto bylaw reference for residents"
-          width={1512}
-          height={756}
-          className="w-full object-cover"
-          priority
-        />
-        {/* CTA overlay at bottom of image */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white/95 via-white/75 to-transparent pt-16 pb-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto flex flex-col gap-4">
-            <div className="inline-flex w-fit items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              Informational reference tool · Not official legal advice
-            </div>
-            <div className="max-w-2xl">
-              <SearchBar />
-            </div>
+      <section
+        className="relative overflow-hidden border-b border-blue-100/60 bg-gradient-to-b from-[#e9f1ff] via-[#f1f6ff] to-[#f6f8fb]"
+        aria-label="Introduction"
+      >
+        {/* Soft colour glows */}
+        <div aria-hidden className="pointer-events-none absolute -top-32 -right-24 h-96 w-96 rounded-full bg-blue-300/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-12 left-1/3 h-72 w-72 rounded-full bg-cyan-200/30 blur-3xl" />
+
+        {/* Dotted grid accent */}
+        <svg aria-hidden className="pointer-events-none absolute right-6 top-8 hidden text-blue-300/50 sm:block lg:right-12" width="132" height="84">
+          <pattern id="hero-dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.5" fill="currentColor" />
+          </pattern>
+          <rect width="132" height="84" fill="url(#hero-dots)" />
+        </svg>
+
+        {/* Toronto skyline silhouette (inline SVG — no external image) */}
+        <svg
+          aria-hidden
+          viewBox="0 0 1440 200"
+          preserveAspectRatio="none"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 w-full text-blue-200/50 sm:h-28"
+        >
+          <path
+            fill="currentColor"
+            d="M0,200 V150 H60 V120 H110 V165 H170 V100 H230 V135 H290 V75 H360 V115 H420 V150 H470 V95 H520 V60 H545 V18 H560 V60 H585 V110 H640 V70 H700 V130 H760 V55 H830 V120 H890 V90 H950 V60 H1020 V140 H1080 V95 H1140 V120 H1210 V70 H1270 V150 H1340 V110 H1400 V160 H1440 V200 Z"
+          />
+        </svg>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-24 md:pt-24 md:pb-32">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-100 backdrop-blur">
+            <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
+            Informational reference tool · Not official legal advice
+          </span>
+
+          <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+            Toronto{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              Bylaw Guide
+            </span>
+          </h1>
+
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
+            Search the Toronto Municipal Code, understand common bylaw rules in plain
+            language, and find the right official City resource — all in one
+            resident-friendly place.
+          </p>
+
+          <div className="mt-8 max-w-2xl">
+            <SearchBar />
+          </div>
+
+          {/* Popular searches */}
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-gray-500">Popular:</span>
+            {["garbage", "pool fence", "long grass", "heating", "graffiti"].map((term) => (
+              <Link
+                key={term}
+                href={`/search?q=${encodeURIComponent(term)}`}
+                className="rounded-full bg-white/70 px-3 py-1 text-gray-600 ring-1 ring-gray-200 transition-colors hover:text-blue-700 hover:ring-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                {term}
+              </Link>
+            ))}
           </div>
         </div>
       </section>

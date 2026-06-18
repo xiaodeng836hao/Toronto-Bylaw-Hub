@@ -8,8 +8,8 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Toronto Bylaw Hub",
-    template: "%s · Toronto Bylaw Hub",
+    default: "Toronto Bylaw Guide",
+    template: "%s · Toronto Bylaw Guide",
   },
   description:
     "A resident-friendly guide to Toronto bylaws: search Toronto Municipal Code chapters, review photos for possible bylaw matches, understand pool fence and zoning rules, and find official City of Toronto resources.",
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     "zoning",
     "311 Toronto",
   ],
-  applicationName: "Toronto Bylaw Hub",
+  applicationName: "Toronto Bylaw Guide",
   openGraph: {
-    title: "Toronto Bylaw Hub",
+    title: "Toronto Bylaw Guide",
     description:
       "Search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence and zoning rules.",
     type: "website",
-    siteName: "Toronto Bylaw Hub",
+    siteName: "Toronto Bylaw Guide",
     locale: "en_CA",
   },
   robots: { index: true, follow: true },
