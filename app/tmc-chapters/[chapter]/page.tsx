@@ -6,9 +6,15 @@ import {
 } from "@/lib/mock-data";
 import { getChapterContent, type ComplexityLevel, type RelatedTopic } from "@/lib/chapter-content";
 import {
+  FENCE_HEIGHT_TABLE, FENCE_HEIGHT_MEASUREMENT_NOTE, FENCE_SCHOOL_NOTE,
+  FENCE_RESTRICTIONS, FENCE_DRIVEWAY_VISIBILITY, FENCE_DECK_RULES, POOL_FENCE_REDIRECT,
+} from "@/lib/fence-447";
+import FenceHeightHelper from "./FenceHeightHelper";
+import {
   ArrowLeft, ArrowRight, ExternalLink, Download, FileText, ListChecks,
   HelpCircle, AlertCircle, Users, Tag, BookOpen, ChevronRight, Info, Phone,
   ClipboardCheck, Wrench, AlertTriangle, CheckCircle2, XCircle, Layers, Compass, Hash,
+  Ruler, Waves, Car, SquareStack, Ban,
 } from "lucide-react";
 
 export function generateStaticParams() {
@@ -80,6 +86,7 @@ export default async function ChapterDetailPage(
     .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
   const badge = /^[\d-]+$/.test(ch.chapterNumber) ? `Chapter ${ch.chapterNumber}` : ch.chapterNumber;
+  const isFence = ch.slug === "447";
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -154,6 +161,24 @@ export default async function ChapterDetailPage(
             </section>
           )}
 
+          {/* Pool Fence redirect (447 only) */}
+          {isFence && (
+            <section className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-2">
+                <Waves className="w-5 h-5 text-sky-600" aria-hidden="true" />
+                {POOL_FENCE_REDIRECT.title}
+              </h2>
+              <p className="text-sm text-gray-700 leading-relaxed">{POOL_FENCE_REDIRECT.text}</p>
+              <Link
+                href={POOL_FENCE_REDIRECT.href}
+                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white text-sm font-medium rounded-lg hover:bg-sky-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+              >
+                {POOL_FENCE_REDIRECT.buttonLabel} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+              <p className="mt-3 text-xs text-sky-800/80">{POOL_FENCE_REDIRECT.note}</p>
+            </section>
+          )}
+
           {/* Key Requirements */}
           {content && content.keyRequirements.length > 0 && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
@@ -191,12 +216,164 @@ export default async function ChapterDetailPage(
             </section>
           )}
 
+          {/* Fence Height Requirements table (447 only) */}
+          {isFence && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <Ruler className="w-5 h-5 text-blue-500" aria-hidden="true" />
+                Fence Height Requirements
+              </h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Maximum fence heights from Chapter 447, § 447-1.2B, Table 1. Find the row that matches where your fence
+                is, then read across to your property type (or the hedge column for vegetation).
+              </p>
+
+              {/* Desktop / tablet: table */}
+              <div className="hidden sm:block overflow-x-auto rounded-xl border border-gray-100">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-500">
+                      <th className="p-3 font-semibold w-10">#</th>
+                      <th className="p-3 font-semibold">Fence situation / location</th>
+                      <th className="p-3 font-semibold whitespace-nowrap">Single / multiple residential</th>
+                      <th className="p-3 font-semibold whitespace-nowrap">Non-residential</th>
+                      <th className="p-3 font-semibold whitespace-nowrap">Hedge / vegetation</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {FENCE_HEIGHT_TABLE.map((r) => (
+                      <tr key={r.item} className="align-top hover:bg-gray-50/60">
+                        <td className="p-3 text-sm font-bold text-gray-400">{r.item}</td>
+                        <td className="p-3">
+                          <p className="text-sm font-medium text-gray-900">{r.situation}</p>
+                          <p className="text-xs text-gray-500 mt-1 leading-relaxed">{r.description}</p>
+                          <p className="text-xs text-blue-700 mt-1.5"><span className="font-medium">Example:</span> {r.example}</p>
+                        </td>
+                        <td className="p-3 text-sm font-semibold text-gray-900 whitespace-nowrap">{r.residential}</td>
+                        <td className="p-3 text-sm font-semibold text-gray-900 whitespace-nowrap">{r.nonResidential}</td>
+                        <td className="p-3 text-sm font-semibold text-gray-700 whitespace-nowrap">{r.hedge}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile: stacked cards */}
+              <div className="sm:hidden flex flex-col gap-3">
+                {FENCE_HEIGHT_TABLE.map((r) => (
+                  <div key={r.item} className="rounded-xl border border-gray-100 p-4">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 text-blue-600 text-xs font-bold flex-shrink-0">{r.item}</span>
+                      <p className="text-sm font-semibold text-gray-900">{r.situation}</p>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed mb-2">{r.description}</p>
+                    <dl className="grid grid-cols-3 gap-2 mb-2">
+                      <div className="rounded-lg bg-gray-50 p-2">
+                        <dt className="text-[10px] uppercase tracking-wide text-gray-400">Residential</dt>
+                        <dd className="text-sm font-semibold text-gray-900">{r.residential}</dd>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 p-2">
+                        <dt className="text-[10px] uppercase tracking-wide text-gray-400">Non-res.</dt>
+                        <dd className="text-sm font-semibold text-gray-900">{r.nonResidential}</dd>
+                      </div>
+                      <div className="rounded-lg bg-gray-50 p-2">
+                        <dt className="text-[10px] uppercase tracking-wide text-gray-400">Hedge</dt>
+                        <dd className="text-sm font-semibold text-gray-700">{r.hedge}</dd>
+                      </div>
+                    </dl>
+                    <p className="text-xs text-blue-700"><span className="font-medium">Example:</span> {r.example}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 p-3 rounded-xl border border-gray-200 bg-gray-50 flex gap-2.5">
+                <Info className="w-4 h-4 text-gray-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <div className="text-xs text-gray-600 leading-relaxed">
+                  <p>{FENCE_HEIGHT_MEASUREMENT_NOTE}</p>
+                  <p className="mt-1.5">{FENCE_SCHOOL_NOTE}</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Fence Height Helper (447 only) */}
+          {isFence && <FenceHeightHelper />}
+
+          {/* General Fence Restrictions (447 only) */}
+          {isFence && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
+                <Ban className="w-5 h-5 text-rose-500" aria-hidden="true" />
+                General Fence Restrictions
+              </h2>
+              <div className="flex flex-col gap-3">
+                {FENCE_RESTRICTIONS.map((r) => (
+                  <div key={r.title} className="rounded-xl border border-gray-100 p-4">
+                    <div className="flex items-start justify-between gap-3 mb-1">
+                      <h3 className="font-semibold text-gray-900 text-sm">{r.title}</h3>
+                      <span className="inline-flex items-center gap-1 flex-shrink-0 text-[11px] font-mono text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                        <Hash className="w-3 h-3" aria-hidden="true" />{r.sectionReference}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{r.text}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Driveways and Visibility (447 only) */}
+          {isFence && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <Car className="w-5 h-5 text-blue-500" aria-hidden="true" />
+                Driveways and Visibility
+              </h2>
+              <p className="text-xs text-gray-500 mb-4">{FENCE_DRIVEWAY_VISIBILITY.sectionReference}</p>
+              <ul className="flex flex-col gap-2.5 mb-4">
+                {FENCE_DRIVEWAY_VISIBILITY.points.map((p) => (
+                  <li key={p} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3.5">
+                <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Practical example</p>
+                <p className="text-sm text-blue-900">{FENCE_DRIVEWAY_VISIBILITY.example}</p>
+              </div>
+            </section>
+          )}
+
+          {/* Fences on Unroofed Decks (447 only) */}
+          {isFence && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <SquareStack className="w-5 h-5 text-blue-500" aria-hidden="true" />
+                Fences on Unroofed Decks
+              </h2>
+              <p className="text-xs text-gray-500 mb-4">{FENCE_DECK_RULES.sectionReference}</p>
+              <ul className="flex flex-col gap-2.5 mb-4">
+                {FENCE_DECK_RULES.points.map((p) => (
+                  <li key={p} className="flex items-start gap-2.5 text-sm text-gray-700">
+                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3.5">
+                <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Practical example</p>
+                <p className="text-sm text-blue-900">{FENCE_DECK_RULES.example}</p>
+              </div>
+            </section>
+          )}
+
           {/* Practical Compliance Guide */}
           {content && content.practicalComplianceSteps.length > 0 && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <Wrench className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                {ch.slug === "417" ? "How to Reduce or Eliminate Dust" : "Practical Compliance Guide"}
+                {ch.slug === "417" ? "How to Reduce or Eliminate Dust" : isFence ? "Before You Build or Replace a Fence" : "Practical Compliance Guide"}
               </h2>
               <ol className="flex flex-col gap-3">
                 {content.practicalComplianceSteps.map((s, i) => (
@@ -280,7 +457,7 @@ export default async function ChapterDetailPage(
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
             <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
               <AlertCircle className="w-5 h-5 text-orange-500" aria-hidden="true" />
-              Common Examples
+              {isFence ? "Common Non-Compliance Examples" : "Common Examples"}
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {ch.commonExamples.map((ex) => (
