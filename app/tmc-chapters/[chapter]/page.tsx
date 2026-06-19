@@ -228,30 +228,40 @@ export default async function ChapterDetailPage(
                 is, then read across to your property type (or the hedge column for vegetation).
               </p>
 
-              {/* Desktop / tablet: table */}
+              {/* Desktop / tablet: table (fixed layout so columns stay balanced) */}
               <div className="hidden sm:block overflow-x-auto rounded-xl border border-gray-100">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full min-w-[560px] table-fixed text-left border-collapse">
+                  <colgroup>
+                    <col className="w-[5%]" />
+                    <col className="w-[43%]" />
+                    <col className="w-[18%]" />
+                    <col className="w-[17%]" />
+                    <col className="w-[17%]" />
+                  </colgroup>
                   <thead>
-                    <tr className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-500">
-                      <th className="p-3 font-semibold w-10">#</th>
-                      <th className="p-3 font-semibold">Fence situation / location</th>
-                      <th className="p-3 font-semibold whitespace-nowrap">Single / multiple residential</th>
-                      <th className="p-3 font-semibold whitespace-nowrap">Non-residential</th>
-                      <th className="p-3 font-semibold whitespace-nowrap">Hedge / vegetation</th>
+                    <tr className="bg-gray-50 text-[11px] uppercase tracking-wide text-gray-500 align-bottom">
+                      <th className="p-2.5 font-semibold">#</th>
+                      <th className="p-2.5 font-semibold">Fence situation / location</th>
+                      <th className="p-2.5 font-semibold">
+                        Residential
+                        <span className="block normal-case tracking-normal text-[10px] text-gray-400 font-normal">single / multiple</span>
+                      </th>
+                      <th className="p-2.5 font-semibold">Non-residential</th>
+                      <th className="p-2.5 font-semibold">Hedge / vegetation</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {FENCE_HEIGHT_TABLE.map((r) => (
                       <tr key={r.item} className="align-top hover:bg-gray-50/60">
-                        <td className="p-3 text-sm font-bold text-gray-400">{r.item}</td>
-                        <td className="p-3">
+                        <td className="p-2.5 text-sm font-bold text-gray-400">{r.item}</td>
+                        <td className="p-2.5">
                           <p className="text-sm font-medium text-gray-900">{r.situation}</p>
                           <p className="text-xs text-gray-500 mt-1 leading-relaxed">{r.description}</p>
                           <p className="text-xs text-blue-700 mt-1.5"><span className="font-medium">Example:</span> {r.example}</p>
                         </td>
-                        <td className="p-3 text-sm font-semibold text-gray-900 whitespace-nowrap">{r.residential}</td>
-                        <td className="p-3 text-sm font-semibold text-gray-900 whitespace-nowrap">{r.nonResidential}</td>
-                        <td className="p-3 text-sm font-semibold text-gray-700 whitespace-nowrap">{r.hedge}</td>
+                        <td className="p-2.5 text-sm font-semibold text-gray-900">{r.residential}</td>
+                        <td className="p-2.5 text-sm font-semibold text-gray-900">{r.nonResidential}</td>
+                        <td className="p-2.5 text-sm font-semibold text-gray-700">{r.hedge}</td>
                       </tr>
                     ))}
                   </tbody>
