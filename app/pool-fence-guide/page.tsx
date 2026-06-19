@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { poolFenceChecklist, OFFICIAL_311_URL } from "@/lib/mock-data";
@@ -7,7 +7,7 @@ import {
   CheckCircle2, Circle, ExternalLink, Waves, ShieldCheck, ShieldX, AlertTriangle,
   Info, ChevronDown, ChevronUp, ClipboardList, HardHat, Printer, BookOpen,
   Phone, Ruler, DoorClosed, Lock, Eye, Construction, ListChecks,
-  Images, Maximize2, X,
+  Images, Maximize2, X, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 // ── Official sources ─────────────────────────────────────────────────────────
@@ -166,138 +166,46 @@ const SOURCES = [
   { label: "Zoning Certificate for a Pool Fence Enclosure", href: ZONING_CERT_POOL, desc: "How to apply for the zoning review you need first." },
 ];
 
-// ── Visual Pool Fence Guide modules (3 provided illustrations) ────────────────
-type ModuleSection = { heading?: string; tone?: "good" | "bad" | "neutral"; items: string[] };
-interface VisualModule {
+// ── Visual Pool Fence Guide slides (3 provided illustrations) ─────────────────
+interface VisualSlide {
   id: string;
-  num: number;
   title: string;
   src: string;
   width: number;
   height: number;
   alt: string;
   caption: string;
-  intro: string;
-  sections: ModuleSection[];
-  note: string;
 }
 
 const IMG_DIR = "/images/pool-fence-guide";
 
-const VISUAL_MODULES: VisualModule[] = [
+const VISUAL_SLIDES: VisualSlide[] = [
   {
     id: "quick-guide",
-    num: 1,
     title: "Toronto Quick Guide",
     src: `${IMG_DIR}/pool-fence-quick-guide.png`,
     width: 1055,
     height: 1491,
     alt: "Illustrated quick guide to Toronto swimming pool enclosure rules, including enclosure requirements, gate requirements, and permit steps.",
     caption: "Quick reference summary of common Toronto pool enclosure rules.",
-    intro:
-      "This quick guide highlights when a pool enclosure is required, key enclosure rules, minimum height requirements, gate requirements, visibility considerations, and the general permit steps.",
-    sections: [
-      {
-        heading: "What it covers",
-        tone: "neutral",
-        items: [
-          "When an enclosure is required",
-          "4-sided enclosure concept",
-          "Minimum enclosure height",
-          "Gate self-closing and self-latching",
-          "Distance from the pool edge",
-          "Distance from climbable objects",
-          "Visibility near the house",
-          "General permit process",
-        ],
-      },
-    ],
-    note:
-      "This overview is simplified for public reference. Always confirm exact requirements using Chapter 447 and official City of Toronto guidance.",
   },
   {
     id: "compliant-examples",
-    num: 2,
     title: "Compliant and Non-Compliant Examples",
     src: `${IMG_DIR}/pool-fence-more-examples.png`,
     width: 1055,
     height: 1491,
     alt: "Illustrated examples of compliant and non-compliant pool fence situations, including climbable objects and unsafe access conditions.",
     caption: "Examples of compliant and non-compliant conditions, including climbable object issues.",
-    intro:
-      "This visual reference compares common non-compliant conditions with safer and more compliant examples, including climbable object concerns.",
-    sections: [
-      {
-        heading: "Key points shown",
-        tone: "neutral",
-        items: [
-          "4-sided enclosure required",
-          "No direct access from the house into the pool area",
-          "Fence must be at least 1.2 m from the pool edge",
-          "Fence must be at least 1.0 m from climbable objects",
-          "Outside surface must be non-climbable",
-          "Gate must be self-closing and self-latching",
-          "Gate must be kept locked when the pool area is not in use",
-        ],
-      },
-      {
-        heading: "Common climbable issues",
-        tone: "bad",
-        items: [
-          "Trees or large shrubs",
-          "Patio chairs and benches",
-          "Storage bins / recycling bins",
-          "Air conditioner units or equipment",
-          "Horizontal trim / rails / footholds",
-          "Stacked materials, toys, ladders, or firewood",
-        ],
-      },
-    ],
-    note:
-      "These examples are educational only. Actual compliance depends on exact site conditions and the bylaw.",
   },
   {
     id: "material-examples",
-    num: 3,
     title: "Fence Material Examples",
     src: `${IMG_DIR}/pool-fence-material-examples.png`,
     width: 1055,
     height: 1491,
     alt: "Illustrated examples of common pool fence materials, material rules, and materials generally not suitable for pool enclosures.",
     caption: "Examples of common fence materials and material-related rules for pool enclosures.",
-    intro:
-      "This visual guide shows common fence materials that may be used for pool enclosures, along with examples of materials that are generally not suitable.",
-    sections: [
-      {
-        heading: "Common permitted material examples",
-        tone: "good",
-        items: ["Chain-link fence", "Wood fence", "Metal picket fence", "Glass panel fence", "Masonry wall"],
-      },
-      {
-        heading: "Material rules to remember",
-        tone: "neutral",
-        items: [
-          "Outside surface should be non-climbable",
-          "No openings except a compliant gate",
-          "Fence must be at least 1.2 m from the pool edge",
-          "Keep climbable objects at least 1.0 m away",
-          "If a building wall forms part of the enclosure, there can be no doors or windows opening into the pool area",
-          "Gates must be self-closing, self-latching, and kept locked except when the pool area is in use",
-        ],
-      },
-      {
-        heading: "Generally not allowed / not suitable examples",
-        tone: "bad",
-        items: [
-          "Barbed or sharp material",
-          "Sheet metal or corrugated metal panels",
-          "Electric fence",
-          "Temporary fence as a substitute for a permanent compliant enclosure",
-        ],
-      },
-    ],
-    note:
-      "Material choice does not by itself guarantee compliance. The final design must still meet Chapter 447 requirements.",
   },
 ];
 
@@ -308,7 +216,38 @@ export default function PoolFenceGuidePage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [filterCat, setFilterCat] = useState("All");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [lightbox, setLightbox] = useState<VisualModule | null>(null);
+  const [lightbox, setLightbox] = useState<VisualSlide | null>(null);
+  const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const slideCount = VISUAL_SLIDES.length;
+  const goPrev = () => setSlide((s) => (s - 1 + slideCount) % slideCount);
+  const goNext = () => setSlide((s) => (s + 1) % slideCount);
+
+  // Jump the carousel to a specific slide and scroll the section into view
+  // (used by the cross-reference links in other sections).
+  const goToSlide = (index: number) => {
+    setSlide(index);
+    document.getElementById("visual-guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Auto-advance the carousel (loops). Pauses on hover/focus and while the
+  // lightbox is open.
+  useEffect(() => {
+    if (paused || lightbox) return;
+    const t = setInterval(() => setSlide((s) => (s + 1) % slideCount), 5500);
+    return () => clearInterval(t);
+  }, [paused, lightbox, slideCount]);
+
+  // Touch swipe handling for the carousel.
+  const touchStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) (dx < 0 ? goNext : goPrev)();
+    touchStartX.current = null;
+  };
 
   // Close the image lightbox with Escape and lock body scroll while open.
   useEffect(() => {
@@ -416,8 +355,8 @@ export default function PoolFenceGuidePage() {
             </h2>
             <p className="text-sm text-gray-500 mb-5">
               See the{" "}
-              <a href="#quick-guide" className="text-cyan-600 hover:text-cyan-700 font-medium">Toronto Quick Guide</a>{" "}and{" "}
-              <a href="#compliant-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">Compliant / Non-Compliant Examples</a>{" "}below for illustrated versions of these rules.
+              <button type="button" onClick={() => goToSlide(0)} className="text-cyan-600 hover:text-cyan-700 font-medium underline-offset-2 hover:underline">Toronto Quick Guide</button>{" "}and{" "}
+              <button type="button" onClick={() => goToSlide(1)} className="text-cyan-600 hover:text-cyan-700 font-medium underline-offset-2 hover:underline">Compliant / Non-Compliant Examples</button>{" "}in the visual guide below.
             </p>
 
             {/* Height table */}
@@ -463,7 +402,7 @@ export default function PoolFenceGuidePage() {
             </h2>
             <p className="text-sm text-gray-500 mb-5">
               See the{" "}
-              <a href="#compliant-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">illustrated examples below</a>{" "}for common gate and access issues.
+              <button type="button" onClick={() => goToSlide(1)} className="text-cyan-600 hover:text-cyan-700 font-medium underline-offset-2 hover:underline">illustrated examples</button>{" "}in the visual guide below for common gate and access issues.
             </p>
             <div className="flex flex-col gap-3 mb-5">
               {GATE_RULES.map((g) => (
@@ -499,73 +438,90 @@ export default function PoolFenceGuidePage() {
               <p className="text-xs text-amber-800">{VISUAL_DISCLAIMER}</p>
             </div>
 
-            <div className="flex flex-col gap-6">
-              {VISUAL_MODULES.map((m) => (
-                <div key={m.id} id={m.id} className="rounded-2xl border border-gray-100 bg-gray-50/40 p-4 sm:p-5 scroll-mt-24">
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <span className="w-7 h-7 rounded-full bg-cyan-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">{m.num}</span>
-                    <h3 className="text-lg font-bold text-gray-900">{m.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-4">{m.intro}</p>
+            {/* Swipeable, auto-looping image carousel */}
+            <div
+              className="relative"
+              onMouseEnter={() => setPaused(true)}
+              onMouseLeave={() => setPaused(false)}
+              onFocusCapture={() => setPaused(true)}
+              onBlurCapture={() => setPaused(false)}
+              role="group"
+              aria-roledescription="carousel"
+              aria-label="Pool fence illustrations"
+            >
+              <p className="text-sm font-semibold text-gray-900 mb-3" aria-live="polite">
+                <span className="text-cyan-600">{slide + 1} / {slideCount}</span> · {VISUAL_SLIDES[slide].title}
+              </p>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                    {/* Image (click to enlarge) */}
-                    <figure className="m-0">
+              <div
+                className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+              >
+                <div className="flex transition-transform duration-500 ease-out" style={{ transform: `translateX(-${slide * 100}%)` }}>
+                  {VISUAL_SLIDES.map((s, i) => (
+                    <div
+                      key={s.id}
+                      className="w-full flex-shrink-0"
+                      role="group"
+                      aria-roledescription="slide"
+                      aria-label={`${i + 1} of ${slideCount}: ${s.title}`}
+                      aria-hidden={i !== slide}
+                    >
                       <button
                         type="button"
-                        onClick={() => setLightbox(m)}
-                        aria-label={`Enlarge image: ${m.title}`}
-                        className="group relative block w-full rounded-xl overflow-hidden border border-gray-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                        onClick={() => setLightbox(s)}
+                        tabIndex={i === slide ? 0 : -1}
+                        aria-label={`Enlarge image: ${s.title}`}
+                        className="group relative block w-full h-[58vh] sm:h-[600px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-500"
                       >
                         <Image
-                          src={m.src}
-                          width={m.width}
-                          height={m.height}
-                          alt={m.alt}
-                          sizes="(max-width: 1024px) 100vw, 480px"
-                          className="w-full h-auto"
+                          src={s.src}
+                          fill
+                          alt={s.alt}
+                          sizes="(max-width: 896px) 100vw, 800px"
+                          className="object-contain p-2"
                         />
-                        <span className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                        <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
                           <Maximize2 className="w-3 h-3" aria-hidden="true" /> Enlarge
                         </span>
                       </button>
-                      <figcaption className="text-xs text-gray-500 mt-2">{m.caption}</figcaption>
-                    </figure>
-
-                    {/* Supporting points */}
-                    <div className="flex flex-col gap-4">
-                      {m.sections.map((sec) => (
-                        <div key={sec.heading ?? "items"}>
-                          {sec.heading && (
-                            <p className={`text-sm font-semibold mb-2 ${sec.tone === "good" ? "text-green-700" : sec.tone === "bad" ? "text-red-700" : "text-gray-900"}`}>
-                              {sec.heading}
-                            </p>
-                          )}
-                          <ul className="flex flex-col gap-1.5">
-                            {sec.items.map((it) => (
-                              <li key={it} className="flex items-start gap-2 text-sm text-gray-600">
-                                {sec.tone === "good" ? (
-                                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                                ) : sec.tone === "bad" ? (
-                                  <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                                ) : (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0 mt-2" aria-hidden="true" />
-                                )}
-                                {it}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
                     </div>
-                  </div>
-
-                  <div className="mt-4 p-3 rounded-lg bg-white border border-gray-100 flex gap-2.5">
-                    <Info className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                    <p className="text-xs text-gray-500">{m.note}</p>
-                  </div>
+                  ))}
                 </div>
-              ))}
+
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  aria-label="Previous image"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                >
+                  <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  aria-label="Next image"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/90 text-gray-700 shadow hover:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                >
+                  <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                </button>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-3 text-center">{VISUAL_SLIDES[slide].caption}</p>
+
+              <div className="flex justify-center gap-2 mt-3">
+                {VISUAL_SLIDES.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setSlide(i)}
+                    aria-label={`Show ${s.title}`}
+                    aria-current={slide === i}
+                    className={`h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 ${slide === i ? "w-6 bg-cyan-600" : "w-2 bg-gray-300 hover:bg-gray-400"}`}
+                  />
+                ))}
+              </div>
             </div>
           </section>
 
@@ -579,7 +535,7 @@ export default function PoolFenceGuidePage() {
             </p>
             <p className="text-sm text-gray-500 mb-4">
               See the{" "}
-              <a href="#material-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">Fence Material Examples</a>{" "}section above for material suitability context.
+              <button type="button" onClick={() => goToSlide(2)} className="text-cyan-600 hover:text-cyan-700 font-medium underline-offset-2 hover:underline">Fence Material Examples</button>{" "}in the visual guide above for material suitability context.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl border border-green-100 bg-green-50/60 p-4">
