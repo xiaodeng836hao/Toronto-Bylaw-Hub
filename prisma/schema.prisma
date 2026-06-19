@@ -24,7 +24,9 @@ model Feedback {
   email        String?
   userType     String
   feedbackType String
+  feature      String?
   message      String
+  canContact   Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
 

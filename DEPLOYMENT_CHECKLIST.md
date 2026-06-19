@@ -1,31 +1,52 @@
-# Deployment Checklist — Toronto Bylaw Hub
+# Deployment Checklist — Toronto Bylaw Guide
+
+Production domain: **https://bylawguide.ca**
 
 This app is built to run reliably on **restricted corporate/government networks**
 (e.g. City of Toronto office Wi-Fi). It loads **no external runtime assets** — all
 images, fonts, icons, and scripts are served from the app's own origin. Use this
-checklist when deploying to a production custom domain.
+checklist when deploying to the production custom domain.
 
 ## Before deploy
 
-- [ ] **Use a custom domain**, not a preview/temporary deployment domain.
-      Preview domains are more likely to be blocked or filtered on office Wi-Fi.
-- [ ] Set `NEXT_PUBLIC_SITE_URL` to the **full custom domain** (e.g.
-      `https://www.yourdomain.ca`). This drives the canonical URL, `sitemap.xml`,
-      and `robots.txt`. If unset, a placeholder is used.
-- [ ] **Enable HTTPS** on the custom domain (valid certificate, HTTP → HTTPS
+- [ ] **Production custom domain connected** (`bylawguide.ca`), not a
+      preview/temporary deployment domain (preview domains are more likely to be
+      blocked or filtered on office Wi-Fi).
+- [ ] Set `NEXT_PUBLIC_SITE_URL=https://bylawguide.ca`. This drives the canonical
+      URL, `sitemap.xml`, and `robots.txt`. If unset, the app still defaults to
+      `https://bylawguide.ca` (see `lib/site-config.ts`).
+- [ ] **HTTPS is active** on the custom domain (valid certificate, HTTP → HTTPS
       redirect). Restricted networks often block plain HTTP.
 - [ ] (Optional) `DATABASE_URL` — only needed if you want feedback stored in
       PostgreSQL. The app works without it (feedback is logged to the server
       console instead), so it is not required for the public site to function.
+      If set, run `npx prisma migrate deploy` (the `Feedback` model now includes
+      `feature` and `canContact`).
 
 ## Build & verify locally
 
 - [ ] `npm install` completes without errors.
+- [ ] `npm run preflight` passes (no localhost/preview URLs, no removed routes,
+      required routes present, domain config correct).
 - [ ] `npm run build` completes with **no TypeScript errors**.
 - [ ] `npm run dev` (or `npm start` after build) serves all pages.
 - [ ] All routes render: `/`, `/tmc-chapters`, `/tmc-chapters/[chapter]`,
       `/photo-review`, `/pool-fence-guide`, `/zoning`, `/prohibited-plants`,
       `/prohibited-plants/[slug]`, `/search`, `/feedback`, `/noise-complaints`.
+- [ ] No broken internal links; external links reviewed (open in a new tab).
+- [ ] **Mobile tested** at ~375px (no horizontal scroll; tables/cards stack).
+- [ ] **Feedback form tested** end-to-end; **database connection tested** if
+      `DATABASE_URL` is set.
+
+## SEO / Google Search Console (see SEO_CHECKLIST.md)
+
+- [ ] `robots.txt` is live at `/robots.txt`.
+- [ ] `sitemap.xml` is live at `/sitemap.xml` and uses `bylawguide.ca` URLs.
+- [ ] Google Search Console property verified for `bylawguide.ca`.
+- [ ] Sitemap submitted to Google.
+- [ ] Homepage inspected (URL Inspection) and indexing requested.
+- [ ] Main pages inspected in Search Console.
+- [ ] No `noindex` on production pages (the app sets `index: true`).
 
 ## Network-reliability guarantees (already built in)
 

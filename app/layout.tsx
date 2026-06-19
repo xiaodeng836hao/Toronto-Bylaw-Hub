@@ -3,32 +3,42 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
-import { SITE_URL } from "@/lib/site";
+import BetaNotice from "@/components/BetaNotice";
+import { SITE_URL, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Toronto Bylaw Guide",
-    template: "%s · Toronto Bylaw Guide",
+    default: siteConfig.defaultTitle,
+    template: siteConfig.titleTemplate,
   },
-  description:
-    "A resident-friendly guide to Toronto bylaws: search Toronto Municipal Code chapters, review photos for possible bylaw matches, understand pool fence and zoning rules, and find official City of Toronto resources.",
+  description: siteConfig.defaultDescription,
   keywords: [
     "Toronto bylaws",
     "Toronto Municipal Code",
     "property standards",
+    "fence height",
     "pool fence",
     "zoning",
+    "prohibited plants",
     "311 Toronto",
   ],
-  applicationName: "Toronto Bylaw Guide",
+  applicationName: siteConfig.siteName,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Toronto Bylaw Guide",
+    title: siteConfig.defaultTitle,
     description:
-      "Search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence and zoning rules.",
+      "Search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence, fence height, and zoning rules.",
+    url: SITE_URL,
     type: "website",
-    siteName: "Toronto Bylaw Guide",
+    siteName: siteConfig.siteName,
     locale: "en_CA",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.defaultTitle,
+    description:
+      "A resident-friendly guide to Toronto bylaws — TMC chapters, pool fence, fence height, zoning, and prohibited plants, with official City sources.",
   },
   robots: { index: true, follow: true },
 };
@@ -46,6 +56,7 @@ export default function RootLayout({
           {children}
         </main>
         <DisclaimerBanner />
+        <BetaNotice />
         <Footer />
       </body>
     </html>

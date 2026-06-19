@@ -2,9 +2,12 @@
 import { useState } from "react";
 import { MessageSquare, CheckCircle2, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 
-const userTypes = ["Resident", "Other"];
+const userTypes = ["Resident", "Bylaw Officer", "Other"];
 const feedbackTypes = ["Bug Report", "Suggestion", "Missing Bylaw", "Content Correction", "Other"];
-const featureOptions = ["TMC Chapters", "Photo Review", "Pool Fence Guide", "Zoning", "Search", "Other"];
+const featureOptions = [
+  "Home", "TMC Chapters", "Fences", "Pool Fence Guide", "Zoning",
+  "Prohibited Plants", "Photo Review", "Search", "Feedback", "Other",
+];
 const MAX_MESSAGE = 1000;
 
 type FormState = {
@@ -13,9 +16,12 @@ type FormState = {
   feedbackType: string;
   feature: string;
   message: string;
+  canContact: boolean;
+  /** Honeypot — must stay empty; bots tend to fill every field. */
+  website: string;
 };
 
-const EMPTY: FormState = { email: "", userType: "", feedbackType: "", feature: "", message: "" };
+const EMPTY: FormState = { email: "", userType: "", feedbackType: "", feature: "", message: "", canContact: false, website: "" };
 
 export default function FeedbackPage() {
   const [form, setForm] = useState<FormState>(EMPTY);
@@ -45,12 +51,24 @@ export default function FeedbackPage() {
       setError(`Your message is too long. Please keep it under ${MAX_MESSAGE} characters.`);
       return;
     }
+    // Honeypot: a real user never fills this. Pretend success without sending.
+    if (form.website.trim()) {
+      setSubmitted(true);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          email: form.email,
+          userType: form.userType,
+          feedbackType: form.feedbackType,
+          feature: form.feature,
+          message: form.message,
+          canContact: form.canContact && !!form.email,
+        }),
       });
       if (!res.ok) throw new Error("Submission failed");
       setSubmitted(true);
@@ -95,7 +113,29 @@ export default function FeedbackPage() {
         </p>
       </div>
 
+      {/* Privacy note */}
+      <div className="mb-5 p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex gap-2.5">
+        <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <p className="text-xs text-amber-800">
+          Do not submit confidential, personal, or emergency information through this form. For urgent issues or to report a bylaw concern, use Toronto 311.
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 flex flex-col gap-5">
+        {/* Honeypot — visually hidden, ignored by humans, often filled by bots */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden" >
+          <label htmlFor="website">Leave this field empty</label>
+          <input
+            id="website"
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.website}
+            onChange={(e) => update("website", e.target.value)}
+          />
+        </div>
+
         {/* Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -114,6 +154,17 @@ export default function FeedbackPage() {
             }`}
           />
           {!emailValid && <p className="text-xs text-red-500 mt-1">Please enter a valid email address.</p>}
+          <label className="mt-2.5 flex items-center gap-2 text-sm text-gray-600 select-none cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.canContact}
+              onChange={(e) => update("canContact", e.target.checked)}
+              disabled={!form.email}
+              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50"
+            />
+            Can we contact you about this feedback?
+            {!form.email && <span className="text-xs text-gray-400">(add an email first)</span>}
+          </label>
         </div>
 
         {/* User Type */}

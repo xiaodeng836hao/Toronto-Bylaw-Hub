@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 const MAX_MESSAGE = 1000;
 
 // Expected Prisma `Feedback` model fields (when a database is configured):
-//   email String?  userType String  feedbackType String  feature String?  message String  createdAt DateTime @default(now())
+//   email String?  userType String  feedbackType String  feature String?  message String  canContact Boolean  createdAt DateTime @default(now())
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, userType, feedbackType, feature, message } = body ?? {};
+    const { email, userType, feedbackType, feature, message, canContact } = body ?? {};
 
     if (!userType || !feedbackType || !message?.trim()) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       feedbackType,
       feature: feature || null,
       message: message.trim(),
+      canContact: Boolean(canContact) && !!email,
     };
 
     if (process.env.DATABASE_URL) {

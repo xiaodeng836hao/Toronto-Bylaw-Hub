@@ -1,15 +1,14 @@
 /**
  * Canonical public site URL.
  *
- * Set `NEXT_PUBLIC_SITE_URL` to your custom production domain (e.g.
- * `https://www.yourdomain.ca`) before building/deploying. When unset it falls
- * back to a placeholder so local development and preview builds still work.
+ * Re-exported from {@link siteConfig} so SEO metadata (canonical URL), the
+ * sitemap, and robots.txt all share one source of truth. The production domain
+ * is `https://bylawguide.ca`; override with `NEXT_PUBLIC_SITE_URL` if needed.
  *
- * This value is only used for SEO metadata (canonical URL), the sitemap, and
- * robots.txt — it is never used to load runtime assets, so it cannot cause
- * blocked requests on restricted networks. All page/API links inside the app
- * are relative.
+ * Only used for SEO/sitemap/robots — never to load runtime assets, so it cannot
+ * cause blocked requests on restricted networks. All in-app links are relative.
  */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://toronto-bylaw-hub.example.ca"
-).replace(/\/+$/, "");
+export { siteConfig } from "./site-config";
+import { siteConfig } from "./site-config";
+
+export const SITE_URL = siteConfig.siteUrl;
