@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { poolFenceChecklist, OFFICIAL_311_URL } from "@/lib/mock-data";
 import {
   CheckCircle2, Circle, ExternalLink, Waves, ShieldCheck, ShieldX, AlertTriangle,
   Info, ChevronDown, ChevronUp, ClipboardList, HardHat, Printer, BookOpen,
   Phone, Ruler, DoorClosed, Lock, Eye, Construction, ListChecks,
+  Images, Maximize2, X,
 } from "lucide-react";
 
 // ── Official sources ─────────────────────────────────────────────────────────
@@ -164,10 +166,162 @@ const SOURCES = [
   { label: "Zoning Certificate for a Pool Fence Enclosure", href: ZONING_CERT_POOL, desc: "How to apply for the zoning review you need first." },
 ];
 
+// ── Visual Pool Fence Guide modules (3 provided illustrations) ────────────────
+type ModuleSection = { heading?: string; tone?: "good" | "bad" | "neutral"; items: string[] };
+interface VisualModule {
+  id: string;
+  num: number;
+  title: string;
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  intro: string;
+  sections: ModuleSection[];
+  note: string;
+}
+
+const IMG_DIR = "/images/pool-fence-guide";
+
+const VISUAL_MODULES: VisualModule[] = [
+  {
+    id: "quick-guide",
+    num: 1,
+    title: "Toronto Quick Guide",
+    src: `${IMG_DIR}/pool-fence-quick-guide.png`,
+    width: 1055,
+    height: 1491,
+    alt: "Illustrated quick guide to Toronto swimming pool enclosure rules, including enclosure requirements, gate requirements, and permit steps.",
+    caption: "Quick reference summary of common Toronto pool enclosure rules.",
+    intro:
+      "This quick guide highlights when a pool enclosure is required, key enclosure rules, minimum height requirements, gate requirements, visibility considerations, and the general permit steps.",
+    sections: [
+      {
+        heading: "What it covers",
+        tone: "neutral",
+        items: [
+          "When an enclosure is required",
+          "4-sided enclosure concept",
+          "Minimum enclosure height",
+          "Gate self-closing and self-latching",
+          "Distance from the pool edge",
+          "Distance from climbable objects",
+          "Visibility near the house",
+          "General permit process",
+        ],
+      },
+    ],
+    note:
+      "This overview is simplified for public reference. Always confirm exact requirements using Chapter 447 and official City of Toronto guidance.",
+  },
+  {
+    id: "compliant-examples",
+    num: 2,
+    title: "Compliant and Non-Compliant Examples",
+    src: `${IMG_DIR}/pool-fence-more-examples.png`,
+    width: 1055,
+    height: 1491,
+    alt: "Illustrated examples of compliant and non-compliant pool fence situations, including climbable objects and unsafe access conditions.",
+    caption: "Examples of compliant and non-compliant conditions, including climbable object issues.",
+    intro:
+      "This visual reference compares common non-compliant conditions with safer and more compliant examples, including climbable object concerns.",
+    sections: [
+      {
+        heading: "Key points shown",
+        tone: "neutral",
+        items: [
+          "4-sided enclosure required",
+          "No direct access from the house into the pool area",
+          "Fence must be at least 1.2 m from the pool edge",
+          "Fence must be at least 1.0 m from climbable objects",
+          "Outside surface must be non-climbable",
+          "Gate must be self-closing and self-latching",
+          "Gate must be kept locked when the pool area is not in use",
+        ],
+      },
+      {
+        heading: "Common climbable issues",
+        tone: "bad",
+        items: [
+          "Trees or large shrubs",
+          "Patio chairs and benches",
+          "Storage bins / recycling bins",
+          "Air conditioner units or equipment",
+          "Horizontal trim / rails / footholds",
+          "Stacked materials, toys, ladders, or firewood",
+        ],
+      },
+    ],
+    note:
+      "These examples are educational only. Actual compliance depends on exact site conditions and the bylaw.",
+  },
+  {
+    id: "material-examples",
+    num: 3,
+    title: "Fence Material Examples",
+    src: `${IMG_DIR}/pool-fence-material-examples.png`,
+    width: 1055,
+    height: 1491,
+    alt: "Illustrated examples of common pool fence materials, material rules, and materials generally not suitable for pool enclosures.",
+    caption: "Examples of common fence materials and material-related rules for pool enclosures.",
+    intro:
+      "This visual guide shows common fence materials that may be used for pool enclosures, along with examples of materials that are generally not suitable.",
+    sections: [
+      {
+        heading: "Common permitted material examples",
+        tone: "good",
+        items: ["Chain-link fence", "Wood fence", "Metal picket fence", "Glass panel fence", "Masonry wall"],
+      },
+      {
+        heading: "Material rules to remember",
+        tone: "neutral",
+        items: [
+          "Outside surface should be non-climbable",
+          "No openings except a compliant gate",
+          "Fence must be at least 1.2 m from the pool edge",
+          "Keep climbable objects at least 1.0 m away",
+          "If a building wall forms part of the enclosure, there can be no doors or windows opening into the pool area",
+          "Gates must be self-closing, self-latching, and kept locked except when the pool area is in use",
+        ],
+      },
+      {
+        heading: "Generally not allowed / not suitable examples",
+        tone: "bad",
+        items: [
+          "Barbed or sharp material",
+          "Sheet metal or corrugated metal panels",
+          "Electric fence",
+          "Temporary fence as a substitute for a permanent compliant enclosure",
+        ],
+      },
+    ],
+    note:
+      "Material choice does not by itself guarantee compliance. The final design must still meet Chapter 447 requirements.",
+  },
+];
+
+const VISUAL_DISCLAIMER =
+  "These images are simplified educational examples only. Actual compliance depends on exact measurements, site conditions, and the official requirements of Toronto Municipal Code Chapter 447.";
+
 export default function PoolFenceGuidePage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [filterCat, setFilterCat] = useState("All");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [lightbox, setLightbox] = useState<VisualModule | null>(null);
+
+  // Close the image lightbox with Escape and lock body scroll while open.
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightbox]);
 
   const toggle = (id: string) => setChecked((p) => ({ ...p, [id]: !p[id] }));
   const filteredChecklist = poolFenceChecklist.filter((i) => filterCat === "All" || i.category === filterCat);
@@ -257,9 +411,14 @@ export default function PoolFenceGuidePage() {
 
           {/* 5 · Enclosure Requirements */}
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Enclosure Requirements
             </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              See the{" "}
+              <a href="#quick-guide" className="text-cyan-600 hover:text-cyan-700 font-medium">Toronto Quick Guide</a>{" "}and{" "}
+              <a href="#compliant-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">Compliant / Non-Compliant Examples</a>{" "}below for illustrated versions of these rules.
+            </p>
 
             {/* Height table */}
             <div className="mb-5 rounded-xl border border-cyan-100 bg-cyan-50/50 p-4">
@@ -299,9 +458,13 @@ export default function PoolFenceGuidePage() {
 
           {/* 6 · Gate Requirements */}
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Lock className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Gate Requirements
             </h2>
+            <p className="text-sm text-gray-500 mb-5">
+              See the{" "}
+              <a href="#compliant-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">illustrated examples below</a>{" "}for common gate and access issues.
+            </p>
             <div className="flex flex-col gap-3 mb-5">
               {GATE_RULES.map((g) => (
                 <div key={g.title} className="flex gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
@@ -323,13 +486,100 @@ export default function PoolFenceGuidePage() {
             </div>
           </section>
 
-          {/* 7 · Temporary Fencing */}
+          {/* 7 · Visual Pool Fence Guide */}
+          <section id="visual-guide" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-24">
+            <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+              <Images className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Visual Pool Fence Guide
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              These illustrated examples help explain key pool enclosure rules, common non-compliant situations, and common fence material examples under Toronto&apos;s pool fence requirements.
+            </p>
+            <div className="mb-6 p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex gap-2.5">
+              <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-xs text-amber-800">{VISUAL_DISCLAIMER}</p>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              {VISUAL_MODULES.map((m) => (
+                <div key={m.id} id={m.id} className="rounded-2xl border border-gray-100 bg-gray-50/40 p-4 sm:p-5 scroll-mt-24">
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <span className="w-7 h-7 rounded-full bg-cyan-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">{m.num}</span>
+                    <h3 className="text-lg font-bold text-gray-900">{m.title}</h3>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">{m.intro}</p>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    {/* Image (click to enlarge) */}
+                    <figure className="m-0">
+                      <button
+                        type="button"
+                        onClick={() => setLightbox(m)}
+                        aria-label={`Enlarge image: ${m.title}`}
+                        className="group relative block w-full rounded-xl overflow-hidden border border-gray-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                      >
+                        <Image
+                          src={m.src}
+                          width={m.width}
+                          height={m.height}
+                          alt={m.alt}
+                          sizes="(max-width: 1024px) 100vw, 480px"
+                          className="w-full h-auto"
+                        />
+                        <span className="absolute top-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                          <Maximize2 className="w-3 h-3" aria-hidden="true" /> Enlarge
+                        </span>
+                      </button>
+                      <figcaption className="text-xs text-gray-500 mt-2">{m.caption}</figcaption>
+                    </figure>
+
+                    {/* Supporting points */}
+                    <div className="flex flex-col gap-4">
+                      {m.sections.map((sec) => (
+                        <div key={sec.heading ?? "items"}>
+                          {sec.heading && (
+                            <p className={`text-sm font-semibold mb-2 ${sec.tone === "good" ? "text-green-700" : sec.tone === "bad" ? "text-red-700" : "text-gray-900"}`}>
+                              {sec.heading}
+                            </p>
+                          )}
+                          <ul className="flex flex-col gap-1.5">
+                            {sec.items.map((it) => (
+                              <li key={it} className="flex items-start gap-2 text-sm text-gray-600">
+                                {sec.tone === "good" ? (
+                                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                                ) : sec.tone === "bad" ? (
+                                  <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                                ) : (
+                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0 mt-2" aria-hidden="true" />
+                                )}
+                                {it}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 rounded-lg bg-white border border-gray-100 flex gap-2.5">
+                    <Info className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                    <p className="text-xs text-gray-500">{m.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* 8 · Temporary Fencing */}
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Construction className="w-5 h-5 text-amber-500" aria-hidden="true" /> Temporary Fencing
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
               Temporary fencing requirements depend on the situation. During pool construction it may be allowed if authorized by the City, but it should not be assumed to satisfy the permanent enclosure requirements. Snow fencing is treated differently where the bylaw allows. Any temporary fence around a pool or unsafe condition must effectively prevent access, be stable and secured, and not be easily moved or opened. If used before the permanent enclosure is complete, confirm requirements with the City — it is not a substitute for the required permanent pool enclosure unless the bylaw or City direction allows it.
+            </p>
+            <p className="text-sm text-gray-500 mb-4">
+              See the{" "}
+              <a href="#material-examples" className="text-cyan-600 hover:text-cyan-700 font-medium">Fence Material Examples</a>{" "}section above for material suitability context.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl border border-green-100 bg-green-50/60 p-4">
@@ -472,6 +722,38 @@ export default function PoolFenceGuidePage() {
           </section>
         </div>
       </div>
+
+      {/* Image lightbox (click-to-enlarge) */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 print:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${lightbox.title} — enlarged image`}
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            type="button"
+            autoFocus
+            onClick={() => setLightbox(null)}
+            aria-label="Close enlarged image"
+            className="absolute top-4 right-4 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+          </button>
+          <figure className="m-0 max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={lightbox.src}
+              width={lightbox.width}
+              height={lightbox.height}
+              alt={lightbox.alt}
+              sizes="100vw"
+              className="w-auto h-auto max-h-[86vh] max-w-full rounded-lg mx-auto"
+            />
+            <figcaption className="text-center text-xs text-gray-200 mt-2">{lightbox.caption}</figcaption>
+          </figure>
+        </div>
+      )}
 
       {/* ════════ PRINT-ONLY CHECKLIST ════════ */}
       <div className="print-area hidden print:block" style={{ fontFamily: "system-ui, sans-serif", fontSize: 12, color: "#111", lineHeight: 1.4 }}>
