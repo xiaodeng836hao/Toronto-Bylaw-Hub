@@ -60,14 +60,13 @@ export default function FenceHeightHelper() {
   const match = matchFenceHeightRule(a);
 
   return (
-    <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+    <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
       <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
         <Compass className="w-5 h-5 text-blue-500" aria-hidden="true" />
         Find the Relevant Fence Height Rule
       </h2>
       <p className="text-sm text-gray-600 mb-4">
-        Answer a few questions to see the Table 1 row that likely applies. This is a reference tool, not a legal
-        determination.
+        Answer a few questions to see the likely Table 1 row — a reference tool, not a legal determination.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

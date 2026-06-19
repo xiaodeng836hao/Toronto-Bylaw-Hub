@@ -146,12 +146,12 @@ export default async function ChapterDetailPage(
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Main column */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           {/* Plain-English Overview */}
           {content && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-3">
                 <BookOpen className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Plain-English Overview
@@ -163,7 +163,7 @@ export default async function ChapterDetailPage(
 
           {/* Pool Fence redirect (447 only) */}
           {isFence && (
-            <section className="rounded-2xl border border-sky-200 bg-sky-50 p-6">
+            <section className="rounded-2xl border border-sky-200 bg-sky-50 p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-2">
                 <Waves className="w-5 h-5 text-sky-600" aria-hidden="true" />
                 {POOL_FENCE_REDIRECT.title}
@@ -181,7 +181,7 @@ export default async function ChapterDetailPage(
 
           {/* Key Requirements */}
           {content && content.keyRequirements.length > 0 && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <ClipboardCheck className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 {content.complexityLevel === "complex" ? "Top Practical Requirements" : "Key Requirements"}
@@ -218,7 +218,7 @@ export default async function ChapterDetailPage(
 
           {/* Fence Height Requirements table (447 only) */}
           {isFence && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
                 <Ruler className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Fence Height Requirements
@@ -256,8 +256,7 @@ export default async function ChapterDetailPage(
                         <td className="p-2.5 text-sm font-bold text-gray-400">{r.item}</td>
                         <td className="p-2.5">
                           <p className="text-sm font-medium text-gray-900">{r.situation}</p>
-                          <p className="text-xs text-gray-500 mt-1 leading-relaxed">{r.description}</p>
-                          <p className="text-xs text-blue-700 mt-1.5"><span className="font-medium">Example:</span> {r.example}</p>
+                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{r.description}</p>
                         </td>
                         <td className="p-2.5 text-sm font-semibold text-gray-900">{r.residential}</td>
                         <td className="p-2.5 text-sm font-semibold text-gray-900">{r.nonResidential}</td>
@@ -277,7 +276,7 @@ export default async function ChapterDetailPage(
                       <p className="text-sm font-semibold text-gray-900">{r.situation}</p>
                     </div>
                     <p className="text-xs text-gray-500 leading-relaxed mb-2">{r.description}</p>
-                    <dl className="grid grid-cols-3 gap-2 mb-2">
+                    <dl className="grid grid-cols-3 gap-2">
                       <div className="rounded-lg bg-gray-50 p-2">
                         <dt className="text-[10px] uppercase tracking-wide text-gray-400">Residential</dt>
                         <dd className="text-sm font-semibold text-gray-900">{r.residential}</dd>
@@ -291,7 +290,6 @@ export default async function ChapterDetailPage(
                         <dd className="text-sm font-semibold text-gray-700">{r.hedge}</dd>
                       </div>
                     </dl>
-                    <p className="text-xs text-blue-700"><span className="font-medium">Example:</span> {r.example}</p>
                   </div>
                 ))}
               </div>
@@ -311,7 +309,7 @@ export default async function ChapterDetailPage(
 
           {/* General Fence Restrictions (447 only) */}
           {isFence && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <Ban className="w-5 h-5 text-rose-500" aria-hidden="true" />
                 General Fence Restrictions
@@ -334,7 +332,7 @@ export default async function ChapterDetailPage(
 
           {/* Driveways and Visibility (447 only) */}
           {isFence && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
                 <Car className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Driveways and Visibility
@@ -357,7 +355,7 @@ export default async function ChapterDetailPage(
 
           {/* Fences on Unroofed Decks (447 only) */}
           {isFence && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
                 <SquareStack className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Fences on Unroofed Decks
@@ -380,7 +378,7 @@ export default async function ChapterDetailPage(
 
           {/* Practical Compliance Guide */}
           {content && content.practicalComplianceSteps.length > 0 && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <Wrench className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 {ch.slug === "417" ? "How to Reduce or Eliminate Dust" : isFence ? "Before You Build or Replace a Fence" : "Practical Compliance Guide"}
@@ -406,7 +404,7 @@ export default async function ChapterDetailPage(
 
           {/* Common Questions (answered) */}
           {content && content.commonQuestions.length > 0 ? (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <HelpCircle className="w-5 h-5 text-violet-500" aria-hidden="true" />
                 Common Questions
@@ -434,7 +432,7 @@ export default async function ChapterDetailPage(
               </div>
             </section>
           ) : (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <HelpCircle className="w-5 h-5 text-violet-500" aria-hidden="true" />
                 Common Resident Questions
@@ -448,7 +446,7 @@ export default async function ChapterDetailPage(
           )}
 
           {/* What this covers */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
             <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
               <ListChecks className="w-5 h-5 text-blue-500" aria-hidden="true" />
               What This Chapter Generally Covers
@@ -464,7 +462,7 @@ export default async function ChapterDetailPage(
           </section>
 
           {/* Common examples */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
             <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
               <AlertCircle className="w-5 h-5 text-orange-500" aria-hidden="true" />
               {isFence ? "Common Non-Compliance Examples" : "Common Examples"}
@@ -481,7 +479,7 @@ export default async function ChapterDetailPage(
 
           {/* Related Topics */}
           {content && content.relatedTopics.length > 0 && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <Compass className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Related Topics
@@ -496,7 +494,7 @@ export default async function ChapterDetailPage(
         </div>
 
         {/* Sidebar */}
-        <aside className="flex flex-col gap-6">
+        <aside className="flex flex-col gap-5">
           {/* Who it applies to */}
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
             <h2 className="flex items-center gap-2 font-semibold text-gray-800 text-sm mb-2">

@@ -49,80 +49,68 @@ export interface FenceHeightRow {
 export const FENCE_HEIGHT_TABLE: FenceHeightRow[] = [
   {
     item: 1,
-    situation: "Front yard, near a public-highway lot line",
-    description:
-      "Fence in a front yard, and within 2.4 m of a lot line abutting a public highway (a public highway does not include a public lane).",
+    situation: "Front yard, near a street-side lot line",
+    description: "Front yard, within 2.4 m of a public-highway lot line (a public lane doesn't count).",
     residential: "1.2 m",
     nonResidential: "1.2 m",
     hedge: "1.2 m",
-    plain:
-      "A front-yard fence close to the street has the lowest limit so it does not box in the front of the property or block sightlines.",
-    example: "A picket fence along the front of a house, right by the sidewalk, may be up to 1.2 m.",
+    plain: "A front-yard fence close to the street has the lowest limit so it doesn't block sightlines.",
+    example: "A picket fence right by the front sidewalk may be up to 1.2 m.",
   },
   {
     item: 2,
-    situation: "Front yard, set back from the highway lot line",
-    description:
-      "Fence in a front yard, and NOT within 2.4 m of a lot line abutting a public highway (a public highway does not include a public lane).",
+    situation: "Front yard, set back from the street",
+    description: "Front yard, more than 2.4 m back from the public-highway lot line.",
     residential: "2.0 m",
     nonResidential: "2.0 m",
     hedge: "No maximum",
-    plain:
-      "A front-yard fence set back more than 2.4 m from the street-side lot line can be taller. A hedge in this position has no set maximum.",
+    plain: "Set back from the street, a front-yard fence can be taller; a hedge here has no set maximum.",
     example: "A fence partway up the front yard, well back from the sidewalk, may be up to 2.0 m.",
   },
   {
     item: 3,
-    situation: "Side, near a highway side lot line and a driveway",
-    description:
-      "Fence not in a front yard, and within 2.4 m of a side lot line abutting a public highway (not a public lane), and within 2.4 m of a driveway.",
+    situation: "Side, near a street-side lot line and a driveway",
+    description: "Not a front yard; within 2.4 m of both a public-highway side lot line and a driveway.",
     residential: "2.0 m",
     nonResidential: "2.0 m",
     hedge: "2.0 m",
-    plain:
-      "A side-area fence that is close to both a street-side lot line and a driveway is limited to keep driveway sightlines clear.",
-    example: "A corner-lot side fence next to the driveway, close to the flanking street, may be up to 2.0 m.",
+    plain: "Close to both a street-side lot line and a driveway, so the limit keeps sightlines clear.",
+    example: "A corner-lot side fence next to the driveway may be up to 2.0 m.",
   },
   {
     item: 4,
-    situation: "Side, between the highway lot line and main wall, near a driveway",
-    description:
-      "Fence not in a front yard, and between 2.4 m from a side lot line abutting a public highway (not a public lane) and the nearest wall of the main building extended to the rear lot line, and within 2.4 m of a driveway.",
+    situation: "Side, past the street-side lot line, near a driveway",
+    description: "Not a front yard; past 2.4 m from the public-highway side lot line but within 2.4 m of a driveway.",
     residential: "2.0 m",
     nonResidential: "2.5 m",
     hedge: "No maximum",
-    plain:
-      "Further in along the side of the lot, but still within 2.4 m of a driveway. Non-residential property is allowed slightly taller here.",
-    example: "A side-yard fence beside the driveway, set in from the flanking street, may be up to 2.0 m (residential).",
+    plain: "Further in along the side, still within 2.4 m of a driveway. Non-residential may be a bit taller.",
+    example: "A side-yard fence beside the driveway may be up to 2.0 m (residential).",
   },
   {
     item: 5,
     situation: "On an unroofed deck",
-    description:
-      "Fence on an unroofed deck, and not in a front yard, and not within 2.4 m of a lot line abutting a public highway (not a public lane).",
-    residential: "2.0 m above surface of deck",
-    nonResidential: "2.0 m above surface of deck",
+    description: "On an unroofed deck (not a front yard, not within 2.4 m of a street-side lot line); measured from the deck.",
+    residential: "2.0 m above deck",
+    nonResidential: "2.0 m above deck",
     hedge: "No maximum",
-    plain:
-      "On an attached, unroofed deck the height is measured from the deck surface — not the ground — so a deck fence/privacy screen may be up to 2.0 m above the deck.",
-    example: "A privacy screen on a raised back deck may be up to 2.0 m measured from the deck floor.",
+    plain: "Measured from the deck surface — not the ground — so it sits higher above the yard.",
+    example: "A privacy screen on a raised back deck may be up to 2.0 m from the deck floor.",
   },
   {
     item: 6,
-    situation: "Abutting multi-residential, non-residential, a highway or a public walkway",
-    description:
-      "Fence not in a front yard that is also not a fence under Items 3, 4 or 5, and abutting a multi-residential property, a non-residential property, a public highway or a public walkway.",
+    situation: "Abutting multi-res, non-res, a highway or a walkway",
+    description: "Not a front yard (and not Items 3–5); abutting multi-residential, non-residential, a highway, or a public walkway.",
     residential: "2.5 m",
     nonResidential: "2.5 m",
     hedge: "No maximum",
-    plain:
-      "Where a rear/side fence backs onto an apartment property, a business property, a road, or a public walkway, a taller fence is allowed for privacy and buffering.",
+    plain: "Backing onto an apartment/business property, road, or walkway allows a taller fence for buffering.",
     example: "A back fence along a property that backs onto a public walkway may be up to 2.5 m.",
   },
   {
     item: 7,
     situation: "Abutting a rapid transit right-of-way",
-    description: "Fence abutting a rapid transit right of way.",
+    description: "Abutting a rapid transit right-of-way.",
     residential: "2.5 m",
     nonResidential: "No maximum",
     hedge: "No maximum",
@@ -132,31 +120,30 @@ export const FENCE_HEIGHT_TABLE: FenceHeightRow[] = [
   {
     item: 8,
     situation: "Recreational facility (tennis, baseball, etc.)",
-    description: "Fence for a tennis court, a baseball diamond or other recreational facility.",
+    description: "For a tennis court, baseball diamond, or other recreational facility.",
     residential: "3.0 m",
     nonResidential: "No maximum",
     hedge: "No maximum",
-    plain: "Sports/recreational fencing can be much taller to contain balls and play.",
+    plain: "Sports fencing can be much taller to contain balls and play.",
     example: "A backstop or tennis-court fence on a residential property may be up to 3.0 m.",
   },
   {
     item: 9,
     situation: "Any other fence",
-    description: "Any other fence not described by Items 1–8.",
+    description: "Any other fence not covered above.",
     residential: "2.0 m",
     nonResidential: "2.5 m",
     hedge: "No maximum",
-    plain:
-      "The catch-all row. A typical rear-yard fence that does not match any other row falls here — generally up to 2.0 m on a residential property.",
+    plain: "The catch-all row — a typical rear-yard fence is generally up to 2.0 m (residential).",
     example: "A standard backyard fence between two houses may be up to 2.0 m (residential).",
   },
 ];
 
 export const FENCE_HEIGHT_MEASUREMENT_NOTE =
-  "Fence height is measured at any point along its length from the average grade level measured perpendicular to, and one metre away on either side of, the fence (§ 447-1.2B(1)). Where more than one description in Table 1 applies to a fence, each part that matches a single description is treated as a separate fence for height (§ 447-1.2B(2)). Always check Chapter 447 Table 1 for the exact wording.";
+  "Height is measured from the average grade level 1 m out on either side of the fence (§ 447-1.2B(1)). If parts of one fence match different rows, each part is judged separately (§ 447-1.2B(2)).";
 
 export const FENCE_SCHOOL_NOTE =
-  "Special rule: a fence at any school must not exceed 1.5 m where it is adjacent to a public highway or right-of-way (§ 447-1.2B(3)).";
+  "School fences: max 1.5 m where adjacent to a public highway or right-of-way (§ 447-1.2B(3)).";
 
 // ── General fence restrictions (§ 447-1.2A) ──────────────────────────────────
 export interface FenceRestriction {
@@ -167,32 +154,30 @@ export interface FenceRestriction {
 
 export const FENCE_RESTRICTIONS: FenceRestriction[] = [
   {
-    title: "No barbed wire, chicken wire, or sharp material (with a narrow exception)",
+    title: "No barbed wire or sharp material",
     text:
-      "Barbed wire, chicken wire, or other barbed or sharp material generally cannot be used in a fence. The only exception is where the fence is permitted to exceed 2.5 m in height and the barbed/sharp material is installed at not less than 2.5 m, on metal brackets angled 45° back toward the enclosed area.",
+      "Barbed wire, chicken wire, or sharp material isn't allowed — except above 2.5 m on 45° inward brackets, where the fence may exceed 2.5 m.",
     sectionReference: "§ 447-1.2A(2)",
   },
   {
-    title: "No sheet metal or corrugated metal panels",
-    text: "Sheet metal and corrugated metal panels are not allowed in any fence.",
+    title: "No sheet or corrugated metal",
+    text: "Sheet metal and corrugated metal panels can't be used in any fence.",
     sectionReference: "§ 447-1.2A(3)",
   },
   {
-    title: "Electric fences are generally not allowed",
+    title: "No electric fences (off-farm)",
     text:
-      "A fence (or an attachment to it) must not be used as a conductor of electricity, except on agricultural land actually used for raising livestock — and only where it carries no more than 12 volts, is designed and installed only to contain livestock, and has warning signs at intervals of no more than 12 m.",
+      "Fences can't carry electricity, except low-voltage livestock fencing on farmland (≤12 V, livestock-only, warning signs every 12 m).",
     sectionReference: "§ 447-1.2A(4)",
   },
   {
-    title: "Use materials meant for permanent fencing",
-    text:
-      "Materials not usually intended for permanent fencing cannot be used unless specifically permitted by this chapter or another by-law.",
+    title: "Use permanent-fencing materials",
+    text: "Use materials meant for permanent fencing unless another by-law allows otherwise.",
     sectionReference: "§ 447-1.2A(5)",
   },
   {
-    title: "Temporary fences are generally not allowed — snow fences are the seasonal exception",
-    text:
-      "Temporary fencing is generally not permitted. A snow fence may be used on private property only between November 15 and April 15, and must comply with the corresponding standards in the chapter and other by-laws.",
+    title: "No temporary fences (snow fences excepted)",
+    text: "Temporary fences aren't allowed; a snow fence is the exception, only Nov 15 – Apr 15.",
     sectionReference: "§ 447-1.2A(5), (6)",
   },
 ];
@@ -200,26 +185,24 @@ export const FENCE_RESTRICTIONS: FenceRestriction[] = [
 // ── Driveways and visibility (§ 447-1.2C–D) ──────────────────────────────────
 export const FENCE_DRIVEWAY_VISIBILITY = {
   points: [
-    "Any fence within 2.4 m of a driveway must be open-fence construction (open mesh chain-link or an equivalent open construction) for at least 2.4 m from the lot line where the driveway begins, so it does not block the view of the boulevard or highway.",
-    "In a parking lot, any fence must be open-fence construction anywhere it could otherwise restrict the sightlines of vehicles or pedestrians.",
-    "Open-fence construction means a fence that gives motorists and pedestrians an unobstructed view of people, vehicles, and their movement through the entire length of the fence.",
-    "No vegetation may be grown, and no object placed, in a way that obstructs the view through a fence that is required to be open-fence construction. This applies to hedges and to anything growing on or placed near the fence.",
+    "A fence within 2.4 m of a driveway must be open (see-through) construction — like chain-link — for 2.4 m from where the driveway meets the lot line, so it doesn't block the view of the street.",
+    "Open construction gives drivers and pedestrians a clear view through the whole fence; parking-lot fences must stay open wherever they'd block sightlines.",
+    "Don't let a hedge, plants, or objects grow into or block a fence that has to stay open.",
   ],
   example:
-    "A tall, solid fence right beside a driveway can hide approaching pedestrians or cyclists. In the driveway visibility area, an open construction such as chain-link may be required instead.",
-  sectionReference: "§ 447-1.2C, § 447-1.2D",
+    "A tall, solid fence beside a driveway can hide approaching pedestrians or cyclists — an open construction like chain-link may be required there instead.",
+  sectionReference: "§ 447-1.2C, D",
 };
 
 // ── Fences on unroofed decks (Table 1, Item 5) ───────────────────────────────
 export const FENCE_DECK_RULES = {
   points: [
-    "Chapter 447 has a specific row for a fence on an attached, unroofed deck that is not in a front yard and not within 2.4 m of a lot line abutting a public highway.",
-    "The maximum height is 2.0 m measured above the surface of the deck (not from the ground), on single, multiple-residential, and non-residential property.",
-    "If the deck fence also acts as a guard (a protective barrier at the open side of a raised deck), it must also meet the guard requirements of Chapter 629, Property Standards. Where more than one by-law applies, the more restrictive requirement governs.",
+    "On an attached, unroofed deck (not a front yard, not within 2.4 m of a street-side lot line), a fence may be up to 2.0 m measured from the deck surface — not the ground.",
+    "If the deck fence also acts as a guard, it must also meet Chapter 629; where rules overlap, the stricter one applies.",
   ],
   example:
-    "A 2.0 m privacy screen on a raised back deck is measured from the deck floor, so it can sit higher above the yard than a ground-level fence of the same height.",
-  sectionReference: "§ 447-1.2B (Table 1, Item 5); § 447-1.2E (guards)",
+    "A 2.0 m privacy screen on a raised deck is measured from the deck floor, so it can sit higher above the yard than a ground-level fence.",
+  sectionReference: "§ 447-1.2B (Item 5); § 447-1.2E",
 };
 
 // ── Pool fence redirect callout ──────────────────────────────────────────────
