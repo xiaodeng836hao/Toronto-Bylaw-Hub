@@ -1,9 +1,9 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   Camera, Upload, X, ExternalLink, Loader2, FileImage,
-  Info, CheckCircle2, ChevronDown, Clock, SearchCheck,
+  Info, CheckCircle2, ChevronDown, Clock, SearchCheck, Maximize2,
 } from "lucide-react";
 import { photoReviewIssues, getPhotoIssue, OFFICIAL_311_URL } from "@/lib/mock-data";
 
@@ -14,7 +14,21 @@ export default function PhotoReviewPage() {
   const [description, setDescription] = useState("");
   const [isReviewing, setIsReviewing] = useState(false);
   const [reviewed, setReviewed] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Close the preview lightbox with Escape and lock body scroll while open.
+  useEffect(() => {
+    if (!zoomOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setZoomOpen(false); };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [zoomOpen]);
 
   const selectedIssue = issueType ? getPhotoIssue(issueType) : undefined;
   const isNoise = selectedIssue?.comingSoon === true;
@@ -109,11 +123,21 @@ export default function PhotoReviewPage() {
           >
             {previewUrl ? (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewUrl} alt="Your uploaded photo preview" className="w-full h-full object-cover max-h-56" />
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setZoomOpen(true); }}
+                  aria-label="Enlarge uploaded photo"
+                  className="group relative block w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-violet-500"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={previewUrl} alt="Your uploaded photo preview" className="w-full h-full object-cover max-h-56" />
+                  <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                    <Maximize2 className="w-3 h-3" aria-hidden="true" /> Enlarge
+                  </span>
+                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleClear(); }}
-                  className="absolute top-2 right-2 w-7 h-7 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center hover:bg-red-50 hover:border-red-200 transition-colors"
+                  className="absolute top-2 right-2 w-7 h-7 bg-white/90 border border-gray-200 rounded-full flex items-center justify-center hover:bg-red-50 hover:border-red-200 transition-colors z-10"
                   aria-label="Remove image"
                 >
                   <X className="w-3.5 h-3.5 text-gray-500" />
@@ -344,6 +368,34 @@ export default function PhotoReviewPage() {
           )}
         </div>
       </div>
+
+      {/* Uploaded-photo lightbox (click to enlarge) */}
+      {zoomOpen && previewUrl && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged uploaded photo"
+          onClick={() => setZoomOpen(false)}
+        >
+          <button
+            type="button"
+            autoFocus
+            onClick={() => setZoomOpen(false)}
+            aria-label="Close enlarged image"
+            className="absolute top-4 right-4 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={previewUrl}
+            alt="Your uploaded photo, enlarged"
+            className="max-h-[88vh] max-w-full w-auto h-auto rounded-lg object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }

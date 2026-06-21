@@ -8,7 +8,7 @@ import {
   CheckCircle2, Circle, ExternalLink, Waves, ShieldCheck, ShieldX, AlertTriangle,
   Info, ChevronDown, ChevronUp, ClipboardList, HardHat, Printer, BookOpen,
   Phone, Ruler, DoorClosed, Lock, Eye, Construction, ListChecks,
-  Images, Maximize2, X, ChevronLeft, ChevronRight,
+  Images, Maximize2, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
 } from "lucide-react";
 
 // ── Official sources ─────────────────────────────────────────────────────────
@@ -213,6 +213,17 @@ const VISUAL_SLIDES: VisualSlide[] = [
 const VISUAL_DISCLAIMER =
   "These images are simplified educational examples only. Actual compliance depends on exact measurements, site conditions, and the official requirements of Toronto Municipal Code Chapter 447.";
 
+// Standalone illustration for the Temporary Fencing section (opens in the lightbox).
+const TEMP_FENCING_IMAGE: VisualSlide = {
+  id: "temporary-fencing-image",
+  title: "Temporary Pool Fencing Requirements",
+  src: `${IMG_DIR}/pool-fence-temporary-fencing.png`,
+  width: 1448,
+  height: 1086,
+  alt: "Illustrated temporary pool fencing requirements: when it must be replaced, what an officer may consider, construction standards (steel T-posts spaced 1.2 m, embedded 600 mm, 38 mm plastic mesh, 11-gauge lacing cable), an acceptable alternative, and good-practice reminders.",
+  caption: "Temporary fencing during pool construction — a simplified reference. Confirm details with Chapter 447 and City staff.",
+};
+
 // ── At-a-glance summary + on-page navigation ─────────────────────────────────
 const QUICK_FACTS = [
   { icon: ClipboardList, label: "Permit", value: "Zoning Certificate first, then a Pool Fence Enclosure Permit." },
@@ -243,6 +254,11 @@ export default function PoolFenceGuidePage() {
   const [lightbox, setLightbox] = useState<VisualSlide | null>(null);
   const [slide, setSlide] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const dragRef = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
+  const ZOOM_MIN = 1, ZOOM_MAX = 4, ZOOM_STEP = 0.5;
 
   const slideCount = VISUAL_SLIDES.length;
   const goPrev = () => setSlide((s) => (s - 1 + slideCount) % slideCount);
@@ -285,6 +301,28 @@ export default function PoolFenceGuidePage() {
       document.body.style.overflow = prevOverflow;
     };
   }, [lightbox]);
+
+  // Reset zoom/pan when the lightbox image changes or closes; clear pan at 1×.
+  useEffect(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, [lightbox]);
+  useEffect(() => { if (zoom === 1) setPan({ x: 0, y: 0 }); }, [zoom]);
+
+  const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
+  const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
+  const resetZoom = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
+  const onLightboxWheel = (e: React.WheelEvent) =>
+    setZoom((z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, +(z + (e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP)).toFixed(2))));
+  const onLightboxPointerDown = (e: React.PointerEvent) => {
+    if (zoom <= 1) return;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { x: e.clientX, y: e.clientY, px: pan.x, py: pan.y };
+    setDragging(true);
+  };
+  const onLightboxPointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current) return;
+    setPan({ x: dragRef.current.px + (e.clientX - dragRef.current.x), y: dragRef.current.py + (e.clientY - dragRef.current.y) });
+  };
+  const onLightboxPointerUp = () => { dragRef.current = null; setDragging(false); };
+  const onLightboxDoubleClick = () => setZoom((z) => (z > 1 ? 1 : 2));
 
   const toggle = (id: string) => setChecked((p) => ({ ...p, [id]: !p[id] }));
   const filteredChecklist = poolFenceChecklist.filter((i) => filterCat === "All" || i.category === filterCat);
@@ -600,6 +638,30 @@ export default function PoolFenceGuidePage() {
               See the{" "}
               <button type="button" onClick={() => goToSlide(2)} className="text-cyan-600 hover:text-cyan-700 font-medium underline-offset-2 hover:underline">Fence Material Examples</button>{" "}in the visual guide above for material suitability context.
             </p>
+
+            {/* Temporary fencing illustration (click to enlarge) */}
+            <figure className="m-0 mb-5">
+              <button
+                type="button"
+                onClick={() => setLightbox(TEMP_FENCING_IMAGE)}
+                aria-label={`Enlarge image: ${TEMP_FENCING_IMAGE.title}`}
+                className="group relative block w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+              >
+                <Image
+                  src={TEMP_FENCING_IMAGE.src}
+                  width={TEMP_FENCING_IMAGE.width}
+                  height={TEMP_FENCING_IMAGE.height}
+                  alt={TEMP_FENCING_IMAGE.alt}
+                  sizes="(max-width: 896px) 100vw, 800px"
+                  className="w-full h-auto"
+                />
+                <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-black/55 text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+                  <Maximize2 className="w-3 h-3" aria-hidden="true" /> Enlarge
+                </span>
+              </button>
+              <figcaption className="text-xs text-gray-500 mt-2">{TEMP_FENCING_IMAGE.caption}</figcaption>
+            </figure>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-xl border border-green-100 bg-green-50/60 p-4">
                 <p className="flex items-center gap-2 text-sm font-semibold text-green-800 mb-2"><ShieldCheck className="w-4 h-4" aria-hidden="true" /> Better temporary condition</p>
@@ -744,35 +806,84 @@ export default function PoolFenceGuidePage() {
         </div>
       </div>
 
-      {/* Image lightbox (click-to-enlarge) */}
+      {/* Image lightbox (click-to-enlarge, with zoom + pan) */}
       {lightbox && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 print:hidden"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/85 p-4 print:hidden"
           role="dialog"
           aria-modal="true"
           aria-label={`${lightbox.title} — enlarged image`}
           onClick={() => setLightbox(null)}
         >
-          <button
-            type="button"
-            autoFocus
-            onClick={() => setLightbox(null)}
-            aria-label="Close enlarged image"
-            className="absolute top-4 right-4 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 text-white hover:bg-white/25 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          {/* Zoom toolbar */}
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={zoomOut}
+              disabled={zoom <= ZOOM_MIN}
+              aria-label="Zoom out"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/15 text-white hover:bg-white/25 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ZoomOut className="w-4 h-4" aria-hidden="true" />
+            </button>
+            <span className="min-w-[3.25rem] text-center text-xs font-medium text-white/90 tabular-nums select-none">{Math.round(zoom * 100)}%</span>
+            <button
+              type="button"
+              onClick={zoomIn}
+              disabled={zoom >= ZOOM_MAX}
+              aria-label="Zoom in"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/15 text-white hover:bg-white/25 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ZoomIn className="w-4 h-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={resetZoom}
+              disabled={zoom === 1 && pan.x === 0 && pan.y === 0}
+              aria-label="Reset zoom"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/15 text-white hover:bg-white/25 disabled:opacity-40 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <Maximize2 className="w-4 h-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => setLightbox(null)}
+              aria-label="Close enlarged image"
+              className="ml-1 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/15 text-white hover:bg-white/25 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <X className="w-5 h-5" aria-hidden="true" />
+            </button>
+          </div>
+
+          {/* Zoomable viewport */}
+          <div
+            className="relative flex max-h-[84vh] max-w-[95vw] items-center justify-center overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={onLightboxWheel}
+            onPointerDown={onLightboxPointerDown}
+            onPointerMove={onLightboxPointerMove}
+            onPointerUp={onLightboxPointerUp}
+            onPointerLeave={onLightboxPointerUp}
+            onDoubleClick={onLightboxDoubleClick}
+            style={{ cursor: zoom > 1 ? (dragging ? "grabbing" : "grab") : "zoom-in", touchAction: "none" }}
           >
-            <X className="w-5 h-5" aria-hidden="true" />
-          </button>
-          <figure className="m-0 max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={lightbox.src}
-              width={lightbox.width}
-              height={lightbox.height}
-              alt={lightbox.alt}
-              sizes="100vw"
-              className="w-auto h-auto max-h-[86vh] max-w-full rounded-lg mx-auto"
-            />
-            <figcaption className="text-center text-xs text-gray-200 mt-2">{lightbox.caption}</figcaption>
-          </figure>
+            <div style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`, transition: dragging ? "none" : "transform 0.15s ease" }}>
+              <Image
+                src={lightbox.src}
+                width={lightbox.width}
+                height={lightbox.height}
+                alt={lightbox.alt}
+                sizes="100vw"
+                draggable={false}
+                className="block w-auto h-auto max-h-[84vh] max-w-[95vw] rounded-lg select-none"
+              />
+            </div>
+          </div>
+
+          <figcaption className="mt-3 max-w-2xl text-center text-xs text-gray-300" onClick={(e) => e.stopPropagation()}>
+            {lightbox.caption} <span className="text-gray-400">· scroll or use +/− to zoom, drag to pan, double-click to toggle</span>
+          </figcaption>
         </div>
       )}
 
