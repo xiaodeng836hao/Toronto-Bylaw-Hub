@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import { Inter, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+
+// Self-hosted at build time by next/font — no runtime request to Google, so the
+// site still renders on restricted networks (falls back to the system stack if a
+// font file ever fails to load). A serious, clean, institutional pairing:
+// IBM Plex Sans for headings, Inter for body, IBM Plex Mono for labels/figures.
+const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const fontDisplay = IBM_Plex_Sans({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-display", display: "swap" });
+const fontMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 import Footer from "@/components/Footer";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import BetaNotice from "@/components/BetaNotice";
@@ -24,6 +33,9 @@ export const metadata: Metadata = {
     "311 Toronto",
   ],
   applicationName: siteConfig.siteName,
+  authors: [{ name: siteConfig.authorName }],
+  creator: siteConfig.creatorName,
+  publisher: siteConfig.publisherName,
   alternates: { canonical: "/" },
   openGraph: {
     title: siteConfig.defaultTitle,
@@ -48,9 +60,33 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.shortName,
+    alternateName: siteConfig.siteName,
+    url: SITE_URL,
+    description: siteConfig.defaultDescription,
+    inLanguage: "en-CA",
+    publisher: { "@type": "Organization", name: siteConfig.publisherName, url: SITE_URL },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className={`h-full antialiased ${fontSans.variable} ${fontDisplay.variable} ${fontMono.variable}`}>
       <body className="min-h-full flex flex-col bg-[#f6f8fb]">
+        {/* WebSite structured data (independent reference site — not a government org) */}
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        {/* Site-wide atmospheric backdrop (subtle grid + soft glows) */}
+        <div aria-hidden className="site-backdrop pointer-events-none fixed inset-0 -z-10" />
         <Navbar />
         <main id="main-content" className="flex-1">
           {children}

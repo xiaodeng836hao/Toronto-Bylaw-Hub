@@ -5,6 +5,7 @@ import {
   bylawChapters, getChapterBySlug, OFFICIAL_311_URL,
 } from "@/lib/mock-data";
 import { getChapterContent, type ComplexityLevel, type RelatedTopic } from "@/lib/chapter-content";
+import SourceBadge from "@/components/SourceBadge";
 import {
   FENCE_HEIGHT_TABLE, FENCE_HEIGHT_MEASUREMENT_NOTE, FENCE_SCHOOL_NOTE,
   FENCE_RESTRICTIONS, FENCE_DRIVEWAY_VISIBILITY, FENCE_DECK_RULES, POOL_FENCE_REDIRECT,
@@ -104,7 +105,7 @@ export default async function ChapterDetailPage(
       {/* Header */}
       <header className="mb-6">
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-semibold">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-white text-xs font-semibold ring-1 ring-inset ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
             <FileText className="w-3.5 h-3.5" aria-hidden="true" />
             {badge}
           </span>
@@ -122,7 +123,7 @@ export default async function ChapterDetailPage(
         {/* Action buttons */}
         <div className="flex flex-wrap gap-2 mt-5">
           <a href={ch.officialUrl} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+            className="btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg">
             <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" /> View Official Source
           </a>
           {ch.pdfUrl && (
@@ -136,6 +137,7 @@ export default async function ChapterDetailPage(
             <Phone className="w-3.5 h-3.5" aria-hidden="true" /> Report through 311
           </a>
         </div>
+        <SourceBadge className="mt-5" />
       </header>
 
       {/* Complexity notice */}

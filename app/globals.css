@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f8fb;
-  --foreground: #0f1117;
+  --background: #f4f6fb;
+  --foreground: #0b0f1a;
   --card: #ffffff;
-  --card-border: rgba(0,0,0,0.07);
-  --muted: #6b7280;
-  --accent: #1a56db;
+  --card-border: rgba(15,23,42,0.07);
+  --muted: #64748b;
+  --accent: #2563eb;
   --accent-light: #eff4ff;
 
-  /* System font stack — no external (Google Fonts) requests at build or
-     runtime, so the site renders identically on restricted networks. Variable
-     names are kept so the Tailwind theme and `body` font-family still resolve. */
-  --font-geist-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", sans-serif;
-  --font-geist-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  /* Type system — self-hosted via next/font (no runtime Google request), with a
+     system fallback chain so restricted networks still render cleanly. A serious,
+     clean, institutional pairing: IBM Plex Sans (headings), Inter (body), and
+     IBM Plex Mono (labels / figures). */
+  --font-geist-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-geist-mono: var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, "Liberation Mono", monospace;
+  --font-heading: var(--font-display), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme inline {
@@ -30,35 +31,134 @@
   box-sizing: border-box;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-geist-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Headings use the display face with tightened tracking + balanced wrapping for
+   a confident, modern look. */
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-heading);
+  letter-spacing: -0.011em;
+}
+h1, h2 {
+  text-wrap: balance;
+}
+
+/* Uppercase mono "kicker" label used above headings. */
+.kicker {
+  font-family: var(--font-geist-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+/* Brand gradient text helper. */
+.text-gradient {
+  background: linear-gradient(100deg, #2563eb 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Selection + accessible focus accent. */
+::selection {
+  background: rgba(37, 99, 235, 0.16);
+  color: #0b0f1a;
+}
+
+/* Refined, quiet scrollbar (modern/tech feel). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.35) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.32);
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+  background-clip: content-box;
+}
+
+/* Site-wide atmospheric backdrop: a faint blueprint grid washed with soft
+   brand-tinted radial glows. Fixed behind all content. */
+.site-backdrop {
+  background-image:
+    radial-gradient(55% 45% at 82% -8%, rgba(37, 99, 235, 0.10), transparent 60%),
+    radial-gradient(45% 38% at -8% 6%, rgba(6, 182, 212, 0.08), transparent 55%),
+    radial-gradient(60% 50% at 50% 108%, rgba(99, 102, 241, 0.06), transparent 60%),
+    linear-gradient(to right, rgba(15, 23, 42, 0.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.022) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 56px 56px, 56px 56px;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
+/* Refined layered card shadow — tight contact + soft diffuse, low opacity. */
 .subtle-shadow {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.05);
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.04),
+    0 10px 28px -14px rgba(16, 24, 40, 0.14);
 }
 
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 .card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  transform: translateY(-3px);
+  border-color: rgba(37, 99, 235, 0.22);
+  box-shadow:
+    0 2px 4px rgba(16, 24, 40, 0.05),
+    0 22px 48px -20px rgba(37, 99, 235, 0.28);
 }
 
 .gradient-hero {
   background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 40%, #fafbff 100%);
+}
+
+/* Unified premium primary button — drop-in replacement for
+   `bg-blue-600 hover:bg-blue-700 transition-colors`. Keep the layout utilities
+   (inline-flex, padding, rounded, font) on the element. */
+.btn-primary {
+  background-image: linear-gradient(to bottom right, #2563eb, #1d4ed8 55%, #4338ca);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 24px -12px rgba(37, 99, 235, 0.6);
+  transition: filter 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+}
+.btn-primary:hover {
+  filter: saturate(1.05) brightness(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 16px 32px -12px rgba(37, 99, 235, 0.7);
+}
+.btn-primary:active {
+  transform: translateY(0.5px);
 }
 
 /* Compact margins for any printed page. */

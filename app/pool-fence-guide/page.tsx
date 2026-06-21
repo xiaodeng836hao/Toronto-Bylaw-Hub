@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { poolFenceChecklist, OFFICIAL_311_URL } from "@/lib/mock-data";
+import SourceBadge from "@/components/SourceBadge";
 import {
   CheckCircle2, Circle, ExternalLink, Waves, ShieldCheck, ShieldX, AlertTriangle,
   Info, ChevronDown, ChevronUp, ClipboardList, HardHat, Printer, BookOpen,
@@ -212,6 +213,29 @@ const VISUAL_SLIDES: VisualSlide[] = [
 const VISUAL_DISCLAIMER =
   "These images are simplified educational examples only. Actual compliance depends on exact measurements, site conditions, and the official requirements of Toronto Municipal Code Chapter 447.";
 
+// ── At-a-glance summary + on-page navigation ─────────────────────────────────
+const QUICK_FACTS = [
+  { icon: ClipboardList, label: "Permit", value: "Zoning Certificate first, then a Pool Fence Enclosure Permit." },
+  { icon: Ruler, label: "Minimum height", value: "1.2 m (single-residential) · 1.8 m (multi / non-residential)." },
+  { icon: Lock, label: "Gate", value: "Self-closing, self-latching, and kept locked when not in use." },
+  { icon: ShieldCheck, label: "Distances", value: "At least 1.2 m from the pool edge · 1.0 m from climbable objects." },
+  { icon: AlertTriangle, label: "Before you fill", value: "Pass the City inspection first — don't fill or use the pool early." },
+  { icon: Waves, label: "Hot tub / spa", value: "May be exempt with a permanently attached, locked, secure cover." },
+];
+
+const SECTIONS = [
+  { id: "permit-process", label: "Permit Process" },
+  { id: "preparation", label: "Preparation" },
+  { id: "enclosure-requirements", label: "Enclosure" },
+  { id: "gate-requirements", label: "Gates" },
+  { id: "visual-guide", label: "Visual Guide" },
+  { id: "temporary-fencing", label: "Temporary Fencing" },
+  { id: "non-compliance", label: "Common Issues" },
+  { id: "checklist", label: "Checklist" },
+  { id: "faq", label: "FAQ" },
+  { id: "sources", label: "Sources" },
+];
+
 export default function PoolFenceGuidePage() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [filterCat, setFilterCat] = useState("All");
@@ -274,27 +298,66 @@ export default function PoolFenceGuidePage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 print:hidden">
         {/* 1 · Hero */}
         <div className="mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-50 text-cyan-600 text-xs font-medium mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-cyan-50 to-cyan-100 text-cyan-700 ring-1 ring-inset ring-cyan-600/10 mb-4">
             <Waves className="w-3.5 h-3.5" aria-hidden="true" />
-            Chapter 447 — Fences (§ 447-1.3)
+            <span className="kicker">Chapter 447 · Pool Enclosures</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Pool Fence Enclosure Guide</h1>
           <p className="text-gray-500 max-w-2xl">
             A plain-language guide to Toronto&apos;s swimming pool enclosure rules — the permit process, what to prepare, enclosure and gate requirements, temporary fencing, and a printable compliance checklist. Based on Toronto Municipal Code Chapter 447 and official City of Toronto sources.
           </p>
+          <SourceBadge className="mt-4" />
         </div>
 
         {/* 2 · Important disclaimer */}
-        <div className="mb-8 p-4 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
+        <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
           <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-sm text-amber-800">
             This guide is for general reference only and is not legal advice or an official determination. Requirements depend on your property and zone. Always confirm the exact requirements with Chapter 447 and the official City of Toronto sources before building.
           </p>
         </div>
 
+        {/* At a glance — quick facts */}
+        <section aria-label="At a glance" className="mb-6 rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50/70 to-white p-5 sm:p-6">
+          <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ListChecks className="w-4 h-4 text-cyan-600" aria-hidden="true" /> Pool enclosure at a glance
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {QUICK_FACTS.map((f) => {
+              const Icon = f.icon;
+              return (
+                <div key={f.label} className="flex gap-3 rounded-xl border border-gray-100 bg-white p-3.5">
+                  <Icon className="w-5 h-5 text-cyan-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">{f.label}</p>
+                    <p className="text-sm text-gray-700 leading-snug mt-0.5">{f.value}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-xs text-gray-400 mt-3">A quick summary — see the sections below for the details and official sources.</p>
+        </section>
+
+        {/* On this page — sticky jump navigation */}
+        <nav aria-label="On this page" className="sticky top-16 z-30 mb-6 print:hidden">
+          <div className="flex items-center gap-1.5 overflow-x-auto rounded-xl border border-gray-100 bg-white/85 px-1.5 py-1.5 backdrop-blur subtle-shadow">
+            <span className="flex-shrink-0 self-center pl-2 pr-1 text-xs font-medium text-gray-400">On this page</span>
+            {SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="flex-shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-cyan-50 hover:text-cyan-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+              >
+                {s.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
         <div className="flex flex-col gap-6">
           {/* 3 · Permit Application Process */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="permit-process" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
               <ClipboardList className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Permit Application Process
             </h2>
@@ -327,7 +390,7 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 4 · Homeowner Preparation List */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="preparation" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
               <HardHat className="w-5 h-5 text-amber-500" aria-hidden="true" /> Homeowner Preparation List
             </h2>
@@ -349,7 +412,7 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 5 · Enclosure Requirements */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="enclosure-requirements" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Enclosure Requirements
             </h2>
@@ -396,7 +459,7 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 6 · Gate Requirements */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="gate-requirements" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Lock className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Gate Requirements
             </h2>
@@ -426,7 +489,7 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 7 · Visual Pool Fence Guide */}
-          <section id="visual-guide" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-24">
+          <section id="visual-guide" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
               <Images className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Visual Pool Fence Guide
             </h2>
@@ -526,12 +589,12 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 8 · Temporary Fencing */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="temporary-fencing" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
               <Construction className="w-5 h-5 text-amber-500" aria-hidden="true" /> Temporary Fencing
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed mb-4">
-              Temporary fencing requirements depend on the situation. During pool construction it may be allowed if authorized by the City, but it should not be assumed to satisfy the permanent enclosure requirements. Snow fencing is treated differently where the bylaw allows. Any temporary fence around a pool or unsafe condition must effectively prevent access, be stable and secured, and not be easily moved or opened. If used before the permanent enclosure is complete, confirm requirements with the City — it is not a substitute for the required permanent pool enclosure unless the bylaw or City direction allows it.
+              During construction the City may allow temporary fencing if authorized, but it is <span className="font-medium text-gray-700">not a substitute</span> for the permanent enclosure. Any temporary fence must effectively prevent access — stable, secured, and not easily moved or opened. Confirm requirements with the City before relying on it.
             </p>
             <p className="text-sm text-gray-500 mb-4">
               See the{" "}
@@ -558,8 +621,8 @@ export default function PoolFenceGuidePage() {
             <p className="text-xs text-gray-500 mt-3">Always confirm temporary fencing requirements with Chapter 447 or City staff.</p>
           </section>
 
-          {/* 8 · Common Non-Compliance Examples */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          {/* 9 · Common Non-Compliance Examples */}
+          <section id="non-compliance" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
               <ShieldX className="w-5 h-5 text-red-500" aria-hidden="true" /> Common Non-Compliance Examples
             </h2>
@@ -570,8 +633,8 @@ export default function PoolFenceGuidePage() {
             </ul>
           </section>
 
-          {/* 9 · Compliance Checklist */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          {/* 10 · Compliance Checklist */}
+          <section id="checklist" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 <ListChecks className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Compliance Checklist
@@ -625,8 +688,10 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 11 · FAQ */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
+          <section id="faq" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
+            <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <Info className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Frequently Asked Questions
+            </h2>
             <div className="flex flex-col divide-y divide-gray-100">
               {FAQ.map((item, i) => (
                 <div key={item.q}>
@@ -642,7 +707,7 @@ export default function PoolFenceGuidePage() {
           </section>
 
           {/* 12 · Official Sources */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+          <section id="sources" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-cyan-500" aria-hidden="true" /> Official Sources
             </h2>

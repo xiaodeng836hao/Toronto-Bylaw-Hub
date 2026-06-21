@@ -42,9 +42,9 @@ export default function SearchClient() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 ring-1 ring-inset ring-blue-600/10 mb-4">
           <Search className="w-3.5 h-3.5" aria-hidden="true" />
-          Site-wide Search
+          <span className="kicker">Site-wide Search</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Search Toronto Bylaw Guide</h1>
         <p className="text-gray-500 max-w-2xl">
@@ -154,7 +154,7 @@ export default function SearchClient() {
           href={OFFICIAL_311_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          className="btn-primary flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg"
         >
           <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
           Visit Toronto 311

@@ -10,6 +10,7 @@ import {
 import { OFFICIAL_311_URL } from "@/lib/mock-data";
 import { getPlantImages, IMAGE_USAGE_NOTICE } from "@/lib/plant-images";
 import { PlantImagePanel, PlantCoverImage, HAZARD_LEVEL_CLASSES, HAZARD_TAG_CLASSES } from "@/components/plant-visuals";
+import SourceBadge from "@/components/SourceBadge";
 import {
   Leaf, Search, Filter, Info, AlertTriangle, ShieldAlert, ChevronDown, ChevronUp,
   ArrowRight, Phone, ExternalLink, Calendar, MapPin, X, HelpCircle, Wand2, RotateCcw, FileText,
@@ -57,14 +58,15 @@ export default function ProhibitedPlantsClient() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-green-50 to-green-100 text-green-700 ring-1 ring-inset ring-green-600/10 mb-4">
           <Leaf className="w-3.5 h-3.5" aria-hidden="true" />
-          Chapter 489 · Turfgrass &amp; Prohibited Plants
+          <span className="kicker">Chapter 489 · Prohibited Plants</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Prohibited Plants Identifier</h1>
         <p className="text-gray-500 max-w-2xl mb-5">
           Learn how to identify Toronto&apos;s prohibited plants and how to remove them safely. Compare their seasonal appearance, check hazard levels, and follow resident-friendly removal steps.
         </p>
+        <SourceBadge className="mb-5" />
         <div className="flex flex-wrap gap-3">
           <a
             href={PROHIBITED_PLANTS_OFFICIAL_URL}

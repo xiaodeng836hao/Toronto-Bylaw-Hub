@@ -67,9 +67,9 @@ export default function PhotoReviewPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-violet-50 to-violet-100 text-violet-700 ring-1 ring-inset ring-violet-600/10 mb-4">
           <Camera className="w-3.5 h-3.5" aria-hidden="true" />
-          Preliminary Reference Helper
+          <span className="kicker">Preliminary Reference Helper</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Photo Review Helper</h1>
         <p className="text-gray-500 max-w-2xl">
@@ -100,10 +100,10 @@ export default function PhotoReviewPage() {
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => !previewUrl && fileInputRef.current?.click()}
-            className={`relative border-2 border-dashed rounded-2xl overflow-hidden transition-colors ${
+            className={`relative border-2 border-dashed rounded-2xl overflow-hidden transition-all ${
               previewUrl
                 ? "border-violet-200 bg-violet-50/20"
-                : "border-gray-200 bg-gray-50 hover:border-violet-300 hover:bg-violet-50/20 cursor-pointer"
+                : "border-violet-200/70 bg-gradient-to-br from-violet-50/50 to-white hover:border-violet-300 hover:from-violet-50/80 hover:shadow-[0_20px_44px_-22px_rgba(124,58,237,0.4)] cursor-pointer"
             }`}
             style={{ minHeight: 220 }}
           >
@@ -121,7 +121,7 @@ export default function PhotoReviewPage() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-full py-12 gap-3 px-6 text-center">
-                <div className="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br from-violet-50 to-violet-100 ring-1 ring-inset ring-violet-600/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                   <Upload className="w-6 h-6 text-violet-500" aria-hidden="true" />
                 </div>
                 <div>

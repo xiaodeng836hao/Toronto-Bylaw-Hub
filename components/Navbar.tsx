@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   { href: "/zoning", label: "Zoning" },
   { href: "/prohibited-plants", label: "Prohibited Plants" },
+  { href: "/about", label: "About" },
   { href: "/feedback", label: "Feedback" },
 ];
 
@@ -23,7 +24,7 @@ export default function Navbar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200/80 bg-white/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-black/[0.06] bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
       {/* Skip link for keyboard/screen-reader users */}
       <a
         href="#main-content"
@@ -55,10 +56,10 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 ${
                 isActive(link.href)
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-blue-600/10 text-blue-700 ring-1 ring-inset ring-blue-600/15"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-slate-100/80"
               }`}
             >
               {link.label}

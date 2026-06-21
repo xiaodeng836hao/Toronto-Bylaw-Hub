@@ -67,6 +67,8 @@ const REQUIRED = [
   "app/prohibited-plants/[slug]/page.tsx",
   "app/photo-review/page.tsx",
   "app/feedback/page.tsx",
+  "app/about/page.tsx",
+  "app/disclaimer/page.tsx",
   "app/noise-complaints/page.tsx",
   "app/search/page.tsx",
   "app/sitemap.ts",

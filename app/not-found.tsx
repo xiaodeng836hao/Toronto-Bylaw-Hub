@@ -24,7 +24,7 @@ export default function NotFound() {
       <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           <Home className="w-4 h-4" aria-hidden="true" />
           Go to Home

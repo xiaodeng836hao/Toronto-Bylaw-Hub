@@ -13,11 +13,20 @@
  */
 export const siteConfig = {
   siteName: "Toronto Bylaw Guide",
+  /** Short brand / publisher name (matches the bylawguide.ca domain). */
+  shortName: "BylawGuide",
   siteUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://bylawguide.ca").replace(/\/+$/, ""),
   defaultTitle: "Toronto Bylaw Guide",
   titleTemplate: "%s · Toronto Bylaw Guide",
   defaultDescription:
-    "A resident-friendly guide to Toronto bylaws: search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence, fence height, zoning, and prohibited-plant rules. Links to official City of Toronto sources.",
+    "A plain-language Toronto bylaw reference tool for residents: search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence, fence height, zoning, and prohibited-plant rules. Links to official City of Toronto sources.",
+  // ── Identity / attribution (independent, non-government project) ────────────
+  /** Author/maintainer shown in metadata. */
+  authorName: "BylawGuide",
+  /** Optional personal creator credit (shown on the About page). Edit here only. */
+  creatorName: "M.P.M.B",
+  /** Publisher entity for metadata + JSON-LD (NOT the City of Toronto). */
+  publisherName: "BylawGuide",
   official311Url: "https://www.toronto.ca/home/311-toronto-at-your-service/create-a-service-request/",
   officialTorontoUrl: "https://www.toronto.ca/",
   /** Date the site's summarized bylaw content was last reviewed against official sources. */

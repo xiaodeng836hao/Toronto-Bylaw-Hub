@@ -50,7 +50,7 @@ export default function NoiseComplaintsPage() {
               href={OFFICIAL_311_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors subtle-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              className="btn-primary inline-flex items-center gap-2 px-6 py-3 font-medium rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               <ExternalLink className="w-4 h-4" aria-hidden="true" />
               Visit Official City Resources

@@ -12,6 +12,7 @@ import {
   Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
 } from "lucide-react";
+import SourceBadge from "@/components/SourceBadge";
 
 const quickSearches = [
   "parking", "setback", "deck", "detached garage",
@@ -52,14 +53,15 @@ export default function ZoningClient() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-600/10 mb-4">
           <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
-          By-law 569-2013
+          <span className="kicker">By-law 569-2013</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Zoning Bylaw Guide</h1>
         <p className="text-gray-500 max-w-2xl">
           Plain-language answers to common Toronto zoning questions, plus a keyword search to help locate relevant provisions in Chapter 10 (Residential). Zoning is property-specific, so always confirm details with official City resources.
         </p>
+        <SourceBadge className="mt-4" />
       </div>
 
       {/* About Zoning + official links */}

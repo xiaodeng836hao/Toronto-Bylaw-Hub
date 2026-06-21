@@ -8,6 +8,7 @@ import {
   Search, ExternalLink, Download, FileText, Loader2,
   BookOpen, X, ArrowRight,
 } from "lucide-react";
+import SourceBadge from "@/components/SourceBadge";
 
 function HighlightedExcerpt({ text }: { text: string }) {
   const parts = text.split(/(\*\*.*?\*\*)/g);
@@ -102,9 +103,9 @@ export default function TMCChaptersPage() {
 
       {/* ── Page header ── */}
       <div className="mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 ring-1 ring-inset ring-blue-600/10 mb-4">
           <FileText className="w-3.5 h-3.5" aria-hidden="true" />
-          Toronto Municipal Code
+          <span className="kicker">Toronto Municipal Code</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
           Toronto Municipal Code Chapters
@@ -112,6 +113,7 @@ export default function TMCChaptersPage() {
         <p className="text-gray-500 max-w-2xl">
           Browse major Toronto Municipal Code chapters with plain-language summaries, common examples, and links to official sources. All descriptions are for general reference only.
         </p>
+        <SourceBadge className="mt-4" />
       </div>
 
       {/* ── PDF Keyword Search ── */}
@@ -149,7 +151,7 @@ export default function TMCChaptersPage() {
             <button
               type="submit"
               disabled={pdfLoading || !pdfQuery.trim()}
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {pdfLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               Search
@@ -282,7 +284,7 @@ export default function TMCChaptersPage() {
           {filtered.map((ch) => (
             <article key={ch.slug} className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5 sm:p-6 flex flex-col">
               <div className="flex items-start gap-4">
-                <div className="bg-blue-600 text-white text-xs font-bold rounded-lg px-3 py-1.5 text-center flex-shrink-0 whitespace-nowrap">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-700 text-white text-xs font-bold rounded-lg px-3 py-1.5 text-center flex-shrink-0 whitespace-nowrap ring-1 ring-inset ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                   {chapterBadge(ch.chapterNumber)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -308,7 +310,7 @@ export default function TMCChaptersPage() {
               <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-100">
                 <Link
                   href={`/tmc-chapters/${ch.slug}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                  className="btn-primary inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg"
                 >
                   View Chapter <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
                 </Link>

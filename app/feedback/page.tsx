@@ -91,7 +91,7 @@ export default function FeedbackPage() {
         </p>
         <button
           onClick={() => { setSubmitted(false); setForm(EMPTY); }}
-          className="mt-6 px-5 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="btn-primary mt-6 px-5 py-2.5 font-medium rounded-xl text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           Submit another
         </button>
@@ -103,9 +103,9 @@ export default function FeedbackPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <div className="mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-amber-50 to-amber-100 text-amber-700 ring-1 ring-inset ring-amber-600/10 mb-4">
           <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
-          Community Input
+          <span className="kicker">Community Input</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Submit Feedback</h1>
         <p className="text-gray-500">
@@ -268,7 +268,7 @@ export default function FeedbackPage() {
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="btn-primary flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-xl disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           {loading ? (
             <>

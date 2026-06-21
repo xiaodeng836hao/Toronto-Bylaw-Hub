@@ -15,6 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/prohibited-plants",
     "/search",
     "/feedback",
+    "/about",
+    "/disclaimer",
     "/noise-complaints",
   ].map((path) => ({
     url: `${BASE_URL}${path}`,
