@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SearchBar from "@/components/SearchBar";
-import { OFFICIAL_311_URL } from "@/lib/mock-data";
+import { OFFICIAL_311_URL, bylawChapters, zoningTopics } from "@/lib/mock-data";
+import { prohibitedPlants } from "@/lib/prohibited-plants";
 import { siteConfig } from "@/lib/site-config";
 import {
   Camera, Waves, MapPin, MessageSquare, Phone, Leaf,
@@ -72,12 +73,12 @@ const featureCards = [
   },
 ];
 
+// Site-coverage stats — computed from the content data so they stay accurate.
 const quickStats = [
-  { label: "Municipal Code Chapters", value: "18" },
-  { label: "Zoning Topics", value: "8" },
-  { label: "Prohibited Plants", value: "10" },
-  { label: "Photo Review Types", value: "16" },
-  { label: "Checklist Items", value: "12" },
+  { label: "Bylaw chapters", value: String(bylawChapters.length) },
+  { label: "Zoning topics", value: String(zoningTopics.length) },
+  { label: "Prohibited plants", value: String(prohibitedPlants.length) },
+  { label: "Reference tools", value: "5" },
 ];
 
 const commonViolations = [
@@ -207,7 +208,7 @@ export default function Home() {
       {/* Quick Stats */}
       <section className="border-b border-gray-100 bg-white" aria-label="At a glance">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-6">
             {quickStats.map((stat) => (
               <div key={stat.label} className="text-center">
                 <p className="font-mono text-3xl font-semibold tracking-tight text-gray-900 tabular-nums">{stat.value}</p>

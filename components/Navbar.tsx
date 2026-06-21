@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/tmc-chapters", label: "TMC Chapters" },
+  { href: "/tmc-chapters", label: "Bylaw Chapters" },
   { href: "/photo-review", label: "Photo Review" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   { href: "/zoning", label: "Zoning" },

@@ -4,7 +4,7 @@ import { siteConfig } from "@/lib/site-config";
 
 const pageLinks = [
   { href: "/about", label: "About" },
-  { href: "/tmc-chapters", label: "TMC Chapters" },
+  { href: "/tmc-chapters", label: "Bylaw Chapters" },
   { href: "/photo-review", label: "Photo Review" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   { href: "/zoning", label: "Zoning Guide" },
