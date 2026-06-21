@@ -665,6 +665,24 @@ export interface ZoningTopic {
 
 export const zoningTopics: ZoningTopic[] = [
   {
+    id: "landscaping",
+    topic: "Landscaping Requirements",
+    plainExplanation:
+      "Soft landscaping requirements can apply to front yards, side yards, and rear yards depending on the residential zone — including Residential Zone (R) and Residential Detached Zone (RD) — and property conditions. Open the dedicated Landscaping Guide for more detail.",
+    commonQuestion: "Can I pave my entire front yard?",
+    bylawConsideration: "Zoning By-law 569-2013 — soft landscaping and front yard requirements.",
+    whatToPrepare: [
+      "Current and proposed areas of hard vs. soft surfacing",
+      "Your zoning designation",
+      "Site sketch showing dimensions",
+    ],
+    whenOfficial:
+      "Confirm the minimum landscaping requirement for your zone before adding hard surfaces.",
+    officialUrl: ZONING_OFFICIAL_URL,
+    show311: true,
+    keywords: ["landscaping", "soft landscaping", "paving", "hard surface", "front yard coverage"],
+  },
+  {
     id: "front-yard-parking",
     topic: "Front Yard Parking",
     plainExplanation:
@@ -717,24 +735,6 @@ export const zoningTopics: ZoningTopic[] = [
     officialUrl: ZONING_OFFICIAL_URL,
     show311: true,
     keywords: ["shed", "garage", "detached garage", "pergola", "accessory structure", "ancillary building", "detached structure", "outbuilding", "deck", "platform", "balcony", "soft landscaping", "front yard landscaping", "encroachment", "permitted encroachment"],
-  },
-  {
-    id: "landscaping",
-    topic: "Landscaping Requirements",
-    plainExplanation:
-      "Many residential zones require a minimum portion of the lot to remain as soft landscaping (grass, plants, gardens). Paving too much of a lot may not comply with zoning.",
-    commonQuestion: "Can I pave my entire front yard?",
-    bylawConsideration: "Zoning By-law 569-2013 — soft landscaping and front yard requirements.",
-    whatToPrepare: [
-      "Current and proposed areas of hard vs. soft surfacing",
-      "Your zoning designation",
-      "Site sketch showing dimensions",
-    ],
-    whenOfficial:
-      "Confirm the minimum landscaping requirement for your zone before adding hard surfaces.",
-    officialUrl: ZONING_OFFICIAL_URL,
-    show311: true,
-    keywords: ["landscaping", "soft landscaping", "paving", "hard surface", "front yard coverage"],
   },
   {
     id: "home-occupation",
@@ -1204,6 +1204,24 @@ const staticSearchEntries: SearchEntry[] = [
     href: "/pool-fence-guide",
     actionLabel: "Read Guide",
     keywords: ["pool", "pool fence", "pool enclosure", "gate", "gate latch", "latch", "self-latching", "self-closing", "pool gate", "swimming pool", "temporary pool fencing", "permit", "inspection", "fence", "447"],
+  },
+  {
+    id: "guide-landscaping",
+    title: "Toronto Residential Landscaping Guide",
+    type: "Guide",
+    summary:
+      "Plain-language guide to soft landscaping requirements for front yards, side yards, and rear yards in Toronto residential zones (By-law 569-2013, Chapter 10.5), with a minor variance / Committee of Adjustment section.",
+    chapter: "Zoning By-law 569-2013 · Chapter 10.5",
+    href: "/landscaping",
+    actionLabel: "Open Landscaping Guide",
+    keywords: [
+      "landscaping", "soft landscaping", "hard landscaping",
+      "front yard landscaping", "rear yard landscaping", "side yard landscaping",
+      "driveway landscaping", "paved front yard", "parking pad", "artificial turf",
+      "garden bed", "residential zone landscaping", "residential detached landscaping",
+      "minor variance", "committee of adjustment", "zoning landscaping",
+      "permeable", "grass", "patio", "pavers", "soft landscaping requirement",
+    ],
   },
   {
     id: "tool-photo-review",

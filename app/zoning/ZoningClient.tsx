@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   zoningTopics, type ZoningTopic, OFFICIAL_311_URL,
@@ -11,7 +12,7 @@ import {
 import {
   Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
-  ArrowRight, AlertTriangle,
+  ArrowRight, AlertTriangle, Leaf,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
 import { getZoningTopicDetail } from "@/data/zoning/zoning-topic-details";
@@ -357,6 +358,26 @@ function ZoningTopicCard({
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">What It Means</p>
             <p className="text-sm text-gray-700 leading-relaxed">{topic.plainExplanation}</p>
           </div>
+
+          {topic.id === "landscaping" && (
+            <div className="rounded-xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex items-start gap-3 flex-1">
+                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Leaf className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                </div>
+                <p className="text-sm text-emerald-900 leading-relaxed">
+                  Soft landscaping requirements can apply to front yards, side yards, and rear yards depending on the
+                  residential zone and property conditions. Open the dedicated Landscaping Guide for more detail.
+                </p>
+              </div>
+              <Link
+                href="/landscaping"
+                className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+              >
+                <Leaf className="w-3.5 h-3.5" aria-hidden="true" /> Open Landscaping Guide
+              </Link>
+            </div>
+          )}
 
           {detail ? (
             <>

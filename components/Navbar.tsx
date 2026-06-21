@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/photo-review", label: "Photo Review" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   { href: "/zoning", label: "Zoning" },
+  { href: "/landscaping", label: "Landscaping" },
   { href: "/prohibited-plants", label: "Prohibited Plants" },
   { href: "/about", label: "About" },
   { href: "/feedback", label: "Feedback" },

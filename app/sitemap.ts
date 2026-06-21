@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/photo-review",
     "/pool-fence-guide",
     "/zoning",
+    "/landscaping",
     "/prohibited-plants",
     "/search",
     "/feedback",

@@ -8,6 +8,7 @@ const pageLinks = [
   { href: "/photo-review", label: "Photo Review" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   { href: "/zoning", label: "Zoning Guide" },
+  { href: "/landscaping", label: "Landscaping Guide" },
   { href: "/prohibited-plants", label: "Prohibited Plants" },
   { href: "/search", label: "Search" },
   { href: "/feedback", label: "Feedback" },

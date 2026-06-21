@@ -114,17 +114,14 @@ export const zoningTopicDetails: Record<string, ZoningTopicDetail> = {
   landscaping: {
     applicableZones: R_AND_RD,
     whyItMatters:
-      "Zoning requires a minimum portion of the yard to stay as landscaping — and much of it as soft landscaping (plants and grass, not pavement) — which directly limits how much of a yard you can pave.",
+      "Zoning requires a minimum portion of the yard to stay as landscaping — and much of it as soft landscaping (plants and grass, not pavement) — which directly limits how much of a yard you can pave. Soft landscaping requirements can apply to front yards, side yards, and rear yards depending on the residential zone and property conditions.",
     relevantSections: [
-      { zone: "R & RD", chapter: "Chapter 10.5", section: "10.5.50.10", title: "Front Yard Landscaping", plainRule: "Lots under 6.0 m frontage: the front yard (excluding a permitted driveway) must be landscaping. 6.0–<15.0 m: at least 50% landscaping. 15.0 m or more: at least 60%. At least 75% of the required front-yard landscaping must be soft landscaping." },
-      { zone: "R & RD", chapter: "Chapter 10.5", section: "10.5.50.10(3)", title: "Rear Yard Soft Landscaping", plainRule: "A residential building (other than an apartment) must keep at least 50% of the rear yard as soft landscaping if the lot frontage is over 6.0 m (25% if 6.0 m or less)." },
+      { zone: "R & RD", chapter: "Chapter 10.5", section: "10.5.50.10", title: "Landscaping — front, side & rear yards", plainRule: "Clause 10.5.50.10 sets front yard landscaping (50–60% depending on frontage, 75% of it soft), corner-lot side yard landscaping, and rear yard soft landscaping (50% if frontage is over 6.0 m, 25% if 6.0 m or less). See the dedicated Landscaping Guide for the full breakdown by yard." },
     ],
     questions: [
-      { question: "Can I pave my whole front yard?", answer: "No. Depending on frontage, 50–60% of the front yard must remain landscaping (or, on very narrow lots, all of it except a permitted driveway), and at least 75% of that landscaping must be soft landscaping.", nextStep: "Measure your front yard and frontage, then check 10.5.50.10 before adding any hard surfacing." },
+      { question: "Where can I find the full landscaping requirements?", answer: "The dedicated Landscaping Guide explains front yard, side yard, and rear yard soft landscaping in plain English, with what counts and does not count, common questions, and the minor variance option.", nextStep: "Open the Landscaping Guide for the full, source-based detail." },
     ],
-    examples: [
-      "Replacing the front lawn with interlocking stone for extra parking usually conflicts with the front-yard landscaping and soft-landscaping minimums.",
-    ],
+    examples: [],
   },
 
   "home-occupation": {

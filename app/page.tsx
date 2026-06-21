@@ -51,6 +51,17 @@ const featureCards = [
     badge: "By-law 569-2013",
   },
   {
+    href: "/landscaping",
+    icon: Leaf,
+    title: "Landscaping Guide",
+    description: "Soft landscaping requirements for front yards, side yards, and rear yards in Toronto residential zones — plus the minor variance / Committee of Adjustment path.",
+    color: "from-amber-50 to-amber-100",
+    ring: "ring-amber-600/10",
+    iconColor: "text-amber-600",
+    badge: "Chapter 10.5",
+    cta: "Open Landscaping Guide",
+  },
+  {
     href: "/prohibited-plants",
     icon: Leaf,
     title: "Prohibited Plants Identifier",
@@ -78,7 +89,7 @@ const quickStats = [
   { label: "Bylaw chapters", value: String(bylawChapters.length) },
   { label: "Zoning topics", value: String(zoningTopics.length) },
   { label: "Prohibited plants", value: String(prohibitedPlants.length) },
-  { label: "Reference tools", value: "5" },
+  { label: "Reference tools", value: "6" },
 ];
 
 const commonViolations = [
