@@ -13,6 +13,7 @@ const fontMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], var
 import Footer from "@/components/Footer";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import BetaNotice from "@/components/BetaNotice";
+import BackToTop from "@/components/BackToTop";
 import { SITE_URL, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -94,6 +95,7 @@ export default function RootLayout({
         <DisclaimerBanner />
         <BetaNotice />
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );

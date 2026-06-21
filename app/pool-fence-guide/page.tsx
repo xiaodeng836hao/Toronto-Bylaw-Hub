@@ -330,10 +330,41 @@ export default function PoolFenceGuidePage() {
   const done = poolFenceChecklist.filter((i) => checked[i.id]).length;
   const progress = total > 0 ? Math.round((done / total) * 100) : 0;
 
+  // Scroll-spy: highlight the last section whose top has scrolled past the
+  // threshold line; force the final section active at the bottom of the page.
+  const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
+  useEffect(() => {
+    const ids = SECTIONS.map((s) => s.id);
+    let ticking = false;
+    const scan = () => {
+      ticking = false;
+      const threshold = 140;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= threshold) current = id;
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        current = ids[ids.length - 1];
+      }
+      setActiveSection(current);
+    };
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(scan); }
+    };
+    scan();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
     <>
       {/* ════════ ON-SCREEN CONTENT (hidden when printing) ════════ */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 print:hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 print:hidden">
         {/* 1 · Hero */}
         <div className="mb-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-br from-cyan-50 to-cyan-100 text-cyan-700 ring-1 ring-inset ring-cyan-600/10 mb-4">
@@ -377,15 +408,15 @@ export default function PoolFenceGuidePage() {
           <p className="text-xs text-gray-400 mt-3">A quick summary — see the sections below for the details and official sources.</p>
         </section>
 
-        {/* On this page — sticky jump navigation */}
-        <nav aria-label="On this page" className="sticky top-16 z-30 mb-6 print:hidden">
+        {/* On this page — mobile horizontal nav (lg+ uses the left sidebar) */}
+        <nav aria-label="On this page" className="sticky top-16 z-30 mb-6 print:hidden lg:hidden">
           <div className="flex items-center gap-1.5 overflow-x-auto rounded-xl border border-gray-100 bg-white/85 px-1.5 py-1.5 backdrop-blur subtle-shadow">
             <span className="flex-shrink-0 self-center pl-2 pr-1 text-xs font-medium text-gray-400">On this page</span>
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="flex-shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-cyan-50 hover:text-cyan-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+                className={`flex-shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 ${activeSection === s.id ? "bg-cyan-100 text-cyan-800 font-semibold" : "text-gray-600 hover:bg-cyan-50 hover:text-cyan-700"}`}
               >
                 {s.label}
               </a>
@@ -393,7 +424,38 @@ export default function PoolFenceGuidePage() {
           </div>
         </nav>
 
-        <div className="flex flex-col gap-6">
+        {/* Two-column: sticky vertical index (left) + content */}
+        <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10">
+          {/* Left vertical scroll-spy index (desktop only) */}
+          <aside className="hidden lg:block print:hidden">
+            <nav aria-label="On this page" className="sticky top-20">
+              <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">On this page</p>
+              <ul className="flex flex-col border-l border-gray-200">
+                {SECTIONS.map((s) => {
+                  const isActive = activeSection === s.id;
+                  return (
+                    <li key={s.id} className="leading-tight">
+                      <a
+                        href={`#${s.id}`}
+                        onClick={() => setActiveSection(s.id)}
+                        aria-current={isActive ? "true" : undefined}
+                        className={`-ml-px block origin-left rounded-r-lg border-l-2 pl-3 pr-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 ${
+                          isActive
+                            ? "border-cyan-500 bg-cyan-50 text-cyan-700 font-semibold text-sm py-2 scale-[1.04]"
+                            : "border-transparent text-gray-500 hover:text-cyan-700 hover:border-cyan-200 text-xs py-1.5"
+                        }`}
+                      >
+                        {s.label}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </aside>
+
+          {/* Main content column */}
+          <div className="flex flex-col gap-6 min-w-0">
           {/* 3 · Permit Application Process */}
           <section id="permit-process" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 scroll-mt-32">
             <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
@@ -804,6 +866,7 @@ export default function PoolFenceGuidePage() {
             </div>
           </section>
         </div>
+        </div>{/* /two-column grid */}
       </div>
 
       {/* Image lightbox (click-to-enlarge, with zoom + pan) */}

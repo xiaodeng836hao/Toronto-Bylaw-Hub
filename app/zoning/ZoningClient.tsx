@@ -12,7 +12,7 @@ import {
 import {
   Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
-  ArrowRight, AlertTriangle, Leaf,
+  ArrowRight, AlertTriangle, Leaf, BadgeCheck,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
 import { getZoningTopicDetail } from "@/data/zoning/zoning-topic-details";
@@ -23,11 +23,11 @@ const quickSearches = [
 ];
 
 const HOW_TO_STEPS = [
-  "Find your property's zoning category using the Zoning Map Viewer.",
-  "Confirm whether the property is in Residential Zone (R), Residential Detached Zone (RD), or another zone.",
-  "Search for your topic — such as setback, parking, landscaping, HVAC, or accessory structure.",
-  "Review the relevant chapter and section references shown in the results.",
-  "Confirm the final requirements using official City zoning resources or City staff.",
+  { icon: Map, title: "Find your zone", desc: "Look up your property's zoning category in the Zoning Map Viewer." },
+  { icon: Landmark, title: "Confirm the zone", desc: "Check if it's Residential (R), Residential Detached (RD), or another zone." },
+  { icon: Search, title: "Search a topic", desc: "Try setback, parking, landscaping, HVAC, or accessory structure." },
+  { icon: FileText, title: "Review provisions", desc: "Read the chapter and section references shown in the results." },
+  { icon: BadgeCheck, title: "Verify officially", desc: "Confirm the final requirements with official City resources or City staff." },
 ];
 
 const PREPARE_ITEMS = [
@@ -146,19 +146,42 @@ export default function ZoningClient() {
         </div>
       </div>
 
-      {/* How to use this zoning guide */}
+      {/* How to use this zoning guide — visual step flow */}
       <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-6">
-        <h2 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <h2 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
           <ClipboardList className="w-5 h-5 text-emerald-500" aria-hidden="true" /> How to use this zoning guide
         </h2>
-        <ol className="flex flex-col gap-3 mb-4">
-          {HOW_TO_STEPS.map((step, i) => (
-            <li key={step} className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
-              <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
-            </li>
-          ))}
+        <p className="text-sm text-gray-500 mb-5">Five quick steps — from your address to the right zoning provision.</p>
+
+        <ol className="flex flex-col lg:flex-row lg:items-stretch gap-2.5 mb-5">
+          {HOW_TO_STEPS.map((step, i) => {
+            const Icon = step.icon;
+            const last = i === HOW_TO_STEPS.length - 1;
+            return (
+              <li key={step.title} className="flex flex-1 flex-col lg:flex-row items-stretch gap-2.5">
+                <div className="flex-1 rounded-xl bg-emerald-50/60 border border-emerald-100 p-4 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                      <Icon className="w-5 h-5" aria-hidden="true" />
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-emerald-600/70">Step {i + 1}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{step.title}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed mt-1">{step.desc}</p>
+                  </div>
+                </div>
+                {!last && (
+                  <span aria-hidden="true" className="flex items-center justify-center text-emerald-300">
+                    <ArrowRight className="hidden lg:block w-5 h-5" />
+                    <ChevronDown className="lg:hidden w-4 h-4" />
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ol>
+
         <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex gap-2.5">
           <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-xs text-amber-800">

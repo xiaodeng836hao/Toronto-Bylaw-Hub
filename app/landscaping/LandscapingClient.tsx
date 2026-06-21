@@ -22,9 +22,53 @@ const yardIcons: Record<string, React.ElementType> = {
   "rear-yard": Sprout,
 };
 
+// On-page jump navigation (sticky horizontal index).
+const PAGE_SECTIONS = [
+  { id: "soft-landscaping", label: "What is soft landscaping?" },
+  { id: "visual", label: "Soft vs. Hard" },
+  { id: "front-yard", label: "Front Yard" },
+  { id: "side-yard", label: "Side Yard" },
+  { id: "rear-yard", label: "Rear Yard" },
+  { id: "committee-of-adjustment", label: "Minor Variance" },
+  { id: "prepare", label: "What to Prepare" },
+  { id: "faq", label: "FAQ" },
+];
+
 export default function LandscapingClient() {
+  const [activeSection, setActiveSection] = useState<string>(PAGE_SECTIONS[0].id);
+
+  // Scroll-spy: highlight the last section whose top has scrolled past the
+  // threshold line; force the final section active at the bottom of the page.
+  useEffect(() => {
+    const ids = PAGE_SECTIONS.map((s) => s.id);
+    let ticking = false;
+    const scan = () => {
+      ticking = false;
+      const threshold = 140;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= threshold) current = id;
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        current = ids[ids.length - 1];
+      }
+      setActiveSection(current);
+    };
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(scan); }
+    };
+    scan();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <div className="mb-8">
         <Link
@@ -54,6 +98,54 @@ export default function LandscapingClient() {
         </p>
       </div>
 
+      {/* ── Mobile: horizontal jump nav (lg+ uses the left sidebar) ────────── */}
+      <nav aria-label="On this page" className="sticky top-16 z-30 mb-8 lg:hidden">
+        <div className="flex items-center gap-1.5 overflow-x-auto rounded-xl border border-gray-100 bg-white/85 px-1.5 py-1.5 backdrop-blur subtle-shadow">
+          <span className="flex-shrink-0 self-center pl-2 pr-1 text-xs font-medium text-gray-400">On this page</span>
+          {PAGE_SECTIONS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className={`flex-shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${activeSection === s.id ? "bg-amber-100 text-amber-800 font-semibold" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
+            >
+              {s.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── Two-column: sticky vertical index (left) + content ─────────────── */}
+      <div className="lg:grid lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-10">
+        {/* Left vertical scroll-spy index (desktop only) */}
+        <aside className="hidden lg:block">
+          <nav aria-label="On this page" className="sticky top-20">
+            <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">On this page</p>
+            <ul className="flex flex-col border-l border-gray-200">
+              {PAGE_SECTIONS.map((s) => {
+                const isActive = activeSection === s.id;
+                return (
+                  <li key={s.id} className="leading-tight">
+                    <a
+                      href={`#${s.id}`}
+                      onClick={() => setActiveSection(s.id)}
+                      aria-current={isActive ? "true" : undefined}
+                      className={`-ml-px block origin-left rounded-r-lg border-l-2 pl-3 pr-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                        isActive
+                          ? "border-amber-500 bg-amber-50 text-amber-700 font-semibold text-sm py-2 scale-[1.04]"
+                          : "border-transparent text-gray-500 hover:text-amber-700 hover:border-amber-200 text-xs py-1.5"
+                      }`}
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </aside>
+
+        {/* Main content column */}
+        <div className="min-w-0">
       {/* ── Official links ─────────────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-10">
         <h2 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
@@ -78,7 +170,7 @@ export default function LandscapingClient() {
       </div>
 
       {/* ── What is soft landscaping? ──────────────────────────────────────── */}
-      <section aria-labelledby="def-heading" className="mb-10">
+      <section id="soft-landscaping" aria-labelledby="def-heading" className="mb-10 scroll-mt-32">
         <h2 id="def-heading" className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
           <Sprout className="w-6 h-6 text-amber-500" aria-hidden="true" /> What is soft landscaping?
         </h2>
@@ -111,7 +203,7 @@ export default function LandscapingClient() {
       </section>
 
       {/* ── Soft vs Hard visual comparison ─────────────────────────────────── */}
-      <section aria-labelledby="visual-heading" className="mb-10">
+      <section id="visual" aria-labelledby="visual-heading" className="mb-10 scroll-mt-32">
         <h2 id="visual-heading" className="text-2xl font-bold text-gray-900 mb-2">Soft vs. Hard Landscaping</h2>
         <p className="text-gray-600 mb-5">A quick visual reference. Final interpretation depends on the official zoning definition and site conditions.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
@@ -145,7 +237,7 @@ export default function LandscapingClient() {
       {yardSections.map((section) => {
         const Icon = yardIcons[section.id] ?? MapPin;
         return (
-          <section key={section.id} id={section.id} aria-labelledby={`${section.id}-heading`} className="mb-10 scroll-mt-24">
+          <section key={section.id} id={section.id} aria-labelledby={`${section.id}-heading`} className="mb-10 scroll-mt-32">
             <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 md:p-8">
               <div className="flex items-start gap-3 mb-4">
                 <div className="w-11 h-11 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -225,7 +317,7 @@ export default function LandscapingClient() {
       })}
 
       {/* ── Minor Variance / Committee of Adjustment ───────────────────────── */}
-      <section aria-labelledby="coa-heading" className="mb-10 scroll-mt-24" id="committee-of-adjustment">
+      <section aria-labelledby="coa-heading" className="mb-10 scroll-mt-32" id="committee-of-adjustment">
         <div className="rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50/70 to-white p-6 md:p-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-100 text-violet-700 mb-4">
             <Scale className="w-3.5 h-3.5" aria-hidden="true" />
@@ -279,7 +371,7 @@ export default function LandscapingClient() {
       </section>
 
       {/* ── What to prepare ────────────────────────────────────────────────── */}
-      <section aria-labelledby="prepare-heading" className="mb-10">
+      <section id="prepare" aria-labelledby="prepare-heading" className="mb-10 scroll-mt-32">
         <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
           <h2 id="prepare-heading" className="font-bold text-gray-900 mb-1 flex items-center gap-2">
             <ClipboardList className="w-5 h-5 text-amber-500" aria-hidden="true" /> What should I prepare before asking about landscaping compliance?
@@ -300,7 +392,7 @@ export default function LandscapingClient() {
       </section>
 
       {/* ── FAQ accordion ──────────────────────────────────────────────────── */}
-      <section aria-labelledby="faq-heading" className="mb-10">
+      <section id="faq" aria-labelledby="faq-heading" className="mb-10 scroll-mt-32">
         <h2 id="faq-heading" className="text-2xl font-bold text-gray-900 mb-5 flex items-center gap-2">
           <HelpCircle className="w-6 h-6 text-violet-500" aria-hidden="true" /> Common Questions
         </h2>
@@ -320,6 +412,8 @@ export default function LandscapingClient() {
           verify using the official Zoning By-law, Zoning Map Viewer, Toronto Building, or City staff.
         </p>
       </div>
+        </div>{/* /main content column */}
+      </div>{/* /two-column grid */}
     </div>
   );
 }
