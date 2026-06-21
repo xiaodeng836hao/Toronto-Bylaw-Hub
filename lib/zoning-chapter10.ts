@@ -45,6 +45,8 @@ export interface ChapterProvision {
 
 const SRC = CHAPTER_10_SOURCE_URL;
 const RES = "Residential Zone category — applies to R & RD";
+const R = "Residential Zone (R) — Chapter 10.10";
+const RD = "Residential Detached Zone (RD) — Chapter 10.20";
 
 export const chapter10Provisions: ChapterProvision[] = [
   {
@@ -408,6 +410,241 @@ In the Residential Zone category, a detached house may be converted to a duplex,
       "A 'dwelling unit' is a self-contained residence. In residential zones, a detached house may be converted into a duplex, triplex, or fourplex by adding dwelling units. If the original house was built before May 15, 2023 and the new units are entirely within the existing building, it can keep its lawfully-existing status. The permitted building types for each zone are set in the zone chapter (10.10 R / 10.20 RD).",
     keywords: ["dwelling unit", "residential detached", "detached house", "duplex", "triplex", "fourplex", "multiplex", "conversion", "permitted use"],
     relatedTopicId: "home-occupation",
+    sourceUrl: SRC,
+  },
+
+  {
+    id: "permitted-uses",
+    appliesTo: RES,
+    chapter: "Chapter 10.10 (R) · 10.20 (RD)",
+    section: "10.10.20 · 10.20.20",
+    title: "Permitted Uses & Permitted Building Types",
+    plainExplanation:
+      "What you may build (the residential building type) and how the lot may be used — uses permitted outright, and uses permitted only if they meet specific conditions.",
+    bylawText: `10.10.20.10 Permitted Use — R Zone
+The following uses are permitted in the R zone: a Dwelling Unit in a permitted residential building type (Clause 10.10.20.40); Municipal Shelter; Park.
+10.10.20.40 Permitted Building Types — R Zone
+Detached House; Semi-Detached House; Townhouse; Duplex; Triplex; Fourplex; Apartment Building.
+10.10.20.20 Permitted Use with Conditions — R Zone (conditions in 10.10.20.100)
+Ambulance Depot; Cogeneration Energy; Community Centre; Day Nursery; Fire Hall; Garden Suite; Group Home; Home Occupation; Laneway Suite; Library; Multi-tenant House; Place of Worship; Police Station; Private Home Daycare; Public Utility; Renewable Energy; Retail Store; Secondary Suite; Seniors Community House; Short-term Rental; Tourist Home; Transportation Use.
+
+10.20.20.10 Permitted Use — RD Zone
+A Dwelling Unit in a permitted residential building type (Clause 10.20.20.40); Municipal Shelter; Park.
+10.20.20.40 Permitted Building Types — RD Zone
+Detached House; Duplex; Triplex; Fourplex; Townhouse (if the lot abuts a major street); Apartment Building (if the lot abuts a major street).
+10.20.20.20 Permitted Use with Conditions — RD Zone (conditions in 10.20.20.100)
+Ambulance Depot; Cogeneration Energy; Community Centre; Day Nursery; Fire Hall; Garden Suite; Group Home; Home Occupation; Laneway Suite; Library; Multi-tenant House; Place of Worship; Police Station; Private Home Daycare; Public Utility; Renewable Energy; Secondary Suite; Seniors Community House; Short-term Rental; Transportation Use.`,
+    provisionSummary:
+      "In the Residential Zone (R), permitted residential building types are detached, semi-detached, townhouse, duplex, triplex, fourplex, and apartment building. In the Residential Detached (RD) zone the standard types are detached, duplex, triplex, and fourplex — townhouse and apartment building are permitted only if the lot abuts a major street. Both zones permit a municipal shelter and a park outright, plus a list of additional uses (home occupation, secondary/garden/laneway suite, group home, day nursery, place of worship, and more) only if they meet the specific conditions in 10.10.20.100 / 10.20.20.100.",
+    keywords: ["permitted use", "permitted uses", "permitted building types", "building type", "detached house", "semi-detached", "townhouse", "duplex", "triplex", "fourplex", "apartment building", "secondary suite", "garden suite", "laneway suite", "multiplex", "what can I build", "use with conditions", "dwelling unit"],
+    relatedTopicId: "permitted-uses",
+    sourceUrl: SRC,
+  },
+
+  // ───────────── Zone-specific limits: Residential Zone (R) — Chapter 10.10 ─────────────
+  {
+    id: "r-setbacks",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.40.70",
+    title: "R Zone — Front, Side & Rear Yard Setbacks",
+    plainExplanation:
+      "The default minimum distances a house must sit from the front, side, and rear lot lines in the Residential Zone (R).",
+    bylawText: `10.10.40.70 Setbacks
+(1) Minimum Front Yard Setback
+If regulation 10.5.40.70(1) does not apply, the required minimum front yard setback in the R zone is 6.0 metres.
+(2) Minimum Rear Yard Setback
+The required minimum rear yard setback in the R zone is 7.5 metres.
+(3) Minimum Side Yard Setback
+In the R zone, the required minimum side yard setback is:
+(A) 0.9 metres, for: a detached house; a semi-detached house; a duplex; a triplex; a fourplex; a townhouse if all the dwelling units front directly on a street; and an apartment building with a height of 13.0 metres or less;
+(B) 7.5 metres, for: a townhouse if a dwelling unit does not front directly on a street; an apartment building with a height of more than 13.0 metres; and a non-residential building.
+(4) Reduced Minimum Side Yard for Walls with No Windows or Doors
+The required minimum side yard setback in 10.10.40.70(3)(A) and (B) may be reduced to 0.45 metres if there are no windows or doors in that side of the building (for a detached house, semi-detached house, townhouse fronting a street, duplex, triplex, fourplex, or apartment building 13.0 m or less).`,
+    provisionSummary:
+      "In the Residential Zone (R), the default minimum front yard setback is 6.0 m, the rear yard is 7.5 m, and the side yard is 0.9 m for a detached/semi-detached house, duplex, triplex, fourplex (and townhouses/low apartments that front a street). A side wall with no windows or doors can be set back as little as 0.45 m. The front-yard figure may instead be set by the averaging rule (10.5.40.70) based on neighbouring houses, and major-street/corner-lot situations have separate rules — confirm the exact numbers for your lot.",
+    keywords: ["setback", "front yard setback", "side yard setback", "rear yard setback", "yard requirement", "0.9 metres", "6 metres", "7.5 metres", "how close to build", "R zone", "residential zone"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "r-height",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.40.10",
+    title: "R Zone — Maximum Building Height",
+    plainExplanation:
+      "How tall a building may be in the Residential Zone (R) — read from the Height Overlay Map, with a default if none is shown.",
+    bylawText: `10.10.40.10 Height
+(1) Maximum Height
+The permitted maximum height for a building or structure on a lot in the R zone is:
+(A) the numerical value, in metres, following the letters "HT" on the Height Overlay Map; or
+(B) if the lot is in an area with no numerical value following the letters "HT" on the Height Overlay Map, 10.0 metres.
+(3) Maximum Number of Storeys
+The permitted maximum number of storeys is the numerical value following the letters "ST" on the Height Overlay Map; if there is no "ST" value, the number of storeys is not limited by this regulation.`,
+    provisionSummary:
+      "In the Residential Zone (R), maximum building height is whatever number (in metres) follows \"HT\" on the Height Overlay Map for your lot; where no HT value is shown, the default maximum is 10.0 metres. The number of storeys is limited only where an \"ST\" value is shown. Main-wall height and roof-slope rules also apply (10.10.40.10), and townhouses/apartments on major streets differ — check the Height Overlay Map for your property.",
+    keywords: ["building height", "height", "maximum height", "storeys", "how tall", "10 metres", "height overlay", "R zone"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "r-lot-frontage",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.30.20 · 10.10.30.10",
+    title: "R Zone — Minimum Lot Frontage & Lot Area",
+    plainExplanation:
+      "The minimum width (frontage) and area a lot needs in the Residential Zone (R).",
+    bylawText: `10.10.30.20 Lot Frontage
+(1) Minimum Lot Frontage — In the R zone:
+(A) if a zone label on the Zoning By-law Map has the letter "f", the value following "f" is the required minimum lot frontage, in metres;
+(B) if the zone label does not have an "f" value, the required minimum lot frontage is 6.0 metres.
+10.10.30.10 Lot Area
+(1) Minimum Lot Area — In the R zone: (A) the value following "a" on the Zoning By-law Map; or (B) if no "a" value, the required minimum lot frontage multiplied by 30 metres.`,
+    provisionSummary:
+      "In the Residential Zone (R), the minimum lot frontage is the number following \"f\" in the zone label on the Zoning By-law Map; if no \"f\" value is shown, the default minimum is 6.0 metres. Minimum lot area is the \"a\" value, or — where none is shown — the required frontage multiplied by 30 m. Confirm your lot's zone label in the Zoning Map Viewer.",
+    keywords: ["lot frontage", "lot width", "minimum lot frontage", "lot area", "6 metres", "R zone", "zone label"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "r-building-depth",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.40.30",
+    title: "R Zone — Maximum Building Depth",
+    plainExplanation:
+      "How far back a building may extend from the front in the Residential Zone (R).",
+    bylawText: `10.10.40.30 Building Depth
+(1) Maximum Building Depth — In the R zone, the permitted maximum building depth is:
+(A) 17.0 metres for a detached house, semi-detached house, duplex, triplex, fourplex, townhouse or apartment building;
+(B) despite (A), 19.0 metres for a duplex, triplex or fourplex on a lot with a depth of 36.0 m or greater and frontage under 10.0 m, or a depth of 40.0 m or greater and frontage of 10.0 m or greater.`,
+    provisionSummary:
+      "In the Residential Zone (R), the maximum building depth is generally 17.0 metres for a detached/semi-detached house, duplex, triplex, fourplex, townhouse, or apartment building. A duplex/triplex/fourplex on a deep lot may reach 19.0 metres. (Building length is separately limited for townhouses/apartments on major streets.)",
+    keywords: ["building depth", "building length", "how deep", "17 metres", "19 metres", "R zone"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "r-ancillary-coverage",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.60.70 · 10.10.60.20",
+    title: "R Zone — Detached Garages & Sheds (Coverage + Setbacks)",
+    plainExplanation:
+      "Limits on ancillary buildings such as detached garages and sheds in the Residential Zone (R).",
+    bylawText: `10.10.60.70 Lot Coverage
+(1) In the R zone, the area of the lot covered by ancillary buildings and structures may not exceed 5% of the lot area, except for the water surface of a pool and ancillary buildings containing parking spaces (to a maximum of one parking space per dwelling unit).
+10.10.60.20 Setbacks
+(1) The required minimum rear yard and side yard setback for an ancillary building or structure containing a parking space is: (A) 1.0 metre from a rear or side lot line abutting a street or lane; and (B) no minimum setback from a rear or side lot line that does not abut a street or lane.`,
+    provisionSummary:
+      "In the Residential Zone (R), ancillary buildings and structures (such as sheds and detached garages) together may cover no more than 5% of the lot area — pools and parking garages are treated separately. A detached garage (or other structure containing a parking space) must sit at least 1.0 m from a rear/side lot line that abuts a street or lane, but has no minimum setback from an interior rear/side lot line. General ancillary-building rules in Chapter 10.5.60 (height, location) also apply.",
+    keywords: ["ancillary building", "accessory structure", "detached garage", "garage", "shed", "lot coverage", "5%", "1 metre", "R zone"],
+    relatedTopicId: "accessory-structures",
+    sourceUrl: SRC,
+  },
+  {
+    id: "r-parking-access",
+    appliesTo: R,
+    chapter: "Chapter 10.10 (R)",
+    section: "10.10.80.40",
+    title: "R Zone — Garage / Driveway Access on Narrow Lots",
+    plainExplanation:
+      "Where a vehicle entrance and driveway may be located in the Residential Zone (R), especially on narrow lots.",
+    bylawText: `10.10.80.40 Access to Parking Space
+(1) Garage Entrance in Front Wall Not Permitted on Certain Lots
+Despite regulation 10.5.80.40(1), if a lot in the R zone has a lot frontage of 7.6 metres or less, a vehicle entrance through the front main wall of a building, other than an ancillary building, is not permitted.
+(2) Parking Access to a Corner Lot or a Lot Abutting a Lane
+On a corner lot, or a lot abutting a lane, vehicle access to any parking space on the lot must be from the flanking street or from the lane.`,
+    provisionSummary:
+      "In the Residential Zone (R), on a narrow lot (frontage 7.6 m or less) you cannot put a garage/vehicle entrance through the front wall of the house. On a corner lot or a lot that backs onto a lane, parking must be accessed from the flanking street or the lane (not the main front street). Combined with the front-yard parking rule (10.5.80.10), this limits new front-yard driveways — confirm with the City before paving.",
+    keywords: ["parking access", "driveway", "garage", "front yard parking", "narrow lot", "corner lot", "lane", "7.6 metres", "R zone"],
+    relatedTopicId: "front-yard-parking",
+    sourceUrl: SRC,
+  },
+
+  // ───────────── Zone-specific limits: Residential Detached Zone (RD) — Chapter 10.20 ─────────────
+  {
+    id: "rd-setbacks",
+    appliesTo: RD,
+    chapter: "Chapter 10.20 (RD)",
+    section: "10.20.40.70",
+    title: "RD Zone — Front, Side & Rear Yard Setbacks",
+    plainExplanation:
+      "Setback distances for a detached house in the Residential Detached Zone (RD), where the side yard increases with the lot's width.",
+    bylawText: `10.20.40.70 Setbacks
+(1) Minimum Front Yard Setback
+If regulation 10.5.40.70(1) does not apply, the required minimum front yard setback in the RD zone is 6.0 metres.
+(2) Minimum Rear Yard Setback
+The required minimum rear yard setback in the RD zone is the greater of: (A) 7.5 metres; or (B) 25% of the lot depth.
+(3) Minimum Side Yard Setback — The required minimum side yard setback in the RD zone is:
+(A) 0.6 metres if the required minimum lot frontage is less than 6.0 metres;
+(B) 0.9 metres if 6.0 to less than 12.0 metres;
+(C) 1.2 metres if 12.0 to less than 15.0 metres;
+(D) 1.5 metres if 15.0 to less than 18.0 metres;
+(E) 1.8 metres if 18.0 to less than 24.0 metres;
+(F) 2.4 metres if 24.0 to less than 30.0 metres; and
+(G) 3.0 metres if 30.0 metres or greater.`,
+    provisionSummary:
+      "In the Residential Detached (RD) zone, the default minimum front yard setback is 6.0 m and the rear yard setback is the greater of 7.5 m or 25% of the lot depth. The side yard setback scales with the lot's required frontage — from 0.6 m on the narrowest lots up to 3.0 m on lots 30 m or wider (for example, 0.9 m for 6–<12 m frontage, 1.2 m for 12–<15 m). Corner lots and major streets add further rules — confirm the exact figure for your lot in the Zoning Map Viewer.",
+    keywords: ["setback", "front yard setback", "side yard setback", "rear yard setback", "RD zone", "residential detached", "detached house", "lot depth", "graduated side yard", "how close to build"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "rd-lot-frontage",
+    appliesTo: RD,
+    chapter: "Chapter 10.20 (RD)",
+    section: "10.20.30.20 · 10.20.30.40",
+    title: "RD Zone — Minimum Lot Frontage & Lot Coverage",
+    plainExplanation:
+      "Minimum lot width and how much of the lot may be covered by buildings in the Residential Detached Zone (RD).",
+    bylawText: `10.20.30.20 Lot Frontage
+(1) Minimum Lot Frontage — In the RD zone: (A) the value following "f" on the Zoning By-law Map; or (B) if no "f" value, the required minimum lot frontage is 12.0 metres.
+10.20.30.40 Lot Coverage
+(1) Maximum Lot Coverage — (A) if the lot is in an area with a numerical value on the Lot Coverage Overlay Map, that value is the permitted maximum lot coverage (as a percentage of lot area); (B) if not, no lot coverage limit applies.`,
+    provisionSummary:
+      "In the Residential Detached (RD) zone, the minimum lot frontage is the \"f\" value on the Zoning By-law Map, or 12.0 metres where none is shown — wider than the 6.0 m default in the R zone. Maximum lot coverage applies only where the Lot Coverage Overlay Map gives a percentage; if no value is shown, there is no lot-coverage limit (though setbacks, height, and floor space still constrain the building). Check both overlay maps for your lot.",
+    keywords: ["lot frontage", "lot width", "12 metres", "lot coverage", "RD zone", "residential detached", "overlay map"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "rd-building-depth",
+    appliesTo: RD,
+    chapter: "Chapter 10.20 (RD)",
+    section: "10.20.40.30 · 10.20.40.10",
+    title: "RD Zone — Building Depth & Height",
+    plainExplanation:
+      "How far back and how tall a detached house may be in the Residential Detached Zone (RD).",
+    bylawText: `10.20.40.30 Building Depth
+(1) In the RD zone with a required minimum lot frontage of 18.0 metres or less, the rear main wall of a detached house (not including a complying one-storey extension) may be no more than 19.0 metres from the required front yard setback.
+10.20.40.10 Height
+(1) Maximum Height — (A) the value following "HT" on the Height Overlay Map; or (B) if none, 10.0 metres.`,
+    provisionSummary:
+      "In the Residential Detached (RD) zone, on lots with a required frontage of 18.0 m or less, the rear main wall of a detached house may be no more than 19.0 metres back from the required front yard setback (a complying one-storey extension is excluded). Maximum height is the \"HT\" value on the Height Overlay Map, or 10.0 metres where none is shown. Check the Height Overlay Map and your lot's required front yard setback first.",
+    keywords: ["building depth", "how deep", "building height", "height", "10 metres", "19 metres", "RD zone", "residential detached"],
+    relatedTopicId: "setbacks",
+    sourceUrl: SRC,
+  },
+  {
+    id: "rd-decks-platforms",
+    appliesTo: RD,
+    chapter: "Chapter 10.20 (RD)",
+    section: "10.20.40.50",
+    title: "RD Zone — Upper Decks, Balconies & Platforms",
+    plainExplanation:
+      "Limits on raised decks and balconies on a detached house in the Residential Detached Zone (RD).",
+    bylawText: `10.20.40.50 Decks, Platforms and Amenities
+(1) Platforms at or Above the Second Storey of a Detached House
+In the RD zone, a platform such as a deck or balcony with access from the second storey or above of a detached house must comply with the following:
+(A) there may be no more than a total of four platforms, and no more than one on each of the front, rear and each side of the detached house; and
+(B) the maximum area of each platform is 4.0 square metres.`,
+    provisionSummary:
+      "In the Residential Detached (RD) zone, a raised deck or balcony reached from the second storey or higher of a detached house is limited to a total of four platforms — at most one on each of the front, rear, and each side — and each platform may be no larger than 4.0 square metres. Ground-level decks and permitted encroachments are governed separately (Chapter 10.5.40.50/.60). Confirm details for your design.",
+    keywords: ["deck", "platform", "balcony", "upper deck", "second storey", "RD zone", "residential detached", "4 square metres"],
+    relatedTopicId: "accessory-structures",
     sourceUrl: SRC,
   },
 ];

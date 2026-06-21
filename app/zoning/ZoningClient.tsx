@@ -11,12 +11,36 @@ import {
 import {
   Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
+  ArrowRight, AlertTriangle,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
+import { getZoningTopicDetail } from "@/data/zoning/zoning-topic-details";
 
 const quickSearches = [
   "parking", "setback", "deck", "detached garage",
   "air conditioner", "Permitted Use", "landscaping", "Permitted Encroachments",
+];
+
+const HOW_TO_STEPS = [
+  "Find your property's zoning category using the Zoning Map Viewer.",
+  "Confirm whether the property is in Residential Zone (R), Residential Detached Zone (RD), or another zone.",
+  "Search for your topic — such as setback, parking, landscaping, HVAC, or accessory structure.",
+  "Review the relevant chapter and section references shown in the results.",
+  "Confirm the final requirements using official City zoning resources or City staff.",
+];
+
+const PREPARE_ITEMS = [
+  "Property address",
+  "Zoning category from the Zoning Map Viewer",
+  "Survey or site plan, if available",
+  "Lot dimensions (frontage and depth)",
+  "Building location on the lot",
+  "Proposed structure dimensions",
+  "Distance to each lot line",
+  "Driveway or parking layout",
+  "Soft landscaping area",
+  "Photos, if relevant",
+  "Any official notice or permit documents, if applicable",
 ];
 
 export default function ZoningClient() {
@@ -121,10 +145,31 @@ export default function ZoningClient() {
         </div>
       </div>
 
+      {/* How to use this zoning guide */}
+      <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-6">
+        <h2 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <ClipboardList className="w-5 h-5 text-emerald-500" aria-hidden="true" /> How to use this zoning guide
+        </h2>
+        <ol className="flex flex-col gap-3 mb-4">
+          {HOW_TO_STEPS.map((step, i) => (
+            <li key={step} className="flex gap-3">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+              <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex gap-2.5">
+          <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-xs text-amber-800">
+            This guide cannot determine zoning compliance for a specific property. Zoning depends on exact property conditions, measurements, overlays, exceptions, and applicable chapters.
+          </p>
+        </div>
+      </div>
+
       {/* Search */}
       <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-8">
         <h2 className="font-semibold text-gray-900 mb-1">Find a Zoning Topic</h2>
-        <p className="text-sm text-gray-500 mb-4">Search residential zoning provisions by keyword and read the verbatim by-law text. These Chapter 10.5 general regulations apply across the Residential Zone (R) and Residential Detached Zone (RD).</p>
+        <p className="text-sm text-gray-500 mb-4">Search residential zoning provisions by keyword and read the verbatim by-law text. Covers the Chapter 10.5 general regulations plus the zone-specific limits in Chapter 10.10 (Residential Zone R) and Chapter 10.20 (Residential Detached Zone RD) — height, setbacks, lot frontage, building depth, lot coverage, and more.</p>
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
           <label htmlFor="zoning-search" className="sr-only">Search zoning provisions</label>
@@ -157,8 +202,11 @@ export default function ZoningClient() {
           <h2 id="provision-heading" className="text-xl font-bold text-gray-900 mb-1">
             Zoning By-law matches
           </h2>
-          <p className="text-sm text-gray-500 mb-5" aria-live="polite">
+          <p className="text-sm text-gray-500 mb-3" aria-live="polite">
             {provisionResults.length} provision{provisionResults.length !== 1 ? "s" : ""} in Chapter 10 for &ldquo;{term}&rdquo;
+          </p>
+          <p className="text-xs text-gray-400 mb-5">
+            Zoning is property-specific. These are reference excerpts — confirm the exact rule for your lot with the official by-law and Zoning Map Viewer.
           </p>
 
           {provisionResults.length === 0 ? (
@@ -201,11 +249,26 @@ export default function ZoningClient() {
         </div>
       )}
 
+      {/* What information should I prepare? */}
+      <section aria-label="What to prepare" className="mt-10 bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
+        <h2 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
+          <ClipboardList className="w-5 h-5 text-emerald-500" aria-hidden="true" /> What information should I prepare before checking zoning?
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">Having these ready makes it much easier to confirm requirements with the City or a professional.</p>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {PREPARE_ITEMS.map((item) => (
+            <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 mt-2" aria-hidden="true" /> {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {/* Property-specific disclaimer */}
-      <div className="mt-10 p-5 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
+      <div className="mt-6 p-5 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
         <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
         <p className="text-sm text-amber-800">
-          Zoning rules are property-specific. Always confirm requirements using the official Zoning By-law, Zoning Map Viewer, or City staff.
+          Zoning rules are property-specific. This page summarizes selected zoning by-law provisions for general reference only. It is not a legal interpretation and does not confirm whether a property complies. Always verify using the official Zoning By-law, Zoning Map Viewer, Toronto Building, or City staff.
         </p>
       </div>
     </div>
@@ -270,6 +333,7 @@ function ZoningTopicCard({
   onToggle: () => void;
   onSearch: (q: string) => void;
 }) {
+  const detail = getZoningTopicDetail(topic.id);
   return (
     <div id={`topic-${topic.id}`} className={`bg-white rounded-2xl border transition-all scroll-mt-24 ${isExpanded ? "border-emerald-200 subtle-shadow" : "border-gray-100 hover:border-gray-200"}`}>
       <button
@@ -294,20 +358,95 @@ function ZoningTopicCard({
             <p className="text-sm text-gray-700 leading-relaxed">{topic.plainExplanation}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
-                <HelpCircle className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> Common Resident Question
-              </p>
-              <p className="text-sm text-gray-600 italic">&ldquo;{topic.commonQuestion}&rdquo;</p>
+          {detail ? (
+            <>
+              {/* Applicable zones */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Applies to</span>
+                {detail.applicableZones.map((z) => (
+                  <span key={z} className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
+                    <Landmark className="w-3 h-3" aria-hidden="true" /> {z}
+                  </span>
+                ))}
+              </div>
+
+              {/* Why it matters */}
+              <div>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Why this matters</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{detail.whyItMatters}</p>
+              </div>
+
+              {/* Relevant provisions */}
+              <div>
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                  <FileText className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" /> Relevant provisions
+                </p>
+                <div className="flex flex-col gap-2.5">
+                  {detail.relevantSections.map((s) => (
+                    <div key={s.section + s.title} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-xs font-medium text-gray-500">{s.chapter}</span>
+                        <span className="font-mono text-[11px] bg-white border border-gray-200 text-gray-700 px-1.5 py-0.5 rounded">{s.section}</span>
+                        <span className="text-xs font-semibold text-gray-800">{s.title}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">{s.plainRule}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Common questions with answers */}
+              <div>
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                  <HelpCircle className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> Common questions
+                </p>
+                <div className="flex flex-col gap-3">
+                  {detail.questions.map((q) => (
+                    <div key={q.question} className="rounded-xl border border-gray-100 p-3.5">
+                      <p className="text-sm font-semibold text-gray-900 mb-1">{q.question}</p>
+                      <p className="text-sm text-gray-600 leading-relaxed">{q.answer}</p>
+                      {q.nextStep && (
+                        <p className="mt-1.5 inline-flex items-start gap-1 text-xs text-emerald-700">
+                          <ArrowRight className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" /> {q.nextStep}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Examples */}
+              {detail.examples.length > 0 && (
+                <div>
+                  <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" /> Situations that may need review
+                  </p>
+                  <ul className="flex flex-col gap-2">
+                    {detail.examples.map((ex) => (
+                      <li key={ex} className="flex items-start gap-2 text-sm text-amber-900 bg-amber-50/70 border border-amber-100 rounded-lg p-2.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden="true" /> {ex}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                  <HelpCircle className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> Common Resident Question
+                </p>
+                <p className="text-sm text-gray-600 italic">&ldquo;{topic.commonQuestion}&rdquo;</p>
+              </div>
+              <div>
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                  <Scale className="w-3.5 h-3.5 text-blue-500" aria-hidden="true" /> Possible Bylaw Consideration
+                </p>
+                <p className="text-sm text-blue-700 font-medium">{topic.bylawConsideration}</p>
+              </div>
             </div>
-            <div>
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
-                <Scale className="w-3.5 h-3.5 text-blue-500" aria-hidden="true" /> Possible Bylaw Consideration
-              </p>
-              <p className="text-sm text-blue-700 font-medium">{topic.bylawConsideration}</p>
-            </div>
-          </div>
+          )}
 
           <div>
             <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">

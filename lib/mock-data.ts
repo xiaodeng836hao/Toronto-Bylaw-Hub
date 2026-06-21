@@ -716,7 +716,7 @@ export const zoningTopics: ZoningTopic[] = [
       "Check zoning and permit requirements before building any accessory structure, especially near a property line.",
     officialUrl: ZONING_OFFICIAL_URL,
     show311: true,
-    keywords: ["shed", "garage", "pergola", "accessory structure", "detached structure", "outbuilding"],
+    keywords: ["shed", "garage", "detached garage", "pergola", "accessory structure", "ancillary building", "detached structure", "outbuilding", "deck", "platform", "balcony", "soft landscaping", "front yard landscaping", "encroachment", "permitted encroachment"],
   },
   {
     id: "landscaping",
@@ -755,22 +755,23 @@ export const zoningTopics: ZoningTopic[] = [
     keywords: ["home occupation", "work from home", "home business", "residential business"],
   },
   {
-    id: "parking",
-    topic: "Parking Requirements",
+    id: "permitted-uses",
+    topic: "Permitted Uses & Building Types",
     plainExplanation:
-      "Residential parking requirements vary by zone and dwelling type. Most houses must provide a set number of parking spaces, and new parking areas often require separate approval.",
-    commonQuestion: "How many parking spaces do I need, and can I add more?",
-    bylawConsideration: "Zoning By-law 569-2013 — parking space requirements.",
+      "What you may build and how you may use a residential lot — from the permitted residential building types (detached house, duplex, triplex, fourplex, and more) to uses allowed outright and uses allowed only with conditions.",
+    commonQuestion: "What can I build or use my residential property for?",
+    bylawConsideration: "Zoning By-law 569-2013 — Chapter 10.10 (R) and 10.20 (RD) permitted uses and permitted building types.",
     whatToPrepare: [
-      "Dwelling type and number of units",
-      "Existing legal parking spaces",
-      "Proposed changes to parking",
+      "Your property's zoning category from the Zoning Map Viewer",
+      "The building type you are considering (detached, duplex, triplex, etc.)",
+      "The proposed use (dwelling, home occupation, secondary/garden/laneway suite, etc.)",
+      "Whether the lot abuts a major street",
     ],
     whenOfficial:
-      "Check parking requirements before converting a garage or adding parking spaces.",
+      "Confirm the permitted uses and building types for your exact lot before designing or applying.",
     officialUrl: ZONING_OFFICIAL_URL,
     show311: true,
-    keywords: ["parking", "parking space", "residential parking", "parking requirement", "garage conversion"],
+    keywords: ["permitted use", "permitted uses", "permitted building types", "building type", "detached house", "duplex", "triplex", "fourplex", "townhouse", "apartment building", "secondary suite", "garden suite", "laneway suite", "multiplex", "what can I build", "dwelling unit", "residential detached"],
   },
   {
     id: "setbacks",
@@ -788,7 +789,7 @@ export const zoningTopics: ZoningTopic[] = [
       "Obtain a Zoning Certificate or consult City Planning before building near a property line.",
     officialUrl: ZONING_OFFICIAL_URL,
     show311: true,
-    keywords: ["setback", "property line", "how close to build", "side yard", "rear yard", "front yard setback"],
+    keywords: ["setback", "property line", "how close to build", "side yard", "rear yard", "front yard setback", "side yard setback", "rear yard setback", "building height", "building depth", "building length", "lot coverage", "lot frontage", "residential zone", "residential detached", "R zone", "RD zone"],
   },
   {
     id: "fence-zoning-overlap",
