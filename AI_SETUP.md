@@ -18,6 +18,14 @@ API key: every AI path falls back to the existing source-based behaviour.
 | `AI_EMBEDDING_MODEL` | Embedding model for RAG ingestion + query. | `text-embedding-3-small` |
 | `OPENAI_BASE_URL` | Override for an OpenAI-compatible endpoint. | `https://api.openai.com/v1` |
 | `DATABASE_URL` | Optional Postgres for logs / production pgvector. | — |
+| `PLANT_ID_API_KEY` | Enables Plant.id species identification on the Prohibited Plants page. Separate from OpenAI — see `PLANT_ID_SETUP.md`. | — |
+
+> **Plant.id is separate from OpenAI/RAG.** The Prohibited Plants photo
+> identifier uses the Plant.id API for plant **species** identification, and a
+> local BylawGuide matcher decides whether the species is one of Toronto's 10
+> prohibited plants. Setup details are in `PLANT_ID_SETUP.md`. Without
+> `PLANT_ID_API_KEY` the upload feature falls back gracefully and the manual
+> identifier keeps working.
 
 Set these in your shell or `.env.local` (do not commit real keys). Example:
 

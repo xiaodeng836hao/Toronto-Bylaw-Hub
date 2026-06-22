@@ -1166,13 +1166,15 @@ const staticSearchEntries: SearchEntry[] = [
     title: "Prohibited Plants Identifier",
     type: "Identifier",
     summary:
-      "Identify Toronto's 10 prohibited plants, compare their seasonal appearance, and learn safe, resident-friendly removal methods. Includes a rules-based identification helper.",
+      "Identify Toronto's 10 prohibited plants, compare their seasonal appearance, and learn safe, resident-friendly removal methods. Upload a plant photo for an AI-assisted (Plant.id) identification, or use the rules-based helper.",
     href: "/prohibited-plants",
     actionLabel: "Open Identifier",
     keywords: [
       "prohibited plants", "weeds", "invasive plants", "invasive species", "noxious weeds",
       "poison ivy", "giant hogweed", "ragweed", "garlic mustard", "phragmites", "knotweed",
       "thistle", "buckthorn", "dog-strangling vine", "purple loosestrife", "plant identifier",
+      "plant.id", "plant identification", "upload plant photo", "identify prohibited plant",
+      "prohibited plant photo", "giant hogweed photo", "poison ivy photo", "knotweed photo", "ragweed photo",
     ],
   },
 ];

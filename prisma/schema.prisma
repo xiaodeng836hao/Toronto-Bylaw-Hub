@@ -97,3 +97,14 @@ model AIImageAnalysis {
   resultJson      Json?
   createdAt       DateTime @default(now())
 }
+
+// V6.1 — optional Plant.id result log. The feature is stateless by default
+// (no persistence); raw uploaded images are never stored.
+model PlantIdentificationLog {
+  id                   String   @id @default(cuid())
+  normalizedResultJson Json?
+  prohibitedMatchesJson Json?
+  selectedSeason       String?
+  selectedLocationType String?
+  createdAt            DateTime @default(now())
+}

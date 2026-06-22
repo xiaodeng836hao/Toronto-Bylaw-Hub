@@ -549,6 +549,40 @@ export const knowledgeItems: KnowledgeItem[] = [
     cautionLevel: "general",
     nextSteps: ["Open the Prohibited Plants Identifier to recognize and safely remove plants."],
   },
+  {
+    id: "plant-photo-identification",
+    title: "Can I upload a plant photo to identify a prohibited plant?",
+    type: "Prohibited Plant",
+    topic: "Prohibited Plants",
+    summary:
+      "The Prohibited Plants Identifier lets you upload a photo. Plant.id suggests the species and BylawGuide compares it against Toronto's 10 prohibited plants — as a reference result only.",
+    keywords: ["upload plant photo", "plant identification", "plant.id", "identify prohibited plant", "prohibited plant photo", "giant hogweed photo", "poison ivy photo"],
+    synonyms: ["plant photo", "identify plant", "plant id", "photo identification", "what plant is this"],
+    relatedQuestions: [
+      "Can I upload a plant photo?",
+      "Does Plant.id check prohibited plants?",
+      "What happens if a plant is identified as giant hogweed?",
+      "What if no prohibited plant match is found?",
+    ],
+    sourceText:
+      "On the Prohibited Plants page you can upload a photo. The Plant.id service suggests the plant species; BylawGuide then compares those suggestions against Toronto's 10 prohibited plants using a local matcher. Plant.id is not asked about bylaws.",
+    plainLanguageAnswer:
+      "Yes. On the Prohibited Plants Identifier you can upload a clear plant photo. Plant.id suggests the likely species, then BylawGuide compares those suggestions against Toronto's 10 prohibited plants and shows any possible match with a confidence level and safety guidance. If a giant hogweed match appears, a strong safety warning is shown (avoid skin contact with the sap). If nothing matches, it shows \"no clear match found\" — not that a plant is allowed, since the photo or result may be uncertain. Results are a reference only; always confirm with official City sources before removal.",
+    relatedChapter: "Chapter 489 — Turfgrass and Prohibited Plants",
+    relatedSections: [],
+    officialSources: [
+      { title: "Turfgrass & Prohibited Plants", type: CITY, url: "https://www.toronto.ca/city-government/public-notices-bylaws/bylaw-enforcement/turfgrass-prohibited-plants/" },
+      { title: "Chapter 489 (PDF)", type: CODE, url: "https://www.toronto.ca/legdocs/municode/1184_489.pdf" },
+    ],
+    internalUrl: "/prohibited-plants",
+    lastReviewed: REVIEWED,
+    cautionLevel: "general",
+    nextSteps: [
+      "Open the Prohibited Plants page and use \"Identify a Possible Prohibited Plant\".",
+      "Upload a clear photo showing leaves, stems, flowers, berries, or seed heads.",
+      "Confirm any match with the official City sources before acting.",
+    ],
+  },
 
   // ─── TMC Chapters: Graffiti, Dust, Property Standards, Heating/Vital ──────
   {
