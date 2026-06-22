@@ -10,12 +10,29 @@
 //  retrieval). For production, see RAG_SOURCE_MAINTENANCE.md (pgvector path).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
+
+// Load env from .env.local / .env so you can run `npm run ingest-rag` with the
+// key in the file (this standalone script is not Next, so it must load it).
+function loadEnvFile(file) {
+  if (!existsSync(file)) return;
+  for (const line of readFileSync(file, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Za-z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (!m || process.env[m[1]] !== undefined) continue;
+    let v = m[2].trim();
+    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+    process.env[m[1]] = v;
+  }
+}
+loadEnvFile(path.join(ROOT, ".env.local"));
+loadEnvFile(path.join(ROOT, ".env"));
+
 const OUT = path.join(ROOT, "data", "rag", "index.json");
 const MODEL = process.env.AI_EMBEDDING_MODEL || "text-embedding-3-small";
+const DIMENSIONS = 512; // smaller vectors → smaller committed index; must match lib/ai/provider.ts
 const BASE_URL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 const KEY = process.env.OPENAI_API_KEY;
 
@@ -64,7 +81,7 @@ async function embedBatch(texts) {
   const res = await fetch(`${BASE_URL}/embeddings`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${KEY}` },
-    body: JSON.stringify({ model: MODEL, input: texts }),
+    body: JSON.stringify({ model: MODEL, input: texts, dimensions: DIMENSIONS }),
   });
   if (!res.ok) throw new Error(`Embedding API error ${res.status}: ${await res.text()}`);
   const data = await res.json();

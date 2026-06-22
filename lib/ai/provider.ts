@@ -19,6 +19,8 @@ const BASE_URL = process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1";
 const VISION_MODEL = process.env.AI_VISION_MODEL ?? "gpt-4o-mini";
 const TEXT_MODEL = process.env.AI_TEXT_MODEL ?? "gpt-4o-mini";
 export const EMBEDDING_MODEL = process.env.AI_EMBEDDING_MODEL ?? "text-embedding-3-small";
+/** Must match scripts/ingest-rag.mjs so query vectors match the index vectors. */
+export const EMBEDDING_DIMENSIONS = 512;
 
 /** True only when a usable AI provider + key are configured server-side. */
 export function isAiConfigured(): boolean {
@@ -87,7 +89,7 @@ export async function embed(texts: string[]): Promise<number[][]> {
   const res = await fetch(`${BASE_URL}/embeddings`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey()}` },
-    body: JSON.stringify({ model: EMBEDDING_MODEL, input: texts }),
+    body: JSON.stringify({ model: EMBEDDING_MODEL, input: texts, dimensions: EMBEDDING_DIMENSIONS }),
   });
   if (!res.ok) throw new Error(`Embedding error (${res.status})`);
   const data = await res.json();
