@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Toronto Bylaw Hub — Chapter 447 (Fences) detail data (V3.6)
 //
-//  Plain-language, resident-facing data for the GENERAL fence requirements on the
+//  Simple, resident-facing data for the GENERAL fence requirements on the
 //  Chapter 447 page. Height values are taken verbatim from Toronto Municipal Code
 //  Chapter 447, § 447-1.2B, TABLE 1 (Maximum Height of Fences). Detailed swimming
 //  pool ENCLOSURE requirements (§ 447-1.3) are intentionally NOT duplicated here —
@@ -34,7 +34,7 @@ export interface FenceHeightRow {
   nonResidential: string;
   /** Max height for a hedge, shrub or other vegetation that acts as a fence. */
   hedge: string;
-  /** Plain-English explanation of when this row applies. */
+  /** Simple explanation of when this row applies. */
   plain: string;
   /** A practical example. */
   example: string;

@@ -2,7 +2,7 @@ import { FileCheck } from "lucide-react";
 
 /**
  * Small, non-intrusive trust callout for content pages: signals that the page is
- * a plain-language summary of official sources and should be verified.
+ * a simple summary of official sources and should be verified.
  */
 export default function SourceBadge({ className = "" }: { className?: string }) {
   return (

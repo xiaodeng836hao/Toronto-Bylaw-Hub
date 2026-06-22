@@ -15,6 +15,7 @@ import {
   ArrowRight, AlertTriangle, Leaf, BadgeCheck,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
+import RelatedQuestions from "@/components/RelatedQuestions";
 import { getZoningTopicDetail } from "@/data/zoning/zoning-topic-details";
 
 const quickSearches = [
@@ -84,7 +85,7 @@ export default function ZoningClient() {
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Zoning Bylaw Guide</h1>
         <p className="text-gray-500 max-w-2xl">
-          Plain-language answers to common Toronto zoning questions, plus a keyword search to help locate relevant provisions in Chapter 10 (Residential). Zoning is property-specific, so always confirm details with official City resources.
+          Simple answers to common Toronto zoning questions, plus a keyword search to help locate relevant provisions in Chapter 10 (Residential). Zoning is property-specific, so always confirm details with official City resources.
         </p>
         <SourceBadge className="mt-4" />
       </div>
@@ -190,6 +191,31 @@ export default function ZoningClient() {
         </div>
       </div>
 
+      {/* Explore more zoning guides */}
+      <section aria-labelledby="more-zoning" className="mb-8">
+        <h2 id="more-zoning" className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <Map className="w-5 h-5 text-emerald-500" aria-hidden="true" /> Explore more zoning guides
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Link href="/landscaping" className="group bg-white rounded-2xl border border-gray-100 subtle-shadow p-4 flex items-start gap-3 hover:border-emerald-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
+            <span className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0"><Leaf className="w-5 h-5 text-emerald-600" aria-hidden="true" /></span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">Landscaping</span>
+              <span className="block text-xs text-gray-500 leading-relaxed mt-0.5">Soft landscaping requirements for front, side, and rear yards.</span>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 mt-1.5">Open Landscaping Guide <ArrowRight className="w-3 h-3" aria-hidden="true" /></span>
+            </span>
+          </Link>
+          <Link href="/zoning/former-north-york" className="group bg-white rounded-2xl border border-gray-100 subtle-shadow p-4 flex items-start gap-3 hover:border-emerald-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
+            <span className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0"><Landmark className="w-5 h-5 text-emerald-600" aria-hidden="true" /></span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">Former North York Zoning</span>
+              <span className="block text-xs text-gray-500 leading-relaxed mt-0.5">Some properties may require review of former municipal zoning provisions. Browse an index and plain-language overview of Former North York zoning references.</span>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 mt-1.5">Open Former North York Zoning <ArrowRight className="w-3 h-3" aria-hidden="true" /></span>
+            </span>
+          </Link>
+        </div>
+      </section>
+
       {/* Search */}
       <div className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6 mb-8">
         <h2 className="font-semibold text-gray-900 mb-1">Find a Zoning Topic</h2>
@@ -288,6 +314,17 @@ export default function ZoningClient() {
         </ul>
       </section>
 
+      {/* Related questions (Ask) */}
+      <RelatedQuestions
+        className="mt-10"
+        questions={[
+          "What are the zoning setbacks for my house?",
+          "Can I park in my front yard?",
+          "Where can I put my air conditioner or heat pump?",
+          "Do I need a permit for a shed or detached garage?",
+        ]}
+      />
+
       {/* Property-specific disclaimer */}
       <div className="mt-6 p-5 rounded-xl border border-amber-200 bg-amber-50 flex gap-3">
         <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
@@ -321,9 +358,9 @@ function ProvisionCard({ provision, matched }: { provision: ChapterProvision; ma
         <pre className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap font-sans bg-gray-50 border border-gray-100 rounded-lg p-3 max-h-72 overflow-y-auto">{provision.bylawText}</pre>
       </div>
 
-      {/* Plain-language interpretation */}
+      {/* Simple interpretation */}
       <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 mb-3">
-        <p className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide mb-1">Summarized provision (plain language)</p>
+        <p className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide mb-1">Summarized provision (simple terms)</p>
         <p className="text-sm text-gray-700 leading-relaxed">{provision.provisionSummary}</p>
       </div>
 

@@ -11,6 +11,7 @@ import { OFFICIAL_311_URL } from "@/lib/mock-data";
 import { getPlantImages, IMAGE_USAGE_NOTICE } from "@/lib/plant-images";
 import { PlantImagePanel, PlantCoverImage, HAZARD_LEVEL_CLASSES, HAZARD_TAG_CLASSES } from "@/components/plant-visuals";
 import SourceBadge from "@/components/SourceBadge";
+import RelatedQuestions from "@/components/RelatedQuestions";
 import {
   Leaf, Search, Filter, Info, AlertTriangle, ShieldAlert, ChevronDown, ChevronUp,
   ArrowRight, Phone, ExternalLink, Calendar, MapPin, X, HelpCircle, Wand2, RotateCcw, FileText,
@@ -374,6 +375,15 @@ export default function ProhibitedPlantsClient() {
           </a>
         </div>
       </section>
+
+      {/* Related questions (Ask) */}
+      <RelatedQuestions
+        className="mt-10"
+        questions={[
+          "How do I remove giant hogweed safely?",
+          "What are Toronto's prohibited plants?",
+        ]}
+      />
 
       {/* Bottom disclaimers */}
       <div className="mt-10 space-y-3">

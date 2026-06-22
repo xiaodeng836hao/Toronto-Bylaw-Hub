@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Toronto Bylaw Guide — Landscaping Guide content (V4.3)
 //
-//  Plain-language content for the dedicated /landscaping page. Soft-landscaping
+//  Simple content for the dedicated /landscaping page. Soft-landscaping
 //  rules and section references are drawn from Zoning By-law 569-2013, Chapter
 //  10.5 (General regulations for the Residential Zone category) — specifically
 //  Clause 10.5.50.10 Landscaping — which applies across the Residential Zone (R),
@@ -85,7 +85,7 @@ export interface YardProvision {
   chapter: string;
   section: string;
   title: string;
-  /** Plain-language explanation of the rule. */
+  /** Simple explanation of the rule. */
   plainRule: string;
   /** Short summarized source note / excerpt. */
   sourceNote: string;

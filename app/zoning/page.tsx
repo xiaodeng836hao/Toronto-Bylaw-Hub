@@ -5,7 +5,7 @@ import ZoningClient from "./ZoningClient";
 export const metadata: Metadata = {
   title: "Zoning Bylaw Guide",
   description:
-    "Search Toronto residential zoning provisions in Chapter 10.10 (Residential Zone R) and 10.20 (Residential Detached Zone RD) by keyword — setbacks, building height, lot coverage, floor space index, driveways, decks, and more — plus plain-language zoning topics (By-law 569-2013).",
+    "Search Toronto residential zoning provisions in Chapter 10.10 (Residential Zone R) and 10.20 (Residential Detached Zone RD) by keyword — setbacks, building height, lot coverage, floor space index, driveways, decks, and more — plus simple zoning topics (By-law 569-2013).",
 };
 
 export default function ZoningPage() {

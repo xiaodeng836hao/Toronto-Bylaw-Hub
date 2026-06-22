@@ -10,7 +10,7 @@
 //  floor space index, minimum lot frontage, required setbacks, etc.) are set by the
 //  individual zone chapters (10.10 for R, 10.20 for RD).
 //
-//  `provisionSummary` is a concise plain-language paraphrase + interpretation.
+//  `provisionSummary` is a concise simple paraphrase + interpretation.
 //  This is a reference tool, NOT a legal interpretation or property-specific
 //  determination. Always confirm in the official by-law and Zoning Map Viewer.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@ export interface ChapterProvision {
   plainExplanation: string;
   /** Verbatim by-law text (exact wording, transcribed from the official source). */
   bylawText: string;
-  /** Concise plain-language paraphrase + interpretation of the by-law text. */
+  /** Concise simple paraphrase + interpretation of the by-law text. */
   provisionSummary: string;
   /** Keywords this provision should match. */
   keywords: string[];

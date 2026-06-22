@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { poolFenceChecklist, OFFICIAL_311_URL } from "@/lib/mock-data";
 import SourceBadge from "@/components/SourceBadge";
+import RelatedQuestions from "@/components/RelatedQuestions";
 import {
   CheckCircle2, Circle, ExternalLink, Waves, ShieldCheck, ShieldX, AlertTriangle,
   Info, ChevronDown, ChevronUp, ClipboardList, HardHat, Printer, BookOpen,
@@ -373,7 +374,7 @@ export default function PoolFenceGuidePage() {
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Pool Fence Enclosure Guide</h1>
           <p className="text-gray-500 max-w-2xl">
-            A plain-language guide to Toronto&apos;s swimming pool enclosure rules — the permit process, what to prepare, enclosure and gate requirements, temporary fencing, and a printable compliance checklist. Based on Toronto Municipal Code Chapter 447 and official City of Toronto sources.
+            A simple guide to Toronto&apos;s swimming pool enclosure rules — the permit process, what to prepare, enclosure and gate requirements, temporary fencing, and a printable compliance checklist. Based on Toronto Municipal Code Chapter 447 and official City of Toronto sources.
           </p>
           <SourceBadge className="mt-4" />
         </div>
@@ -849,7 +850,7 @@ export default function PoolFenceGuidePage() {
               <Link href="/tmc-chapters/447" className="group flex items-start justify-between gap-3 p-4 rounded-xl border border-gray-100 hover:border-cyan-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500">
                 <div>
                   <p className="text-sm font-medium text-gray-900 group-hover:text-cyan-700 transition-colors">Chapter 447 on this site</p>
-                  <p className="text-xs text-gray-500 mt-0.5">Plain-language summary of the Fences chapter.</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Simple summary of the Fences chapter.</p>
                 </div>
                 <BookOpen className="w-4 h-4 text-gray-300 group-hover:text-cyan-400 flex-shrink-0" aria-hidden="true" />
               </Link>
@@ -865,6 +866,15 @@ export default function PoolFenceGuidePage() {
               </a>
             </div>
           </section>
+
+          <RelatedQuestions
+            questions={[
+              "Do I need a pool fence enclosure permit?",
+              "Does my pool gate need to self-close and self-latch?",
+              "Does a hot tub or spa need a pool enclosure?",
+              "How high can my fence be?",
+            ]}
+          />
         </div>
         </div>{/* /two-column grid */}
       </div>

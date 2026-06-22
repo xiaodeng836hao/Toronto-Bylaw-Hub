@@ -4,8 +4,27 @@ import Link from "next/link";
 import {
   Camera, Upload, X, ExternalLink, Loader2, FileImage,
   Info, CheckCircle2, ChevronDown, Clock, SearchCheck, Maximize2,
+  Sparkles, Compass,
 } from "lucide-react";
 import { photoReviewIssues, getPhotoIssue, OFFICIAL_311_URL } from "@/lib/mock-data";
+
+// Maps a photo-review issue to a related BylawGuide page and an Ask question, so
+// results lead to source-backed reference content (never a "confirmed violation").
+const ISSUE_LINKS: Record<string, { askQuery: string; guideHref: string; guideLabel: string }> = {
+  fence: { askQuery: "How high can my fence be?", guideHref: "/tmc-chapters/447", guideLabel: "Open Fence chapter" },
+  "pool-fence": { askQuery: "Does my pool gate need to self-close and self-latch?", guideHref: "/pool-fence-guide", guideLabel: "Open Pool Fence Guide" },
+  zoning: { askQuery: "What are the zoning setbacks for my house?", guideHref: "/zoning", guideLabel: "Open Zoning guide" },
+  "hvac-ac": { askQuery: "Where can I put my air conditioner or heat pump?", guideHref: "/zoning?topic=hvac-ac-location", guideLabel: "Open Zoning guide" },
+  "front-yard-parking": { askQuery: "Can I park in my front yard?", guideHref: "/landscaping", guideLabel: "Open Landscaping guide" },
+  "accessory-structures": { askQuery: "Do I need a permit for a shed or detached garage?", guideHref: "/zoning?topic=accessory-structures", guideLabel: "Open Zoning guide" },
+  "turfgrass-weeds": { askQuery: "What are Toronto's prohibited plants?", guideHref: "/prohibited-plants", guideLabel: "Open Prohibited Plants" },
+  graffiti: { askQuery: "What should I do about graffiti on private property?", guideHref: "/tmc-chapters/485", guideLabel: "Open Chapter 485" },
+  "property-standards": { askQuery: "What are property standards?", guideHref: "/tmc-chapters/629", guideLabel: "Open Chapter 629" },
+  heating: { askQuery: "What applies to no heat in a rental unit?", guideHref: "/tmc-chapters/497", guideLabel: "Open Chapter 497" },
+  "vital-services": { askQuery: "What applies to no heat in a rental unit?", guideHref: "/tmc-chapters/835", guideLabel: "Open Chapter 835" },
+  dust: { askQuery: "What bylaw applies to dust from construction?", guideHref: "/tmc-chapters/417", guideLabel: "Open Chapter 417" },
+  "waste-dumping": { askQuery: "What about littering or illegal dumping?", guideHref: "/tmc-chapters/548", guideLabel: "Open Chapter 548" },
+};
 
 export default function PhotoReviewPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -324,7 +343,7 @@ export default function PhotoReviewPage() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Plain-Language Explanation</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Simple Explanation</p>
                   <p className="text-sm text-gray-600 leading-relaxed">{selectedIssue.result.explanation}</p>
                 </div>
 
@@ -346,6 +365,27 @@ export default function PhotoReviewPage() {
                   <p className="text-xs font-semibold text-blue-700 mb-1">Recommended Next Step</p>
                   <p className="text-sm text-blue-800">{selectedIssue.result.nextStep}</p>
                 </div>
+
+                {/* Source-backed related content (Ask + related guide) */}
+                {ISSUE_LINKS[selectedIssue.value] && (
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3.5">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Learn more — source-based reference</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Link
+                        href={`/ask?q=${encodeURIComponent(ISSUE_LINKS[selectedIssue.value].askQuery)}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" /> Ask BylawGuide
+                      </Link>
+                      <Link
+                        href={ISSUE_LINKS[selectedIssue.value].guideHref}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <Compass className="w-3.5 h-3.5" aria-hidden="true" /> {ISSUE_LINKS[selectedIssue.value].guideLabel}
+                      </Link>
+                    </div>
+                  </div>
+                )}
 
                 <a
                   href={OFFICIAL_311_URL}

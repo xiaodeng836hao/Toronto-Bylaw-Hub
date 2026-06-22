@@ -3,7 +3,7 @@
 //
 //  Real photographs for each prohibited plant, organized under
 //  /public/images/prohibited-plants/<slug>/. Each plant has a `main` image and a
-//  `gallery` of growth-stage photos with plain-language visual descriptions.
+//  `gallery` of growth-stage photos with simple visual descriptions.
 //
 //  Sources: resident/educational weed-identification photo sets supplied for this
 //  project (Ontario weed-ID / invasive species reference material). To add or
@@ -22,7 +22,7 @@ export interface PlantPhoto {
   season?: string;
   /** Descriptive alt text for screen readers. */
   alt: string;
-  /** Plain-language description of what to notice visually at this stage. */
+  /** Simple description of what to notice visually at this stage. */
   description: string;
 }
 

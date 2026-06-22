@@ -38,13 +38,13 @@ export async function generateMetadata(
 const COMPLEXITY: Record<ComplexityLevel, { label: string; notice: string; box: string; chip: string }> = {
   simple: {
     label: "Focused chapter",
-    notice: "This chapter is relatively focused. The key practical requirements are summarized below in plain English.",
+    notice: "This chapter is relatively focused. The key practical requirements are summarized below in simple terms.",
     box: "border-emerald-200 bg-emerald-50",
     chip: "bg-emerald-100 text-emerald-700",
   },
   moderate: {
     label: "Moderate chapter",
-    notice: "This chapter covers a few related topics. The key practical requirements are summarized below in plain English; review the official bylaw for full details.",
+    notice: "This chapter covers a few related topics. The key practical requirements are summarized below in simple terms; review the official bylaw for full details.",
     box: "border-amber-200 bg-amber-50",
     chip: "bg-amber-100 text-amber-700",
   },
@@ -151,12 +151,12 @@ export default async function ChapterDetailPage(
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Main column */}
         <div className="lg:col-span-2 flex flex-col gap-5">
-          {/* Plain-English Overview */}
+          {/* Simple Overview */}
           {content && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-3">
                 <BookOpen className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                Plain-English Overview
+                Simple Overview
               </h2>
               <p className="text-sm text-gray-700 leading-relaxed">{content.plainLanguageOverview}</p>
               <p className="text-xs text-gray-500 mt-3"><span className="font-medium">Who it applies to:</span> {ch.whoItApplies}</p>
@@ -439,11 +439,20 @@ export default async function ChapterDetailPage(
                 <HelpCircle className="w-5 h-5 text-violet-500" aria-hidden="true" />
                 Common Resident Questions
               </h2>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-2.5">
                 {ch.commonResidentQuestions.map((q) => (
-                  <li key={q} className="text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-3">{q}</li>
+                  <li key={q}>
+                    <Link
+                      href={`/ask?q=${encodeURIComponent(q)}`}
+                      className="group flex items-center justify-between gap-3 text-sm text-gray-700 bg-gray-50 rounded-xl px-4 py-3 hover:bg-blue-50/60 hover:text-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {q}
+                      <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-blue-400 flex-shrink-0 group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
+                    </Link>
+                  </li>
                 ))}
               </ul>
+              <p className="mt-3 text-xs text-gray-400">Tap a question to get a source-based reference answer on the Ask page.</p>
             </section>
           )}
 

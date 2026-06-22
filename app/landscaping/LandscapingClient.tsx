@@ -9,6 +9,7 @@ import {
   ChevronLeft, ChevronRight, Maximize2, ZoomIn, ZoomOut, X,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
+import RelatedQuestions from "@/components/RelatedQuestions";
 import {
   definitions, cautionNote,
   yardSections, softVsHard, minorVariancePoints, fourTests, whatToPrepare, faqItems,
@@ -402,6 +403,17 @@ export default function LandscapingClient() {
           ))}
         </div>
       </section>
+
+      {/* ── Related questions (Ask) ────────────────────────────────────────── */}
+      <RelatedQuestions
+        className="mb-10"
+        questions={[
+          "Can I pave my entire front yard?",
+          "What counts as soft landscaping?",
+          "How much of my rear yard must be soft landscaping?",
+          "Can I park in my front yard?",
+        ]}
+      />
 
       {/* ── Bottom disclaimer ──────────────────────────────────────────────── */}
       <div className="p-5 rounded-xl border border-red-200 bg-red-50 flex gap-3">

@@ -119,7 +119,7 @@ export const zoningTopicDetails: Record<string, ZoningTopicDetail> = {
       { zone: "R & RD", chapter: "Chapter 10.5", section: "10.5.50.10", title: "Landscaping — front, side & rear yards", plainRule: "Clause 10.5.50.10 sets front yard landscaping (50–60% depending on frontage, 75% of it soft), corner-lot side yard landscaping, and rear yard soft landscaping (50% if frontage is over 6.0 m, 25% if 6.0 m or less). See the dedicated Landscaping Guide for the full breakdown by yard." },
     ],
     questions: [
-      { question: "Where can I find the full landscaping requirements?", answer: "The dedicated Landscaping Guide explains front yard, side yard, and rear yard soft landscaping in plain English, with what counts and does not count, common questions, and the minor variance option.", nextStep: "Open the Landscaping Guide for the full, source-based detail." },
+      { question: "Where can I find the full landscaping requirements?", answer: "The dedicated Landscaping Guide explains front yard, side yard, and rear yard soft landscaping in simple terms, with what counts and does not count, common questions, and the minor variance option.", nextStep: "Open the Landscaping Guide for the full, source-based detail." },
     ],
     examples: [],
   },

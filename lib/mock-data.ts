@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { prohibitedPlants } from "./prohibited-plants";
+import { synonymGroups } from "@/data/knowledge-index";
 
 /** Official City of Toronto 311 service request page. Used for every external 311 button. */
 export const OFFICIAL_311_URL =
@@ -500,120 +501,7 @@ export const bylawChapters: BylawChapter[] = [
     pdfUrl: "/pdfs/ch480.pdf",
     relatedChapters: ["395"],
   },
-  // ── Zoning By-law 569-2013 documents ──
-  {
-    slug: "zoning-569-2013-v1-ch1-800",
-    chapterNumber: "569-2013 · Vol 1",
-    codeRef: "569-2013 Volume 1 (Chapters 1–800)",
-    title: "Zoning By-law No. 569-2013 — Volume 1 (Chapters 1–800)",
-    category: "Zoning",
-    plainLanguageSummary:
-      "The foundational volume of Toronto's city-wide Zoning By-law, covering general provisions, definitions, and the core regulations that apply across zones.",
-    whatThisCovers: [
-      "General provisions and how the by-law is applied",
-      "Definitions used throughout the by-law",
-      "Core regulations for use, setbacks, height, and parking",
-    ],
-    commonResidentQuestions: [
-      "Where do I find the general zoning rules for my property?",
-      "What do common zoning terms mean?",
-      "Which zone is my property in?",
-    ],
-    commonExamples: [
-      "Looking up a definition used in the by-law",
-      "Checking the general regulation for a residential zone",
-    ],
-    relatedIssueTypes: ["Zoning Concern", "Setbacks", "Parking"],
-    tags: ["zoning", "569-2013", "general provisions", "definitions", "volume 1"],
-    whoItApplies: "All property owners, builders, and occupants in Toronto.",
-    officialUrl: ZONING_OFFICIAL_URL,
-    pdfUrl: null,
-    relatedChapters: ["zoning-569-2013-v1-ch900", "zoning-569-2013-v3", "zoning-569-2013-v4"],
-  },
-  {
-    slug: "zoning-569-2013-v1-ch900",
-    chapterNumber: "569-2013 · Vol 1",
-    codeRef: "569-2013 Volume 1 (Chapters 900.10+)",
-    title: "Zoning By-law No. 569-2013 — Volume 1 (Chapters 900.10–…)",
-    category: "Zoning",
-    plainLanguageSummary:
-      "The continuation of Volume 1 covering specific-area and overlay provisions in the 900-series chapters of the Zoning By-law.",
-    whatThisCovers: [
-      "Specific-area zoning provisions",
-      "Overlay and exception regulations",
-      "Detailed 900-series chapters",
-    ],
-    commonResidentQuestions: [
-      "Is there a special zoning rule for my specific area?",
-      "What is an overlay or exception in zoning?",
-    ],
-    commonExamples: [
-      "Checking a site-specific exception",
-      "Reviewing an overlay that affects a property",
-    ],
-    relatedIssueTypes: ["Zoning Concern"],
-    tags: ["zoning", "569-2013", "overlay", "exceptions", "volume 1"],
-    whoItApplies: "Property owners and builders in affected areas of Toronto.",
-    officialUrl: ZONING_OFFICIAL_URL,
-    pdfUrl: null,
-    relatedChapters: ["zoning-569-2013-v1-ch1-800", "zoning-569-2013-v3", "zoning-569-2013-v4"],
-  },
-  {
-    slug: "zoning-569-2013-v3",
-    chapterNumber: "569-2013 · Vol 3",
-    codeRef: "569-2013 Volume 3 (Chapters 900.1–90…)",
-    title: "Zoning By-law No. 569-2013 — Volume 3 (Chapters 900.1–90…)",
-    category: "Zoning",
-    plainLanguageSummary:
-      "Volume 3 of the Zoning By-law, containing additional specific-area regulations and exceptions within the 900-series chapters.",
-    whatThisCovers: [
-      "Further specific-area regulations",
-      "Site and area exceptions",
-      "Supplementary 900-series provisions",
-    ],
-    commonResidentQuestions: [
-      "Are there additional exceptions that apply to my property?",
-      "Where do I find supplementary zoning provisions?",
-    ],
-    commonExamples: [
-      "Reviewing a supplementary area regulation",
-      "Confirming a site-specific exception",
-    ],
-    relatedIssueTypes: ["Zoning Concern"],
-    tags: ["zoning", "569-2013", "exceptions", "volume 3"],
-    whoItApplies: "Property owners and builders in affected areas of Toronto.",
-    officialUrl: ZONING_OFFICIAL_URL,
-    pdfUrl: null,
-    relatedChapters: ["zoning-569-2013-v1-ch1-800", "zoning-569-2013-v1-ch900", "zoning-569-2013-v4"],
-  },
-  {
-    slug: "zoning-569-2013-v4",
-    chapterNumber: "569-2013 · Vol 4",
-    codeRef: "569-2013 Volume 4 (Chapters 970–995)",
-    title: "Zoning By-law No. 569-2013 — Volume 4 (Chapters 970–995)",
-    category: "Zoning",
-    plainLanguageSummary:
-      "Volume 4 of the Zoning By-law, covering the 970–995 chapters including additional regulations and schedules.",
-    whatThisCovers: [
-      "970–995 series regulations",
-      "Additional schedules and provisions",
-      "Closing chapters of the by-law",
-    ],
-    commonResidentQuestions: [
-      "Where are the later chapters and schedules of the by-law?",
-      "What is contained in the 970–995 chapters?",
-    ],
-    commonExamples: [
-      "Reviewing a schedule in the by-law",
-      "Checking a late-chapter regulation",
-    ],
-    relatedIssueTypes: ["Zoning Concern"],
-    tags: ["zoning", "569-2013", "schedules", "volume 4"],
-    whoItApplies: "Property owners and builders in Toronto.",
-    officialUrl: ZONING_OFFICIAL_URL,
-    pdfUrl: null,
-    relatedChapters: ["zoning-569-2013-v1-ch1-800", "zoning-569-2013-v1-ch900", "zoning-569-2013-v3"],
-  },
+  // ── Zoning documents ──
   {
     slug: "former-north-york-zoning",
     chapterNumber: "Former NY",
@@ -640,7 +528,7 @@ export const bylawChapters: BylawChapter[] = [
     whoItApplies: "Property owners in former North York areas of Toronto.",
     officialUrl: ZONING_OFFICIAL_URL,
     pdfUrl: null,
-    relatedChapters: ["zoning-569-2013-v1-ch1-800"],
+    relatedChapters: [],
   },
 ];
 
@@ -1059,7 +947,7 @@ export const photoReviewIssues: PhotoIssueType[] = [
     result: {
       possibleIssue: "Possible zoning or land-use concern",
       chapter: "Zoning By-law 569-2013",
-      chapterSlug: "zoning-569-2013-v1-ch1-800",
+      chapterSlug: null,
       section: "General zoning provisions",
       explanation:
         "The photo may show a possible zoning issue such as an unpermitted structure, parking, or use. Zoning is property-specific and may need a City review.",
@@ -1078,7 +966,7 @@ export const photoReviewIssues: PhotoIssueType[] = [
     result: {
       possibleIssue: "Air conditioner or HVAC placement concern",
       chapter: "Zoning By-law 569-2013",
-      chapterSlug: "zoning-569-2013-v1-ch1-800",
+      chapterSlug: null,
       section: "Mechanical equipment setbacks",
       explanation:
         "The photo may show mechanical equipment installed too close to a property line. Zoning often requires a minimum setback for AC and HVAC units.",
@@ -1097,7 +985,7 @@ export const photoReviewIssues: PhotoIssueType[] = [
     result: {
       possibleIssue: "Front yard or boulevard parking concern",
       chapter: "Zoning By-law 569-2013",
-      chapterSlug: "zoning-569-2013-v1-ch1-800",
+      chapterSlug: null,
       section: "Residential parking provisions",
       explanation:
         "The photo may show a vehicle parked on an unpaved front yard or boulevard without an approved driveway, which is generally not permitted.",
@@ -1116,7 +1004,7 @@ export const photoReviewIssues: PhotoIssueType[] = [
     result: {
       possibleIssue: "Accessory structure (shed, garage, pergola) concern",
       chapter: "Zoning By-law 569-2013",
-      chapterSlug: "zoning-569-2013-v1-ch1-800",
+      chapterSlug: null,
       section: "Accessory structure provisions",
       explanation:
         "The photo may show an accessory structure that could exceed height, setback, or coverage limits. Zoning rules apply even when a permit isn't required.",
@@ -1195,22 +1083,52 @@ export interface SearchEntry {
 
 const staticSearchEntries: SearchEntry[] = [
   {
+    id: "tool-ask",
+    title: "Ask BylawGuide",
+    type: "Guide",
+    summary:
+      "Ask simple questions about selected Toronto bylaw topics and get source-based reference answers with official source links.",
+    href: "/ask",
+    actionLabel: "Ask a question",
+    keywords: [
+      "ask", "question", "answer", "how do i", "can i", "help", "reference answer",
+      "fence height", "pool fence", "soft landscaping", "front yard parking", "graffiti",
+      "prohibited plants", "dust", "property standards", "heating", "zoning setbacks",
+    ],
+  },
+  {
     id: "guide-pool-fence",
     title: "Pool Fence & Enclosure Guide",
     type: "Guide",
     summary:
-      "Plain-language guide to swimming pool enclosure permits, fence height, gate self-closing and self-latching rules, and a printable inspection checklist.",
+      "Simple guide to swimming pool enclosure permits, fence height, gate self-closing and self-latching rules, and a printable inspection checklist.",
     chapter: "Chapter 447 — Fences",
     href: "/pool-fence-guide",
     actionLabel: "Read Guide",
     keywords: ["pool", "pool fence", "pool enclosure", "gate", "gate latch", "latch", "self-latching", "self-closing", "pool gate", "swimming pool", "temporary pool fencing", "permit", "inspection", "fence", "447"],
   },
   {
+    id: "guide-former-north-york",
+    title: "Former North York Zoning",
+    type: "Zoning",
+    summary:
+      "A plain-language index and overview of the historical Township of North York Zoning By-law 7625 — zone categories, key definitions, and section references.",
+    chapter: "Former North York · By-law 7625",
+    href: "/zoning/former-north-york",
+    actionLabel: "Open Former North York Zoning",
+    keywords: [
+      "former north york", "former north york zoning", "north york zoning", "north york zoning bylaw",
+      "by-law 7625", "bylaw 7625", "former municipal zoning", "township of north york",
+      "north york front yard", "north york setback", "north york side yard", "north york rear yard",
+      "north york parking", "north york landscaping", "zoning index", "former zoning",
+    ],
+  },
+  {
     id: "guide-landscaping",
     title: "Toronto Residential Landscaping Guide",
     type: "Guide",
     summary:
-      "Plain-language guide to soft landscaping requirements for front yards, side yards, and rear yards in Toronto residential zones (By-law 569-2013, Chapter 10.5), with a minor variance / Committee of Adjustment section.",
+      "Simple guide to soft landscaping requirements for front yards, side yards, and rear yards in Toronto residential zones (By-law 569-2013, Chapter 10.5), with a minor variance / Committee of Adjustment section.",
     chapter: "Zoning By-law 569-2013 · Chapter 10.5",
     href: "/landscaping",
     actionLabel: "Open Landscaping Guide",
@@ -1300,6 +1218,23 @@ export const searchEntries: SearchEntry[] = [
   ...staticSearchEntries,
 ];
 
+/**
+ * Expand query terms with resident-friendly synonyms from the shared knowledge
+ * index, so natural phrasing ("pool gate latch", "paved front yard") still ranks
+ * the right page. Synonyms are weighted lower than direct term matches.
+ */
+function expandedSynonymTerms(q: string): string[] {
+  const extra = new Set<string>();
+  for (const group of synonymGroups) {
+    if (group.some((phrase) => q.includes(phrase))) {
+      for (const phrase of group) {
+        for (const w of phrase.split(/\s+/)) if (w.length > 2) extra.add(w);
+      }
+    }
+  }
+  return [...extra];
+}
+
 /** Search the index. A "noise" query returns ONLY the Noise placeholder. */
 export function searchContent(query: string): SearchEntry[] {
   const q = query.trim().toLowerCase();
@@ -1311,6 +1246,7 @@ export function searchContent(query: string): SearchEntry[] {
   }
 
   const terms = q.split(/\s+/).filter(Boolean);
+  const synTerms = expandedSynonymTerms(q).filter((s) => !terms.includes(s));
   return searchEntries
     .map((entry) => {
       const haystack = `${entry.title} ${entry.summary} ${entry.keywords.join(" ")} ${entry.chapter ?? ""}`.toLowerCase();
@@ -1319,6 +1255,11 @@ export function searchContent(query: string): SearchEntry[] {
         if (entry.title.toLowerCase().includes(term)) score += 6;
         if (entry.keywords.some((k) => k.includes(term))) score += 4;
         if (haystack.includes(term)) score += 1;
+      }
+      // Synonym matches: softer weight so they help without overriding direct hits.
+      for (const term of synTerms) {
+        if (entry.keywords.some((k) => k.includes(term))) score += 2;
+        else if (haystack.includes(term)) score += 0.5;
       }
       return { entry, score };
     })

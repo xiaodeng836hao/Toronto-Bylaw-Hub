@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 //  Toronto Bylaw Hub — Rich chapter content (V3.4)
 //
-//  Structured, plain-language content for TMC chapter detail pages, keyed by the
+//  Structured, simple content for TMC chapter detail pages, keyed by the
 //  chapter slug used in lib/mock-data.ts (bylawChapters). Section references are
 //  taken from the official Toronto Municipal Code chapter text; where an exact
 //  subsection could not be confirmed, the reference is given at the chapter level
@@ -57,7 +57,7 @@ const REVIEWED = "2026-06-14";
 const T311: RelatedTopic = { label: "Report through Toronto 311", href: OFFICIAL_311_URL, description: "Submit a service request to the City.", external: true };
 const PHOTO_REVIEW: RelatedTopic = { label: "Photo Review Helper", href: "/photo-review", description: "Match a photo to a likely bylaw and build an evidence checklist." };
 const SOURCE_NOTE = (n: string) =>
-  `This page summarizes Toronto Municipal Code Chapter ${n} in plain language for general reference only — it is not legal advice. Always confirm the exact requirement, wording, and any exemptions in the official chapter or with the City of Toronto.`;
+  `This page summarizes Toronto Municipal Code Chapter ${n} in simple terms for general reference only — it is not legal advice. Always confirm the exact requirement, wording, and any exemptions in the official chapter or with the City of Toronto.`;
 
 export const chapterContent: Record<string, ChapterContent> = {
   // ── 417 — Dust (MODEL PAGE) ────────────────────────────────────────────────
@@ -513,7 +513,7 @@ export const chapterContent: Record<string, ChapterContent> = {
     ],
     practicalComplianceSteps: [
       { title: "Identify your zone", description: "Use the City's Zoning Map Viewer to find the zoning that applies to your specific property." },
-      { title: "Use the Zoning Guide", description: "Use this site's Zoning Guide for plain-language explanations of common residential zoning topics." },
+      { title: "Use the Zoning Guide", description: "Use this site's Zoning Guide for simple explanations of common residential zoning topics." },
       { title: "Confirm with the City", description: "For a property-specific determination, rely on the official zoning resources or City staff." },
     ],
     commonQuestions: [
@@ -521,7 +521,7 @@ export const chapterContent: Record<string, ChapterContent> = {
       { question: "Why are there two zoning by-laws for my area?", answer: "The city-wide By-law 569-2013 was harmonized across the former municipalities, but some legacy provisions can still apply in certain cases.", practicalNextStep: "Confirm which by-law governs your lot using official zoning resources." },
     ],
     relatedTopics: [
-      { label: "Zoning Guide", href: "/zoning", description: "Plain-language residential zoning topics + Chapter 10 search." },
+      { label: "Zoning Guide", href: "/zoning", description: "Simple residential zoning topics + Chapter 10 search." },
       { label: "Zoning Map Viewer", href: "https://map.toronto.ca/maps/map.jsp?app=ZBL_CONSULT", external: true },
       T311,
     ],

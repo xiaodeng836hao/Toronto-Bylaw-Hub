@@ -10,12 +10,12 @@ import {
 export const metadata: Metadata = {
   title: { absolute: "About BylawGuide | Toronto Bylaw Reference Tool" },
   description:
-    "Learn about BylawGuide, an independent plain-language reference tool for selected Toronto bylaw topics.",
+    "Learn about BylawGuide, an independent simple reference tool for selected Toronto bylaw topics.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About BylawGuide",
     description:
-      "An independent, plain-language reference tool for selected Toronto bylaw topics. Not an official City of Toronto website.",
+      "An independent, simple reference tool for selected Toronto bylaw topics. Not an official City of Toronto website.",
     url: `${siteConfig.siteUrl}/about`,
     type: "website",
   },
@@ -27,12 +27,12 @@ const aboutJsonLd = {
   name: "About BylawGuide",
   url: `${siteConfig.siteUrl}/about`,
   description:
-    "An independent, plain-language reference tool for selected Toronto bylaw topics.",
+    "An independent, simple reference tool for selected Toronto bylaw topics.",
   publisher: { "@type": "Organization", name: siteConfig.publisherName, url: siteConfig.siteUrl },
 };
 
 const COVERS = [
-  "Toronto Municipal Code chapters (plain-language summaries)",
+  "Toronto Municipal Code chapters (simple summaries)",
   "Pool fence enclosure guidance",
   "Zoning topics for residents",
   "Prohibited plants identifier",
@@ -62,7 +62,7 @@ export default function AboutPage() {
           <span className="kicker">About</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">About BylawGuide</h1>
-        <p className="text-gray-500 text-lg">A plain-language reference tool for Toronto bylaw information.</p>
+        <p className="text-gray-500 text-lg">A simple reference tool for Toronto bylaw information.</p>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -73,7 +73,7 @@ export default function AboutPage() {
           </h2>
           <p className="text-sm text-gray-600 leading-relaxed mb-4">
             BylawGuide helps Toronto residents search and understand selected bylaw topics. It provides
-            plain-language summaries, official source links, visual guides, and reference tools — so it&apos;s easier to
+            simple summaries, official source links, visual guides, and reference tools — so it&apos;s easier to
             find the right official City resource.
           </p>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">

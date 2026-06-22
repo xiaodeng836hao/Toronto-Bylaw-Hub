@@ -8,10 +8,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticRoutes = [
     "",
+    "/ask",
     "/tmc-chapters",
     "/photo-review",
     "/pool-fence-guide",
     "/zoning",
+    "/zoning/former-north-york",
     "/landscaping",
     "/prohibited-plants",
     "/search",

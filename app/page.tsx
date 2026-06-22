@@ -6,15 +6,26 @@ import { siteConfig } from "@/lib/site-config";
 import {
   Camera, Waves, MapPin, MessageSquare, Phone, Leaf,
   ArrowRight, BookOpen, FileText, AlertTriangle, CheckSquare,
-  ExternalLink, ChevronRight, Clock,
+  ExternalLink, ChevronRight, Clock, Sparkles,
 } from "lucide-react";
 
 const featureCards = [
   {
+    href: "/ask",
+    icon: Sparkles,
+    title: "Ask BylawGuide",
+    description: "Ask simple questions about selected Toronto bylaw topics and get source-based reference answers with official source links.",
+    color: "from-blue-50 to-indigo-100",
+    ring: "ring-blue-600/10",
+    iconColor: "text-blue-600",
+    badge: "Source-based",
+    cta: "Ask a question",
+  },
+  {
     href: "/tmc-chapters",
     icon: BookOpen,
     title: "Toronto Municipal Code Chapters",
-    description: "Browse and search Toronto Municipal Code chapters with plain-language summaries, common examples, official sources, and PDF downloads.",
+    description: "Browse and search Toronto Municipal Code chapters with simple summaries, common examples, official sources, and PDF downloads.",
     color: "from-blue-50 to-blue-100",
     ring: "ring-blue-600/10",
     iconColor: "text-blue-600",
@@ -44,7 +55,7 @@ const featureCards = [
     href: "/zoning",
     icon: MapPin,
     title: "Zoning Guide",
-    description: "Plain-language answers to common zoning questions: front yard parking, setbacks, accessory structures, landscaping, and more.",
+    description: "Simple answers to common zoning questions: front yard parking, setbacks, accessory structures, landscaping, and more.",
     color: "from-emerald-50 to-emerald-100",
     ring: "ring-emerald-600/10",
     iconColor: "text-emerald-600",
@@ -89,7 +100,7 @@ const quickStats = [
   { label: "Bylaw chapters", value: String(bylawChapters.length) },
   { label: "Zoning topics", value: String(zoningTopics.length) },
   { label: "Prohibited plants", value: String(prohibitedPlants.length) },
-  { label: "Reference tools", value: "6" },
+  { label: "Reference tools", value: "7" },
 ];
 
 const commonViolations = [
@@ -191,8 +202,8 @@ export default function Home() {
           </h1>
 
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
-            Search the Toronto Municipal Code, understand common bylaw rules in plain
-            language, and find the right official City resource — all in one
+            Search the Toronto Municipal Code, understand common bylaw rules in simple
+            terms, and find the right official City resource — all in one
             resident-friendly place.
           </p>
 
@@ -361,9 +372,9 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16" aria-label="About this site">
         <div className="rounded-2xl border border-gray-100 bg-white subtle-shadow p-6 md:p-8">
           <p className="kicker text-blue-600 mb-2.5">About this site</p>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Built for plain-language bylaw understanding</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Built for simple bylaw understanding</h2>
           <p className="text-gray-500 max-w-2xl">
-            {siteConfig.shortName} is an independent public reference tool designed to help residents understand selected Toronto bylaw topics. It summarizes official sources in plain English and links back to official City resources for verification.
+            {siteConfig.shortName} is an independent public reference tool designed to help residents understand selected Toronto bylaw topics. It summarizes official sources in simple terms and links back to official City resources for verification.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <Link

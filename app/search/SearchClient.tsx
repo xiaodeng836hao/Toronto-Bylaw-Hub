@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { searchContent, type SearchType, OFFICIAL_311_URL } from "@/lib/mock-data";
 import {
   Search, ArrowRight, ExternalLink, BookOpen, MapPin,
-  Waves, Camera, Clock, Info, Leaf, Sprout,
+  Waves, Camera, Clock, Info, Leaf, Sprout, Sparkles,
 } from "lucide-react";
 
 const TYPE_STYLES: Record<SearchType, { badge: string; icon: React.ElementType; iconColor: string }> = {
@@ -80,6 +80,23 @@ export default function SearchClient() {
             </button>
           ))}
         </div>
+      )}
+
+      {/* Ask CTA — offer a source-based answer for the typed question */}
+      {trimmed && !/\bnoise\b/.test(trimmed.toLowerCase()) && (
+        <Link
+          href={`/ask?q=${encodeURIComponent(trimmed)}`}
+          className="group mb-5 flex items-center gap-3 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 p-4 hover:border-blue-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center ring-1 ring-inset ring-blue-100 flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-blue-600" aria-hidden="true" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">Ask BylawGuide for a source-based answer</span>
+            <span className="block text-xs text-gray-500 truncate">&ldquo;{trimmed}&rdquo; — get a simple reference answer with official sources.</span>
+          </span>
+          <ArrowRight className="w-4 h-4 text-blue-400 group-hover:translate-x-0.5 transition-transform flex-shrink-0" aria-hidden="true" />
+        </Link>
       )}
 
       {/* Results */}

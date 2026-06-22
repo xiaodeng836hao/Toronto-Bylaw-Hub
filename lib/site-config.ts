@@ -19,7 +19,7 @@ export const siteConfig = {
   defaultTitle: "Toronto Bylaw Guide",
   titleTemplate: "%s · Toronto Bylaw Guide",
   defaultDescription:
-    "A plain-language Toronto bylaw reference tool for residents: search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence, fence height, zoning, and prohibited-plant rules. Links to official City of Toronto sources.",
+    "A simple Toronto bylaw reference tool for residents: search Toronto Municipal Code chapters, review photos for possible bylaw matches, and understand pool fence, fence height, zoning, and prohibited-plant rules. Links to official City of Toronto sources.",
   // ── Identity / attribution (independent, non-government project) ────────────
   /** Author/maintainer shown in metadata. */
   authorName: "BylawGuide",

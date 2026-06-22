@@ -111,7 +111,7 @@ export default function TMCChaptersPage() {
           Toronto Municipal Code Chapters
         </h1>
         <p className="text-gray-500 max-w-2xl">
-          Browse major Toronto Municipal Code chapters with plain-language summaries, common examples, and links to official sources. All descriptions are for general reference only.
+          Browse major Toronto Municipal Code chapters with simple summaries, common examples, and links to official sources. All descriptions are for general reference only.
         </p>
         <SourceBadge className="mt-4" />
       </div>
