@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# Generated RAG embedding index (build with: npm run ingest-rag)
+data/rag/index.json

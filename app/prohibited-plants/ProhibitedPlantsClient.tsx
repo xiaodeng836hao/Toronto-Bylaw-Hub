@@ -12,6 +12,7 @@ import { getPlantImages, IMAGE_USAGE_NOTICE } from "@/lib/plant-images";
 import { PlantImagePanel, PlantCoverImage, HAZARD_LEVEL_CLASSES, HAZARD_TAG_CLASSES } from "@/components/plant-visuals";
 import SourceBadge from "@/components/SourceBadge";
 import RelatedQuestions from "@/components/RelatedQuestions";
+import PlantIdentifier from "@/components/PlantIdentifier";
 import {
   Leaf, Search, Filter, Info, AlertTriangle, ShieldAlert, ChevronDown, ChevronUp,
   ArrowRight, Phone, ExternalLink, Calendar, MapPin, X, HelpCircle, Wand2, RotateCcw, FileText,
@@ -105,6 +106,11 @@ export default function ProhibitedPlantsClient() {
         <p className="text-sm text-amber-800">
           This page is for general educational and reference purposes only. Identification results are not a legal determination. Always confirm prohibited plant information using official City of Toronto resources, and seek professional advice for hazardous species or large infestations.
         </p>
+      </div>
+
+      {/* AI plant photo identification */}
+      <div className="mb-10">
+        <PlantIdentifier />
       </div>
 
       {/* Identifier wizard */}

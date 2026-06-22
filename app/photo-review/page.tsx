@@ -4,9 +4,13 @@ import Link from "next/link";
 import {
   Camera, Upload, X, ExternalLink, Loader2, FileImage,
   Info, CheckCircle2, ChevronDown, Clock, SearchCheck, Maximize2,
-  Sparkles, Compass,
+  Sparkles, Compass, ListChecks, Eye, ShieldAlert,
 } from "lucide-react";
 import { photoReviewIssues, getPhotoIssue, OFFICIAL_311_URL } from "@/lib/mock-data";
+import AIReferenceDisclaimer from "@/components/AIReferenceDisclaimer";
+import type { PhotoReviewAI } from "@/lib/ai/types";
+
+type AiStatus = "idle" | "loading" | "done" | "unavailable" | "noise" | "error";
 
 // Maps a photo-review issue to a related BylawGuide page and an Ask question, so
 // results lead to source-backed reference content (never a "confirmed violation").
@@ -34,6 +38,9 @@ export default function PhotoReviewPage() {
   const [isReviewing, setIsReviewing] = useState(false);
   const [reviewed, setReviewed] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [aiStatus, setAiStatus] = useState<AiStatus>("idle");
+  const [aiResult, setAiResult] = useState<PhotoReviewAI | null>(null);
+  const [aiError, setAiError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Close the preview lightbox with Escape and lock body scroll while open.
@@ -69,23 +76,56 @@ export default function PhotoReviewPage() {
     setReviewed(false);
   }
 
+  function resetAi() {
+    setAiStatus("idle");
+    setAiResult(null);
+    setAiError("");
+  }
+
   function handleClear() {
     setSelectedFile(null);
     setPreviewUrl(null);
     setReviewed(false);
     setIssueType("");
     setDescription("");
+    resetAi();
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   async function handleReview() {
-    if (!issueType) return;
+    if (!issueType && !selectedFile) return;
+    resetAi();
     setReviewed(false);
     setIsReviewing(true);
-    // Brief delay for a considered feel — this is a rules-based reference match, not AI analysis.
-    await new Promise((r) => setTimeout(r, 1200));
+
+    // Always produce the source-based / rules result when an issue type is set.
+    const rulesPromise = new Promise((r) => setTimeout(r, 600));
+
+    // Run real AI image analysis when an image is provided. Falls back quietly
+    // to the rules-based result if AI is unavailable.
+    if (selectedFile) {
+      setAiStatus("loading");
+      try {
+        const fd = new FormData();
+        fd.append("image", selectedFile);
+        if (issueType) fd.append("issueType", issueType);
+        if (description) fd.append("description", description);
+        const res = await fetch("/api/ai/photo-review", { method: "POST", body: fd });
+        const data = await res.json();
+        if (data.aiEnabled === false) setAiStatus("unavailable");
+        else if (data.noise) setAiStatus("noise");
+        else if (data.error) { setAiError(data.error); setAiStatus("error"); }
+        else if (data.result) { setAiResult(data.result as PhotoReviewAI); setAiStatus("done"); }
+        else setAiStatus("unavailable");
+      } catch {
+        setAiError("AI analysis is currently unavailable. You can still use the source-based guide and official links.");
+        setAiStatus("error");
+      }
+    }
+
+    await rulesPromise;
     setIsReviewing(false);
-    setReviewed(true);
+    if (issueType) setReviewed(true);
   }
 
   const steps = [
@@ -94,7 +134,8 @@ export default function PhotoReviewPage() {
     { n: 3, label: "Review match", done: reviewed || isNoise },
   ];
 
-  const canReview = !!issueType && !isReviewing;
+  const canReview = (!!issueType || !!selectedFile) && !isReviewing;
+  const analysisDone = reviewed || ["done", "unavailable", "error", "noise"].includes(aiStatus);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -229,8 +270,16 @@ export default function PhotoReviewPage() {
             <p className="text-xs text-gray-400 mt-1">{description.length}/500</p>
           </div>
 
-          {/* Review button */}
-          {!reviewed && !isNoise && (
+          {/* Privacy note */}
+          <div className="flex items-start gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+            <ShieldAlert className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-xs text-gray-500">
+              Do not upload images containing faces, licence plates, private personal information, or anything you are not comfortable sharing. Uploaded images are used only to generate a reference result and are not stored.
+            </p>
+          </div>
+
+          {/* Analyze button */}
+          {!analysisDone && !isNoise && (
             <button
               onClick={handleReview}
               disabled={!canReview}
@@ -239,18 +288,18 @@ export default function PhotoReviewPage() {
               {isReviewing ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-                  Matching reference bylaws…
+                  Analyzing photo…
                 </>
               ) : (
                 <>
-                  <SearchCheck className="w-4 h-4" aria-hidden="true" />
-                  Review Possible Bylaw Match
+                  <Sparkles className="w-4 h-4" aria-hidden="true" />
+                  Analyze Photo
                 </>
               )}
             </button>
           )}
 
-          {(reviewed || isNoise) && (
+          {(analysisDone || isNoise) && (
             <button
               onClick={handleClear}
               className="flex items-center justify-center gap-2 px-6 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors"
@@ -263,12 +312,12 @@ export default function PhotoReviewPage() {
         {/* Right: Results */}
         <div className="lg:col-span-3 flex flex-col gap-4">
           {/* Empty state */}
-          {!reviewed && !isReviewing && !isNoise && (
+          {!analysisDone && !isReviewing && !isNoise && (
             <div className="bg-gray-50 rounded-2xl border border-gray-100 p-8 flex flex-col items-center justify-center text-center h-full min-h-[320px]">
               <Camera className="w-12 h-12 text-gray-200 mb-4" aria-hidden="true" />
               <p className="font-medium text-gray-500 mb-1">Your reference result will appear here</p>
               <p className="text-sm text-gray-400 max-w-xs">
-                {issueType ? "Click “Review Possible Bylaw Match” to continue." : "Choose an issue type to get started."}
+                {selectedFile ? "Click “Analyze Photo” to get a possible-issue reference result." : "Upload a photo (and optionally choose an issue type), then click “Analyze Photo”."}
               </p>
             </div>
           )}
@@ -277,8 +326,104 @@ export default function PhotoReviewPage() {
           {isReviewing && (
             <div className="bg-violet-50 rounded-2xl border border-violet-100 p-8 flex flex-col items-center justify-center h-full min-h-[320px]">
               <Loader2 className="w-10 h-10 text-violet-400 animate-spin mb-4" aria-hidden="true" />
-              <p className="text-sm text-violet-700 font-semibold mb-1">Matching to reference bylaws…</p>
-              <p className="text-xs text-violet-400">Comparing your selected issue to Toronto bylaw chapters</p>
+              <p className="text-sm text-violet-700 font-semibold mb-1">Analyzing your photo…</p>
+              <p className="text-xs text-violet-400">{selectedFile ? "Looking for possible bylaw-related topics in the image" : "Comparing your selected issue to Toronto bylaw chapters"}</p>
+            </div>
+          )}
+
+          {/* AI image analysis result */}
+          {aiStatus === "done" && aiResult && (
+            <div className="bg-white rounded-2xl border border-violet-100 subtle-shadow overflow-hidden">
+              <div className="bg-gradient-to-br from-violet-50 to-indigo-50 px-5 py-4 flex items-center gap-3 border-b border-violet-100">
+                <Sparkles className="w-5 h-5 text-violet-600 flex-shrink-0" aria-hidden="true" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-violet-900">AI image analysis — possible bylaw topics</p>
+                  <p className="text-xs text-violet-700">Reference only · not an official determination</p>
+                </div>
+                <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ring-1 ring-inset ${aiResult.confidence === "high" ? "bg-emerald-50 text-emerald-700 ring-emerald-600/15" : aiResult.confidence === "medium" ? "bg-blue-50 text-blue-700 ring-blue-600/15" : "bg-amber-50 text-amber-700 ring-amber-600/15"}`}>
+                  {aiResult.confidence} confidence
+                </span>
+              </div>
+              <div className="p-5 flex flex-col gap-4">
+                {aiResult.possibleIssueCategories.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {aiResult.possibleIssueCategories.map((c) => (
+                      <span key={c} className="text-xs font-medium px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-600/15">{c}</span>
+                    ))}
+                  </div>
+                )}
+                {aiResult.visibleObservations.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><Eye className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> What appears visible</p>
+                    <ul className="flex flex-col gap-1.5">
+                      {aiResult.visibleObservations.map((o) => (
+                        <li key={o} className="flex items-start gap-2 text-sm text-gray-700"><span className="w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0 mt-1.5" aria-hidden="true" /> {o}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {aiResult.plainLanguageExplanation && (
+                  <p className="text-sm text-gray-600 leading-relaxed">{aiResult.plainLanguageExplanation}</p>
+                )}
+                {(aiResult.relatedChapters.length > 0 || aiResult.relatedSections.length > 0) && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Possible related</span>
+                    {aiResult.relatedChapters.map((c) => (
+                      <span key={c} className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">{c}</span>
+                    ))}
+                    {aiResult.relatedSections.map((s) => (
+                      <span key={s} className="font-mono text-[11px] bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded">{s}</span>
+                    ))}
+                  </div>
+                )}
+                {aiResult.evidenceChecklist.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 flex items-center gap-1.5"><ListChecks className="w-3.5 h-3.5 text-violet-500" aria-hidden="true" /> Evidence to gather</p>
+                    <ul className="flex flex-col gap-1.5">
+                      {aiResult.evidenceChecklist.map((e) => (
+                        <li key={e} className="flex items-start gap-2 text-sm text-gray-600"><span className="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0 mt-1.5" aria-hidden="true" /> {e}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {aiResult.recommendedNextSteps.length > 0 && (
+                  <div className="p-3.5 rounded-xl bg-violet-50/60 border border-violet-100">
+                    <p className="text-xs font-semibold text-violet-700 uppercase tracking-wide mb-1.5">Recommended next steps</p>
+                    <ul className="flex flex-col gap-1.5">
+                      {aiResult.recommendedNextSteps.map((s) => (
+                        <li key={s} className="flex items-start gap-2 text-sm text-violet-900"><span className="w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0 mt-1.5" aria-hidden="true" /> {s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {aiResult.sourceSearchTerms.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {aiResult.sourceSearchTerms.slice(0, 6).map((t) => (
+                      <Link key={t} href={`/ask?q=${encodeURIComponent(t)}`} className="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">Ask: {t}</Link>
+                    ))}
+                  </div>
+                )}
+                <AIReferenceDisclaimer variant="image" />
+              </div>
+            </div>
+          )}
+
+          {/* AI unavailable / error notices (source-based result still shown) */}
+          {(aiStatus === "unavailable" || aiStatus === "error") && (
+            <div className="flex items-start gap-2.5 p-4 rounded-xl border border-blue-100 bg-blue-50/60">
+              <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-sm text-blue-900">{aiError || "AI analysis is currently unavailable. You can still use the source-based guide and official links below."}</p>
+            </div>
+          )}
+
+          {/* AI detected a noise topic */}
+          {aiStatus === "noise" && (
+            <div className="bg-white rounded-2xl border border-amber-100 subtle-shadow p-5 flex items-start gap-3">
+              <Clock className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div>
+                <p className="font-semibold text-sm text-amber-900 mb-0.5">Noise Complaints — Coming Soon</p>
+                <p className="text-sm text-gray-600">Noise Complaints content is currently under development.</p>
+              </div>
             </div>
           )}
 

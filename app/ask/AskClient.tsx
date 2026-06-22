@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -9,7 +9,15 @@ import {
 } from "lucide-react";
 import { answerQuestion, type AskResult, type AskConfidence } from "@/lib/ask";
 import type { KnowledgeItem } from "@/data/knowledge-index";
+import type { RagChunkRef, AskAnswerAI } from "@/lib/ai/types";
 import AnswerDisclaimer from "@/components/AnswerDisclaimer";
+import AIReferenceDisclaimer from "@/components/AIReferenceDisclaimer";
+
+interface RagResponse {
+  mode: "ai-rag" | "local-fallback" | "noise" | "none";
+  answer?: AskAnswerAI | null;
+  sources?: RagChunkRef[];
+}
 
 const PLACEHOLDER = "e.g. Can I pave my entire front yard?";
 
@@ -61,6 +69,33 @@ export default function AskClient() {
     () => (urlQuery.trim() ? answerQuestion(urlQuery) : null),
     [urlQuery]
   );
+
+  // On submit/navigation, fetch a RAG-grounded answer. When AI is configured the
+  // server returns an "ai-rag" answer + source snippets; otherwise it returns a
+  // local-fallback and we keep the instant local answer above. Only runs on a
+  // settled query (not on every keystroke).
+  const [rag, setRag] = useState<RagResponse | null>(null);
+  // Clear the previous RAG answer when the query changes (render-time reset, not
+  // a setState-in-effect) so a stale answer never shows under a new question.
+  const [ragQuery, setRagQuery] = useState(urlQuery);
+  if (urlQuery !== ragQuery) {
+    setRagQuery(urlQuery);
+    setRag(null);
+  }
+  useEffect(() => {
+    const q = urlQuery.trim();
+    if (!q) return;
+    let cancelled = false;
+    fetch("/api/ai/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: q }),
+    })
+      .then((r) => r.json())
+      .then((data: RagResponse) => { if (!cancelled) setRag(data); })
+      .catch(() => { /* keep local answer */ });
+    return () => { cancelled = true; };
+  }, [urlQuery]);
 
   const runQuery = useCallback(
     (q: string) => {
@@ -126,7 +161,12 @@ export default function AskClient() {
         ))}
       </div>
 
-      {/* Results */}
+      {/* AI source-grounded (RAG) answer — only when AI is configured server-side */}
+      {rag?.mode === "ai-rag" && rag.answer && (
+        <RagAnswerCard answer={rag.answer} sources={rag.sources ?? []} />
+      )}
+
+      {/* Results (local source-based answer) */}
       {!result && <EmptyIntro onPick={runQuery} />}
       {result && <AnswerView result={result} onPick={runQuery} />}
 
@@ -431,6 +471,70 @@ function AskFeedback({ query, answerId }: { query: string; answerId: string }) {
           </button>
         </form>
       )}
+    </div>
+  );
+}
+
+// ── AI source-grounded (RAG) answer card ────────────────────────────────────
+const RAG_CONF: Record<AskConfidence, string> = {
+  high: "bg-emerald-50 text-emerald-700 ring-emerald-600/15",
+  medium: "bg-blue-50 text-blue-700 ring-blue-600/15",
+  low: "bg-amber-50 text-amber-700 ring-amber-600/15",
+};
+
+function RagAnswerCard({ answer, sources }: { answer: AskAnswerAI; sources: RagChunkRef[] }) {
+  return (
+    <div className="mb-5 flex flex-col gap-4">
+      <article className="bg-white rounded-2xl border border-indigo-100 subtle-shadow overflow-hidden">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 px-5 py-3 flex items-center gap-2 border-b border-indigo-100">
+          <Sparkles className="w-4 h-4 text-indigo-600" aria-hidden="true" />
+          <span className="text-sm font-semibold text-indigo-900">AI source-grounded answer</span>
+          <span className={`ml-auto text-[11px] font-medium px-2 py-0.5 rounded-full ring-1 ring-inset ${RAG_CONF[answer.confidence]}`}>
+            {answer.confidence} confidence
+          </span>
+        </div>
+        <div className="p-5 flex flex-col gap-3">
+          {answer.shortAnswer && <p className="text-sm font-medium text-gray-900 leading-relaxed">{answer.shortAnswer}</p>}
+          {answer.explanation && <p className="text-sm text-gray-600 leading-relaxed">{answer.explanation}</p>}
+          {answer.nextSteps.length > 0 && (
+            <div>
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                <ListChecks className="w-3.5 h-3.5 text-indigo-500" aria-hidden="true" /> Next steps
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {answer.nextSteps.map((s) => (
+                  <li key={s} className="flex items-start gap-2 text-sm text-gray-700"><span className="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0 mt-1.5" aria-hidden="true" /> {s}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {sources.length > 0 && (
+            <div>
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-indigo-500" aria-hidden="true" /> Sources used
+              </p>
+              <div className="flex flex-col gap-2">
+                {sources.map((s) => (
+                  <div key={s.id} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="text-sm font-medium text-gray-900">{s.sourceTitle}</span>
+                      {s.section && <span className="font-mono text-[11px] bg-white border border-gray-200 text-gray-700 px-1.5 py-0.5 rounded">{s.section}</span>}
+                      <span className="text-[11px] text-gray-400">{s.sourceType}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{s.text}</p>
+                    <div className="flex flex-wrap items-center gap-3 mt-1.5">
+                      <Link href={s.internalUrl} className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700">View page <ArrowRight className="w-3 h-3" aria-hidden="true" /></Link>
+                      {s.officialUrl && <a href={s.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-gray-800">View official source <ExternalLink className="w-3 h-3" aria-hidden="true" /></a>}
+                      {s.lastReviewed && <span className="text-[11px] text-gray-400">Reviewed {s.lastReviewed}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </article>
+      <AIReferenceDisclaimer variant="general" />
     </div>
   );
 }

@@ -47,3 +47,53 @@ model ChecklistItem {
   category    String
   isRequired  Boolean @default(true)
 }
+
+// ── V6 RAG + AI models (optional; used only when DATABASE_URL is configured) ──
+// Dev/default uses a local JSON vector store (data/rag/index.json). For
+// production pgvector, switch `RagChunk.embedding` to a vector column — see
+// RAG_SOURCE_MAINTENANCE.md.
+
+model RagSource {
+  id          String   @id @default(cuid())
+  title       String
+  type        String
+  officialUrl String?
+  internalUrl String?
+  description String?
+  lastReviewed String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  chunks      RagChunk[]
+}
+
+model RagChunk {
+  id           String    @id @default(cuid())
+  sourceId     String?
+  source       RagSource? @relation(fields: [sourceId], references: [id])
+  chapter      String?
+  section      String?
+  sectionTitle String?
+  text         String
+  // Embeddings stored as JSON for the dev fallback; use pgvector in production.
+  embedding    Json?
+  metadataJson Json?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model AskQueryLog {
+  id                 String   @id @default(cuid())
+  query              String
+  answerSummary      String?
+  retrievedSourceIds String[]
+  confidence         String?
+  createdAt          DateTime @default(now())
+}
+
+model AIImageAnalysis {
+  id              String   @id @default(cuid())
+  type            String   // "photo-review" | "plant-identification"
+  selectedCategory String?
+  resultJson      Json?
+  createdAt       DateTime @default(now())
+}
