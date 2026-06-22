@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { photoReviewIssues, getPhotoIssue, OFFICIAL_311_URL } from "@/lib/mock-data";
 import AIReferenceDisclaimer from "@/components/AIReferenceDisclaimer";
+import { downscaleImage } from "@/lib/image-resize";
 import type { PhotoReviewAI } from "@/lib/ai/types";
 
 type AiStatus = "idle" | "loading" | "done" | "unavailable" | "noise" | "error";
@@ -106,17 +107,32 @@ export default function PhotoReviewPage() {
     if (selectedFile) {
       setAiStatus("loading");
       try {
-        const fd = new FormData();
-        fd.append("image", selectedFile);
-        if (issueType) fd.append("issueType", issueType);
-        if (description) fd.append("description", description);
-        const res = await fetch("/api/ai/photo-review", { method: "POST", body: fd });
-        const data = await res.json();
-        if (data.aiEnabled === false) setAiStatus("unavailable");
-        else if (data.noise) setAiStatus("noise");
-        else if (data.error) { setAiError(data.error); setAiStatus("error"); }
-        else if (data.result) { setAiResult(data.result as PhotoReviewAI); setAiStatus("done"); }
-        else setAiStatus("unavailable");
+        // Check availability first so we never upload a large photo just to learn
+        // AI is off (prevents the mobile "stuck spinner").
+        const status = await fetch("/api/ai/status").then((r) => r.json()).catch(() => null);
+        if (!status?.photoReview) {
+          setAiStatus("unavailable");
+        } else {
+          const img = await downscaleImage(selectedFile);
+          const fd = new FormData();
+          fd.append("image", img);
+          if (issueType) fd.append("issueType", issueType);
+          if (description) fd.append("description", description);
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 60_000);
+          let data: { aiEnabled?: boolean; noise?: boolean; error?: string; result?: PhotoReviewAI };
+          try {
+            const res = await fetch("/api/ai/photo-review", { method: "POST", body: fd, signal: controller.signal });
+            data = await res.json();
+          } finally {
+            clearTimeout(timer);
+          }
+          if (data.aiEnabled === false) setAiStatus("unavailable");
+          else if (data.noise) setAiStatus("noise");
+          else if (data.error) { setAiError(data.error); setAiStatus("error"); }
+          else if (data.result) { setAiResult(data.result); setAiStatus("done"); }
+          else setAiStatus("unavailable");
+        }
       } catch {
         setAiError("AI analysis is currently unavailable. You can still use the source-based guide and official links.");
         setAiStatus("error");

@@ -5,6 +5,7 @@ import {
   Upload, X, Loader2, Sparkles, Leaf, AlertTriangle, Info, ArrowRight, ShieldAlert, ExternalLink, ShieldCheck,
 } from "lucide-react";
 import AIReferenceDisclaimer from "@/components/AIReferenceDisclaimer";
+import { downscaleImage } from "@/lib/image-resize";
 import type { PlantIdentificationResult, MatchConfidence } from "@/lib/plant-id/types";
 
 type Status = "idle" | "loading" | "done" | "unavailable" | "error";
@@ -55,15 +56,29 @@ export default function PlantIdentifier() {
     setResult(null);
     setError("");
     try {
+      // Check availability first to avoid uploading a large photo when the key is off.
+      const status = await fetch("/api/ai/status").then((r) => r.json()).catch(() => null);
+      if (!status?.plantId) {
+        setStatus("unavailable");
+        return;
+      }
+      const img = await downscaleImage(file);
       const fd = new FormData();
-      fd.append("image", file);
+      fd.append("image", img);
       if (season !== "Not sure") fd.append("season", season);
       if (location !== "Not sure") fd.append("location", location);
-      const res = await fetch("/api/plant-id/identify", { method: "POST", body: fd });
-      const data = await res.json();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 60_000);
+      let data: { configured?: boolean; error?: string; result?: PlantIdentificationResult };
+      try {
+        const res = await fetch("/api/plant-id/identify", { method: "POST", body: fd, signal: controller.signal });
+        data = await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
       if (data.configured === false) setStatus("unavailable");
       else if (data.error) { setError(data.error); setStatus("error"); }
-      else if (data.result) { setResult(data.result as PlantIdentificationResult); setStatus("done"); }
+      else if (data.result) { setResult(data.result); setStatus("done"); }
       else setStatus("unavailable");
     } catch {
       setError("Plant identification is temporarily unavailable. You can still browse the plant profiles and official links below.");
