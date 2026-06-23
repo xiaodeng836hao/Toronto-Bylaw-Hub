@@ -16,7 +16,7 @@ Analyse carefully and CONSERVATIVELY — accuracy matters more than coverage:
 Anti-overmatch rules:
 - Only tag "pool fence"/"pool enclosure" when a swimming pool, hot tub, or pool area is actually visible — never for an ordinary fence.
 - Only tag "prohibited plants" when identifiable plant features are visible (leaves/stems/flowers/berries/seed heads); otherwise use "turfgrass"/"overgrown vegetation".
-- Only tag "front yard parking" when a vehicle or a parking surface in a front yard is visible; a paved yard alone is "landscaping"/"zoning".
+- Only tag "parking" (or "front yard parking") when a vehicle or a clear parking surface is visible. A paved area with NO vehicle is "landscaping"/"zoning", not parking. Use the visible location for the subtype: vehicle on a front lawn → front yard parking; vehicle beside the house → side yard parking; vehicle behind the house → rear yard parking; a commercial/work truck or large multi-wheel vehicle → commercial parking; a visible RV, trailer, camper, or boat → recreational vehicle parking. Be cautious — do not assume an RV/trailer or a commercial vehicle unless it is clearly visible, and do not turn an ordinary driveway photo into a violation.
 - Only tag "property standards" for a visible building deficiency or yard condition — not merely because something looks old.
 - Only tag "heating"/"vital services" when heating equipment is visible or the user describes a heat/utility loss.
 
@@ -27,7 +27,7 @@ Wording + safety:
 - If the photo/description is about NOISE, set "noise": true and give no detailed guidance (Noise is under development).
 
 Field guidance:
-- "possibleIssueLabels": choose ONLY from this controlled vocabulary (exact lowercase strings), every one that visibly applies: "graffiti", "waste", "littering", "dumping", "property standards", "fence", "pool fence", "pool enclosure", "turfgrass", "prohibited plants", "overgrown vegetation", "erosion", "bare soil", "drainage", "grading", "ponding", "dust", "vacant", "hazardous property", "heating", "vital services", "refrigerator", "appliance", "clothing drop box", "garage sale", "zoning", "front yard parking", "hvac", "air conditioner", "accessory structure", "shed", "landscaping", "noise". Use [] if nothing is clearly supported.
+- "possibleIssueLabels": choose ONLY from this controlled vocabulary (exact lowercase strings), every one that visibly applies: "graffiti", "waste", "littering", "dumping", "property standards", "fence", "pool fence", "pool enclosure", "turfgrass", "prohibited plants", "overgrown vegetation", "erosion", "bare soil", "drainage", "grading", "ponding", "dust", "vacant", "hazardous property", "heating", "vital services", "refrigerator", "appliance", "clothing drop box", "garage sale", "zoning", "parking", "front yard parking", "side yard parking", "rear yard parking", "commercial parking", "commercial vehicle", "recreational vehicle parking", "rv", "trailer", "boat", "hvac", "air conditioner", "accessory structure", "shed", "landscaping", "noise". Use [] if nothing is clearly supported.
 - Soil/ground: exposed/bare soil, washed-out/eroded ground, rutted muddy slope, pooling/standing water, or poor grading → include "erosion" (+ "bare soil"/"drainage"/"grading"/"ponding"). These are yard landscaping/drainage/grading conditions; report both these AND "turfgrass" when both grass and bare/eroded soil are visible.
 - "detectedObjects": concrete objects/conditions visible (short noun phrases).
 - "possibleIssueCategories": short human-readable category names for display.

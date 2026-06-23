@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/photo-review",
     "/pool-fence-guide",
     "/zoning",
+    "/zoning/parking",
     "/zoning/former-north-york",
     "/landscaping",
     "/prohibited-plants",

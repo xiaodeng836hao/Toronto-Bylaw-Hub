@@ -12,7 +12,7 @@ import { answerQuestion, type AskResult } from "@/lib/ask";
 const CHIPS: { label: string; q: string }[] = [
   { label: "Fence height", q: "How high can a fence be in Toronto?" },
   { label: "Pool fence permit", q: "Do I need a pool fence enclosure permit?" },
-  { label: "Front yard parking", q: "Can I park in my front yard?" },
+  { label: "Parking", q: "Can I park in my front yard?" },
   { label: "Prohibited plants", q: "What are Toronto's prohibited plants?" },
 ];
 

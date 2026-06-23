@@ -572,21 +572,23 @@ export const zoningTopics: ZoningTopic[] = [
   },
   {
     id: "front-yard-parking",
-    topic: "Front Yard Parking",
+    topic: "Parking",
     plainExplanation:
-      "In most Toronto residential zones, you generally need an approved driveway or parking pad to park in the front yard. Parking on grass or an unpaved front yard is usually not permitted.",
-    commonQuestion: "Can I park my car on my front lawn or boulevard?",
-    bylawConsideration: "Zoning By-law 569-2013 — parking in residential zones; front yard landscaping requirements.",
+      "Parking rules may depend on where the vehicle is parked (front, side, or rear yard), the zoning category, the yard area involved, the vehicle type, and whether the use is residential, commercial, or recreational. Generally a parking space may not be in a front yard or a street-facing side yard except on a permitted driveway, a limited number of outdoor spaces are allowed in the rear yard, and commercial vehicles are restricted. Open the Parking Guide for the full breakdown.",
+    commonQuestion: "Where am I allowed to park — front yard, side yard, rear yard, or for a trailer/RV?",
+    bylawConsideration: "Zoning By-law 569-2013 — parking location (10.5.80.10), access (10.10.80.40), and front yard landscaping (10.5.50.10).",
     whatToPrepare: [
-      "Your property address and zoning designation",
-      "Whether you have an existing legal driveway or parking pad",
-      "Photos of the current front yard surface",
+      "Your property address and zoning category",
+      "Where the vehicle is parked (front, side, rear yard, driveway)",
+      "Whether you have an existing legal driveway or parking space",
+      "Vehicle type (passenger, commercial, trailer, boat, or RV)",
+      "Photos of the current parking surface and location",
     ],
     whenOfficial:
-      "Use official City resources before paving a front yard or creating a new parking pad — a permit and zoning review are usually required.",
+      "Use official City resources before paving a yard, creating a new parking pad, or widening a driveway — a permit and zoning review are usually required.",
     officialUrl: ZONING_OFFICIAL_URL,
     show311: true,
-    keywords: ["front yard parking", "parking pad", "driveway", "boulevard parking", "lawn parking"],
+    keywords: ["parking", "front yard parking", "side yard parking", "rear yard parking", "backyard parking", "parking pad", "driveway", "widen driveway", "boulevard parking", "lawn parking", "commercial parking", "commercial vehicle", "recreational vehicle parking", "rv parking", "trailer parking", "boat parking", "vehicle storage"],
   },
   {
     id: "hvac-ac-location",
@@ -981,21 +983,23 @@ export const photoReviewIssues: PhotoIssueType[] = [
   },
   {
     value: "front-yard-parking",
-    label: "Front Yard Parking",
+    label: "Parking",
     result: {
-      possibleIssue: "Front yard or boulevard parking concern",
+      possibleIssue: "Parking concern (front, side, rear, commercial, or recreational vehicle)",
       chapter: "Zoning By-law 569-2013",
       chapterSlug: null,
-      section: "Residential parking provisions",
+      section: "Residential parking provisions (10.5.80.10)",
       explanation:
-        "The photo may show a vehicle parked on an unpaved front yard or boulevard without an approved driveway, which is generally not permitted.",
+        "The photo may show a parking concern — for example a vehicle on an unpaved front yard or street-facing side yard, more outdoor rear-yard spaces than allowed, or an outdoor commercial/recreational vehicle. Parking permission depends on the yard location, zoning category, and vehicle type.",
       evidenceChecklist: [
         "Photo of the parked vehicle and surface",
         "Street address",
+        "Where the vehicle is parked (front, side, rear yard, driveway)",
+        "Vehicle type (passenger, commercial, trailer, boat, RV)",
         "Whether parking appears regular or occasional",
       ],
       nextStep:
-        "See the Zoning Guide on front yard parking, or submit a 311 request under Zoning.",
+        "See the Parking Guide for front, side, rear, commercial, and recreational vehicle parking, or submit a 311 request under Zoning.",
     },
   },
   {
@@ -1139,6 +1143,23 @@ const staticSearchEntries: SearchEntry[] = [
       "garden bed", "residential zone landscaping", "residential detached landscaping",
       "minor variance", "committee of adjustment", "zoning landscaping",
       "permeable", "grass", "patio", "pavers", "soft landscaping requirement",
+    ],
+  },
+  {
+    id: "guide-parking",
+    title: "Toronto Parking Zoning Guide",
+    type: "Guide",
+    summary:
+      "Simple guide to parking-related zoning topics — front yard, side yard, rear yard, commercial, and recreational vehicle parking — under By-law 569-2013 (10.5.80.10, 10.10.80.40), with what to prepare and a minor variance section.",
+    chapter: "Zoning By-law 569-2013 · Chapter 10",
+    href: "/zoning/parking",
+    actionLabel: "Open Parking Guide",
+    keywords: [
+      "parking", "front yard parking", "side yard parking", "rear yard parking", "backyard parking",
+      "parking pad", "driveway", "widen driveway", "interlock parking", "paved front yard",
+      "commercial parking", "commercial vehicle parking", "commercial vehicle",
+      "recreational vehicle parking", "rv parking", "trailer parking", "camper parking", "boat parking",
+      "vehicle storage", "parking in yard", "parking on lawn", "boulevard parking", "zoning parking",
     ],
   },
   {

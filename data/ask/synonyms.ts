@@ -40,7 +40,10 @@ export const askSynonyms: SynonymRule[] = [
 
   // ── Zoning / Landscaping (By-law 569-2013) ──
   { triggers: ["paved yard", "interlock front yard", "concrete front yard", "no grass", "artificial turf"], expand: ["soft landscaping", "hard surface", "landscaping", "zoning"] },
-  { triggers: ["parking pad", "front yard parking", "park on lawn", "driveway widened", "widen driveway"], expand: ["front yard parking", "landscaping", "zoning"] },
+  { triggers: ["parking pad", "front yard parking", "park on lawn", "park on grass", "driveway widened", "widen driveway", "paved front yard parking"], expand: ["front yard parking", "parking", "landscaping", "zoning"] },
+  { triggers: ["side yard parking", "park beside house", "rear yard parking", "backyard parking", "park in backyard", "parking behind house"], expand: ["parking", "zoning"] },
+  { triggers: ["commercial vehicle", "commercial parking", "work truck", "dump truck", "vehicle storage"], expand: ["commercial parking", "commercial vehicle", "parking", "zoning"] },
+  { triggers: ["rv", "recreational vehicle", "trailer", "boat parking", "camper", "motorhome", "park an rv", "store a trailer"], expand: ["recreational vehicle parking", "parking", "zoning"] },
   { triggers: ["ac unit", "air conditioner", "heat pump", "hvac"], expand: ["air conditioner", "hvac", "zoning"] },
   { triggers: ["shed", "detached garage", "accessory structure", "pergola"], expand: ["accessory structure", "zoning"] },
   { triggers: ["setback", "how close to property line", "lot line"], expand: ["setback", "zoning"] },

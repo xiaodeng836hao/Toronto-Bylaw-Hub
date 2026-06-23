@@ -36,7 +36,7 @@ const CHIPS: { label: string; q: string }[] = [
   { label: "Fence height", q: "How high can my fence be?" },
   { label: "Pool fence permit", q: "Do I need a pool fence enclosure permit?" },
   { label: "Soft landscaping", q: "What counts as soft landscaping?" },
-  { label: "Front yard parking", q: "Can I park in my front yard?" },
+  { label: "Parking", q: "Can I park in my front yard?" },
   { label: "Graffiti removal", q: "What should I do about graffiti on private property?" },
   { label: "Prohibited plants", q: "What are Toronto's prohibited plants?" },
   { label: "Dust control", q: "What bylaw applies to dust from construction?" },

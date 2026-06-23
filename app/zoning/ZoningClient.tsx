@@ -12,7 +12,7 @@ import {
 import {
   Search, MapPin, ExternalLink, Building2, Info, FileText, BookOpen,
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Phone, Scale, Tag, Map, Landmark,
-  ArrowRight, AlertTriangle, Leaf, BadgeCheck,
+  ArrowRight, AlertTriangle, Leaf, BadgeCheck, Car,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
 import RelatedQuestions from "@/components/RelatedQuestions";
@@ -435,6 +435,27 @@ function ZoningTopicCard({
                 className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
               >
                 <Leaf className="w-3.5 h-3.5" aria-hidden="true" /> Open Landscaping Guide
+              </Link>
+            </div>
+          )}
+
+          {topic.id === "front-yard-parking" && (
+            <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex items-start gap-3 flex-1">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Car className="w-5 h-5 text-blue-600" aria-hidden="true" />
+                </div>
+                <p className="text-sm text-blue-900 leading-relaxed">
+                  Parking rules may depend on where the vehicle is parked, the zoning category, the yard area involved,
+                  vehicle type, and whether the use is residential, commercial, or recreational. Open the Parking Guide
+                  for front yard, side yard, rear yard, commercial, and recreational vehicle parking topics.
+                </p>
+              </div>
+              <Link
+                href="/zoning/parking"
+                className="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              >
+                <Car className="w-3.5 h-3.5" aria-hidden="true" /> Open Parking Guide
               </Link>
             </div>
           )}

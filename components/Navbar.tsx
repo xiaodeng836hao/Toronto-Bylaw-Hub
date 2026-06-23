@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
     children: [
       { href: "/zoning", label: "Zoning Overview" },
       { href: "/landscaping", label: "Landscaping" },
+      { href: "/zoning/parking", label: "Parking" },
       { href: "/zoning/former-north-york", label: "Former North York Zoning" },
     ],
   },

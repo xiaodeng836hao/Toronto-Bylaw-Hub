@@ -13,6 +13,7 @@ function pageTopicHint(path: string): string {
   if (!path) return "";
   if (path.startsWith("/landscaping")) return "landscaping soft landscaping";
   if (path.startsWith("/pool-fence")) return "pool fence";
+  if (path.startsWith("/zoning/parking")) return "parking front yard side yard rear yard commercial recreational vehicle";
   if (path.startsWith("/zoning")) return "zoning";
   if (path.startsWith("/prohibited-plants")) return "prohibited plants weeds";
   if (/\/tmc-chapters\/447\b/.test(path)) return "fence";

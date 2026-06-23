@@ -39,7 +39,7 @@ export const ISSUE_TAXONOMY: IssueCategory[] = [
   { label: "Garage Sale", curatedId: "garage-sale" },
   { label: "Zoning", curatedId: "zoning" },
   { label: "Landscaping / Soft Landscaping", curatedId: "zoning" },
-  { label: "Front Yard Parking", curatedId: "zoning" },
+  { label: "Parking", curatedId: "zoning" },
   { label: "HVAC / Air Conditioner", curatedId: "zoning" },
   { label: "Accessory Structure / Shed / Detached Garage", curatedId: "zoning" },
   { label: "Noise - Coming Soon", curatedId: null, comingSoon: true },

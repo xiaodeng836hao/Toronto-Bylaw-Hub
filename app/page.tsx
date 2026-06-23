@@ -55,7 +55,7 @@ const featureCards = [
     href: "/zoning",
     icon: MapPin,
     title: "Zoning Guide",
-    description: "Simple answers to common zoning questions: front yard parking, setbacks, accessory structures, landscaping, and more.",
+    description: "Simple answers to common zoning questions: parking, setbacks, accessory structures, landscaping, and more.",
     color: "from-emerald-50 to-emerald-100",
     ring: "ring-emerald-600/10",
     iconColor: "text-emerald-600",
