@@ -2,15 +2,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, Search, ChevronDown } from "lucide-react";
+import { Menu, X, Search, ChevronDown, MessageSquare, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 type NavChild = { href: string; label: string };
 type NavItem = { href: string; label: string } | { label: string; children: NavChild[] };
 
+// Inline nav links. Ask + Feedback are intentionally NOT here — they are
+// rendered as dedicated action buttons pinned to the right of the bar.
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/ask", label: "Ask" },
   { href: "/photo-review", label: "Photo Review" },
   { href: "/tmc-chapters", label: "Bylaw Chapters" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
@@ -24,7 +25,6 @@ const navItems: NavItem[] = [
   },
   { href: "/prohibited-plants", label: "Prohibited Plants" },
   { href: "/about", label: "About" },
-  { href: "/feedback", label: "Feedback" },
 ];
 
 function isLink(item: NavItem): item is { href: string; label: string } {
@@ -79,7 +79,8 @@ export default function Navbar() {
           <span className="text-base font-semibold tracking-tight text-gray-900 hidden sm:block">Toronto Bylaw Guide</span>
         </Link>
 
-        <nav ref={navRef} className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+        <div className="hidden lg:flex items-center gap-2">
+        <nav ref={navRef} className="flex items-center gap-1" aria-label="Main navigation">
           {navItems.map((item) => {
             if (isLink(item)) {
               return (
@@ -144,14 +145,44 @@ export default function Navbar() {
               </div>
             );
           })}
+        </nav>
+
+          {/* Search */}
           <Link
             href="/search"
             aria-label="Search the site"
-            className="ml-1 p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
+            className="p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
           >
             <Search className="w-5 h-5" />
           </Link>
-        </nav>
+
+          {/* Divider */}
+          <span aria-hidden className="mx-1 h-6 w-px bg-gray-200" />
+
+          {/* Feedback — outlined action button (far right) */}
+          <Link
+            href="/feedback"
+            aria-current={isActive("/feedback") ? "page" : undefined}
+            className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border px-3.5 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 ${
+              isActive("/feedback")
+                ? "border-blue-200 bg-blue-50 text-blue-700"
+                : "border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            <MessageSquare className="h-4 w-4 text-gray-500" aria-hidden="true" />
+            Feedback
+          </Link>
+
+          {/* Ask BylawGuide — primary action button (far right) */}
+          <Link
+            href="/ask"
+            aria-current={isActive("/ask") ? "page" : undefined}
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_-8px_rgba(37,99,235,0.6)] transition-colors hover:from-blue-700 hover:to-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+          >
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            Ask BylawGuide
+          </Link>
+        </div>
 
         <button
           className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -224,6 +255,26 @@ export default function Navbar() {
             <Search className="w-4 h-4" />
             Search
           </Link>
+
+          {/* Ask + Feedback action buttons */}
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Link
+              href="/feedback"
+              onClick={closeAll}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <MessageSquare className="h-4 w-4 text-gray-500" aria-hidden="true" />
+              Feedback
+            </Link>
+            <Link
+              href="/ask"
+              onClick={closeAll}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 px-3 py-2.5 text-sm font-semibold text-white hover:from-blue-700 hover:to-indigo-700"
+            >
+              <Sparkles className="h-4 w-4" aria-hidden="true" />
+              Ask BylawGuide
+            </Link>
+          </div>
         </div>
       )}
     </header>

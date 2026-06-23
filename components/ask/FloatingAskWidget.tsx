@@ -69,7 +69,26 @@ export default function FloatingAskWidget() {
 
   useEffect(() => {
     if (!open) return;
-    inputRef.current?.focus();
+
+    // On mobile the panel is a bottom sheet. Auto-focusing there pops the
+    // keyboard immediately, which (on iOS) shoves the fixed panel up the screen.
+    // So focus only on larger screens; on mobile the user taps the input.
+    const mobile = typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches;
+    if (!mobile) inputRef.current?.focus();
+
+    // Mobile only: freeze the page behind the sheet by pinning <body>. This stops
+    // background scroll/scroll-chaining AND guarantees the exact scroll position
+    // is restored on close (fixes the page "not recovering" after the keyboard).
+    const scrollY = mobile ? window.scrollY : 0;
+    if (mobile) {
+      const b = document.body.style;
+      b.position = "fixed";
+      b.top = `-${scrollY}px`;
+      b.left = "0";
+      b.right = "0";
+      b.width = "100%";
+    }
+
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
     const onClick = (e: MouseEvent) => {
       const t = e.target as Node;
@@ -80,6 +99,15 @@ export default function FloatingAskWidget() {
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onClick);
+      if (mobile) {
+        const b = document.body.style;
+        b.position = "";
+        b.top = "";
+        b.left = "";
+        b.right = "";
+        b.width = "";
+        window.scrollTo(0, scrollY);
+      }
     };
   }, [open, close]);
 
@@ -139,6 +167,15 @@ export default function FloatingAskWidget() {
         </button>
       </div>
 
+      {/* Mobile-only dim backdrop (tap to close) — keeps the sheet self-contained */}
+      {open && (
+        <div
+          aria-hidden="true"
+          onClick={close}
+          className="fixed inset-0 z-[55] bg-slate-900/20 sm:hidden print:hidden"
+        />
+      )}
+
       {/* Panel */}
       {open && (
         <div
@@ -147,7 +184,7 @@ export default function FloatingAskWidget() {
           role="dialog"
           aria-modal="false"
           aria-label="Ask BylawGuide"
-          className="fixed z-[60] bottom-[5.5rem] left-4 right-4 sm:left-auto sm:right-6 sm:w-[400px] max-h-[72vh] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_24px_60px_-20px_rgba(15,23,42,0.45)] print:hidden"
+          className="fixed z-[60] bottom-[max(1rem,env(safe-area-inset-bottom))] left-3 right-3 sm:bottom-[5.5rem] sm:left-auto sm:right-6 sm:w-[400px] max-h-[78dvh] sm:max-h-[72vh] flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_24px_60px_-20px_rgba(15,23,42,0.45)] print:hidden"
         >
           {/* Header */}
           <div className="flex items-start gap-2.5 bg-gradient-to-br from-blue-50 to-indigo-50 px-4 py-3 border-b border-indigo-100">
@@ -213,7 +250,7 @@ export default function FloatingAskWidget() {
           )}
 
           {/* Answer area */}
-          <div className="flex-1 overflow-y-auto px-4 py-3">
+          <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3">
             {loading && (
               <div className="flex items-center gap-2 text-sm text-gray-500 py-6 justify-center">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Searching sources…

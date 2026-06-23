@@ -85,15 +85,19 @@ export default function AboutPage() {
           </ul>
         </section>
 
-        {/* Who created it */}
-        <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-6">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 mb-3">
-            <Users className="w-5 h-5 text-blue-500" aria-hidden="true" /> Who created it
+        {/* Who created it — the friendly, personal corner of the site */}
+        <section className="rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-amber-50 p-6 subtle-shadow">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-violet-900 mb-3">
+            <Users className="w-5 h-5 text-violet-500" aria-hidden="true" /> Who made this?
+            <span aria-hidden="true">👋</span>
           </h2>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-700 leading-relaxed">
             BylawGuide is an independent public reference project created to make Toronto bylaw information easier to
-            understand.
-            {siteConfig.creatorName ? <> Created by {siteConfig.creatorName}.</> : null}
+            understand. <span aria-hidden="true">📚✨</span>
+          </p>
+          <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+            Designed and created by a passionate bylaw enthusiast{siteConfig.creatorName ? <>, <span className="font-semibold text-violet-800">{siteConfig.creatorName}</span></> : null}.{" "}
+            <span aria-hidden="true">🤓🛠️🍁</span>
           </p>
         </section>
 
