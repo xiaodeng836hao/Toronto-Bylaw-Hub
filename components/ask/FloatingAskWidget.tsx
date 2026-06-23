@@ -12,14 +12,8 @@ import { answerQuestion, type AskResult } from "@/lib/ask";
 const CHIPS: { label: string; q: string }[] = [
   { label: "Fence height", q: "How high can a fence be in Toronto?" },
   { label: "Pool fence permit", q: "Do I need a pool fence enclosure permit?" },
-  { label: "Soft landscaping", q: "What counts as soft landscaping?" },
   { label: "Front yard parking", q: "Can I park in my front yard?" },
-  { label: "Broken window", q: "What section applies to a broken window?" },
-  { label: "Missing handrail", q: "What section applies to a missing handrail?" },
-  { label: "No heat", q: "What applies to no heat in a rental unit?" },
-  { label: "Graffiti", q: "What should I do about graffiti on private property?" },
   { label: "Prohibited plants", q: "What are Toronto's prohibited plants?" },
-  { label: "Dust control", q: "What bylaw applies to dust from construction?" },
 ];
 
 const CONF_STYLE: Record<string, string> = {
@@ -191,7 +185,6 @@ export default function FloatingAskWidget() {
             <Sparkles className="h-5 w-5 text-indigo-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-indigo-900">Ask BylawGuide</p>
-              <p className="text-xs text-indigo-700">Get a source-based reference answer.</p>
             </div>
             <button
               type="button"
@@ -260,11 +253,6 @@ export default function FloatingAskWidget() {
               <p className="text-sm text-rose-600 py-2">{error}</p>
             )}
             {result && !loading && <CompactAnswer state={result} onClose={close} />}
-            {!result && !loading && !error && (
-              <p className="text-xs text-gray-400 pt-1">
-                Tip: ask a specific question, or tap a topic above. Answers are summarized from this guide and link to official sources.
-              </p>
-            )}
           </div>
 
           {/* Footer disclaimer */}

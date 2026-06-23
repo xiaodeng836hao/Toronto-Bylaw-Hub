@@ -14,7 +14,7 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/photo-review", label: "Photo Review" },
   { href: "/tmc-chapters", label: "Bylaw Chapters" },
-  { href: "/pool-fence-guide", label: "Pool Fence Guide" },
+  { href: "/pool-fence-guide", label: "Pool Fence" },
   {
     label: "Zoning",
     children: [
@@ -69,18 +69,18 @@ export default function Navbar() {
         Skip to main content
       </a>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-[84rem] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2.5 rounded-md hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="flex shrink-0 items-center gap-2.5 rounded-md hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           aria-label="Toronto Bylaw Guide — home"
         >
           <Image src="/logo.svg" alt="Toronto Bylaw Guide logo" width={40} height={40} className="object-contain" priority />
-          <span className="text-base font-semibold tracking-tight text-gray-900 hidden sm:block">Toronto Bylaw Guide</span>
+          <span className="hidden whitespace-nowrap text-base font-semibold tracking-tight text-gray-900 sm:block">Toronto Bylaw Guide</span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-2">
-        <nav ref={navRef} className="flex items-center gap-1" aria-label="Main navigation">
+        <div className="hidden min-[1320px]:flex items-center gap-2">
+        <nav ref={navRef} className="flex items-center gap-1 whitespace-nowrap" aria-label="Main navigation">
           {navItems.map((item) => {
             if (isLink(item)) {
               return (
@@ -173,19 +173,19 @@ export default function Navbar() {
             Feedback
           </Link>
 
-          {/* Ask BylawGuide — primary action button (far right) */}
+          {/* Ask Anything — primary action button (far right) */}
           <Link
             href="/ask"
             aria-current={isActive("/ask") ? "page" : undefined}
             className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 px-3.5 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_-8px_rgba(37,99,235,0.6)] transition-colors hover:from-blue-700 hover:to-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
           >
             <Sparkles className="h-4 w-4" aria-hidden="true" />
-            Ask BylawGuide
+            Ask Anything
           </Link>
         </div>
 
         <button
-          className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="min-[1320px]:hidden p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
@@ -196,7 +196,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div id="mobile-menu" className="lg:hidden border-t border-gray-100 bg-white px-4 py-3 flex flex-col gap-1">
+        <div id="mobile-menu" className="min-[1320px]:hidden border-t border-gray-100 bg-white px-4 py-3 flex flex-col gap-1">
           {navItems.map((item) => {
             if (isLink(item)) {
               return (
@@ -272,7 +272,7 @@ export default function Navbar() {
               className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 px-3 py-2.5 text-sm font-semibold text-white hover:from-blue-700 hover:to-indigo-700"
             >
               <Sparkles className="h-4 w-4" aria-hidden="true" />
-              Ask BylawGuide
+              Ask Anything
             </Link>
           </div>
         </div>
