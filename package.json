@@ -9,7 +9,9 @@
     "lint": "eslint",
     "preflight": "node scripts/preflight.mjs",
     "build:bylaw-index": "node scripts/build-bylaw-index.mjs",
-    "ingest-rag": "node scripts/ingest-rag.mjs"
+    "build:bylaw-section-index": "node scripts/build-bylaw-section-index.mjs",
+    "ingest-rag": "node scripts/ingest-rag.mjs",
+    "eval:ask": "node scripts/evaluate-ask-accuracy.mjs"
   },
   "dependencies": {
     "@prisma/client": "^7.8.0",
@@ -24,6 +26,7 @@
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.18.0",
     "next": "16.2.9",
+    "nodemailer": "^6.10.1",
     "prisma": "^7.8.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -32,6 +35,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",

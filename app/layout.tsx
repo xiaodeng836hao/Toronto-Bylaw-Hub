@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import DisclaimerBanner from "@/components/DisclaimerBanner";
 import BetaNotice from "@/components/BetaNotice";
 import BackToTop from "@/components/BackToTop";
+import FloatingAskWidget from "@/components/ask/FloatingAskWidget";
 import { SITE_URL, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -96,6 +97,7 @@ export default function RootLayout({
         <BetaNotice />
         <Footer />
         <BackToTop />
+        <FloatingAskWidget />
       </body>
     </html>
   );

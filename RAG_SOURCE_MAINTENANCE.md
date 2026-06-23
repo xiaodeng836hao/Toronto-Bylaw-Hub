@@ -63,6 +63,62 @@ source. The date appears on every source card.
   "I could not find a clear source-based answer".
 - Keep wording cautious; never present output as an official determination.
 
+## Photo Review bylaw section matching
+
+Photo Review maps an **image** (not a text query) to source-backed bylaw
+**sections** (full flow in `AI_SETUP.md` → "Photo Review bylaw section
+matching"):
+
+- The image AI returns only **observations + issue labels + searchKeywords** —
+  never chapter/section numbers.
+- The PDF/Markdown-derived **section index** is the source of truth:
+  - Source Markdown lives in `data/extracted-bylaws/` (one file per chapter).
+  - `scripts/build-bylaw-section-index.mjs` parses it into
+    `data/rag/bylaw-section-index.json` (run `npm run build:bylaw-section-index`).
+    It splits on `§` headings, strips page banners/footers, and derives keywords.
+  - The retriever (`lib/photo-review/bylaw-section-retriever.ts`) scores those
+    sections against the AI search terms and attaches the best ones, each marked
+    `verified` with a source excerpt.
+- The curated map (`data/photo-review-bylaw-map.ts`) is the **fallback only** for
+  the section reference: it supplies the issue category, confidence, pool gating,
+  evidence, and official links, and provides "needs-verification" sections when
+  the index has no clear match (e.g. Dust 417, Zoning — not yet in the corpus).
+- **V6.4 accuracy layer:** the AI returns `negativeFindings` and a controlled
+  category (`data/photo-review/issue-taxonomy.ts`); the retriever applies
+  overmatch guardrails (`data/photo-review/category-visual-criteria.ts`) and
+  searches only the routed chapters first (`data/photo-review/category-source-routing.ts`,
+  primary then secondary — e.g. waste → 548 then 846/841). When you add a new
+  category or chapter, update the taxonomy, the routing map, and (if it needs a
+  required clue or negative-killer) the visual-criteria file — keyed by the same
+  curated id.
+- **To add/refresh a chapter's section coverage:** drop its extracted Markdown
+  into `data/extracted-bylaws/` (keep the `§` headings + section titles intact),
+  re-run `npm run build:bylaw-section-index`, and verify on `/photo-review`. Also
+  register the chapter in `CHAPTER_META` (both the build script and
+  `data/rag/source-manifest.ts`) so titles, official URLs and internal pages
+  resolve.
+- This pipeline is independent of the embedding vector index — it works with or
+  without `data/rag/index.json` and without an API key (client curated fallback).
+
+## Ask BylawGuide section grounding (V6.7)
+
+Ask now retrieves precise SECTION-level chunks the same way Photo Review does,
+instead of broad page-level knowledge items (full flow in `AI_SETUP.md` → "Ask
+BylawGuide accuracy system"):
+
+- The question is classified (`lib/ask/classify-query.ts`) using resident-language
+  synonyms (`data/ask/synonyms.ts`) + the curated matcher, then routed to source
+  chapters (`data/photo-review/category-source-routing.ts`).
+- `lib/ask/section-retrieve.ts` scores sections in the routed chapters of the
+  Markdown index (and the §629 selector for Property Standards), returning
+  `RagChunkRef[]`. The Ask route prefers these; it falls back to the curated
+  knowledge index for topics not yet in the corpus (Zoning, Landscaping, Dust).
+- **To improve an Ask answer:** add the chapter's Markdown to
+  `data/extracted-bylaws/` and re-index (`npm run build:bylaw-section-index`), add
+  resident phrasings to `data/ask/synonyms.ts`, and add a case to
+  `data/ask/ask-evaluation-cases.ts`. Then run `npm run eval:ask` — it must stay
+  green. Never add a section number that is not in the source.
+
 ## Production: PostgreSQL + pgvector
 
 The local JSON store is for development / single-instance use. For production:

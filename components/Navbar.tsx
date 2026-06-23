@@ -11,8 +11,8 @@ type NavItem = { href: string; label: string } | { label: string; children: NavC
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/ask", label: "Ask" },
-  { href: "/tmc-chapters", label: "Bylaw Chapters" },
   { href: "/photo-review", label: "Photo Review" },
+  { href: "/tmc-chapters", label: "Bylaw Chapters" },
   { href: "/pool-fence-guide", label: "Pool Fence Guide" },
   {
     label: "Zoning",

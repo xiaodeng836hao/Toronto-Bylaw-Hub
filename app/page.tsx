@@ -22,6 +22,16 @@ const featureCards = [
     cta: "Ask a question",
   },
   {
+    href: "/photo-review",
+    icon: Camera,
+    title: "Photo Review Helper",
+    description: "Upload a photo to automatically match possible bylaw-related issues to the most relevant Toronto bylaw chapters and sections, with an evidence checklist.",
+    color: "from-violet-50 to-violet-100",
+    ring: "ring-violet-600/10",
+    iconColor: "text-violet-600",
+    badge: "Preliminary Helper",
+  },
+  {
     href: "/tmc-chapters",
     icon: BookOpen,
     title: "Toronto Municipal Code Chapters",
@@ -30,16 +40,6 @@ const featureCards = [
     ring: "ring-blue-600/10",
     iconColor: "text-blue-600",
     badge: "Bylaw Search",
-  },
-  {
-    href: "/photo-review",
-    icon: Camera,
-    title: "Photo Review Helper",
-    description: "Upload a photo and choose an issue type to see a preliminary reference match to a likely bylaw chapter, with an evidence checklist.",
-    color: "from-violet-50 to-violet-100",
-    ring: "ring-violet-600/10",
-    iconColor: "text-violet-600",
-    badge: "Preliminary Helper",
   },
   {
     href: "/pool-fence-guide",
@@ -202,9 +202,10 @@ export default function Home() {
           </h1>
 
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
-            Search the Toronto Municipal Code, understand common bylaw rules in simple
-            terms, and find the right official City resource — all in one
-            resident-friendly place.
+            Your one-stop guide to Toronto&rsquo;s bylaws — search the Municipal Code, ask
+            questions, review a photo, and follow clear guides for fences, pools, zoning,
+            and prohibited plants, all linked to the right official City resources in one
+            user-friendly place.
           </p>
 
           <div className="mt-8 max-w-2xl">
@@ -370,27 +371,69 @@ export default function Home() {
 
       {/* Trust / About band */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16" aria-label="About this site">
-        <div className="rounded-2xl border border-gray-100 bg-white subtle-shadow p-6 md:p-8">
-          <p className="kicker text-blue-600 mb-2.5">About this site</p>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Built for simple bylaw understanding</h2>
-          <p className="text-gray-500 max-w-2xl">
-            {siteConfig.shortName} is an independent public reference tool designed to help residents understand selected Toronto bylaw topics. It summarizes official sources in simple terms and links back to official City resources for verification.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2"
-            >
-              Learn About This Site <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </Link>
-            <a
-              href={siteConfig.officialTorontoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" /> View Official City Sources
-            </a>
+        <div className="relative overflow-hidden rounded-3xl border border-blue-100/70 bg-gradient-to-br from-white via-white to-blue-50/50 subtle-shadow p-6 md:p-10">
+          {/* Decorative brand glow */}
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-20 -right-10 h-56 w-56 rounded-full bg-cyan-300/20 blur-3xl" />
+            <div className="absolute -bottom-24 -left-12 h-56 w-56 rounded-full bg-blue-400/15 blur-3xl" />
+            <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-blue-200/50 to-transparent hidden lg:block lg:left-[58.333%]" />
+          </div>
+
+          <div className="relative grid gap-10 lg:grid-cols-12 lg:items-center">
+            {/* Intro */}
+            <div className="lg:col-span-7">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-[0_10px_26px_-8px_rgba(37,99,235,0.65)] ring-1 ring-inset ring-white/30">
+                  <BookOpen className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="kicker text-blue-600">About this site</span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-3">
+                Bylaws, made simple to understand
+              </h2>
+              <p className="text-gray-500 max-w-xl leading-relaxed">
+                {siteConfig.shortName} is an independent public reference tool that helps residents understand
+                selected Toronto bylaw topics — summarizing official sources in plain language and linking back to
+                the City for verification.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 shadow-[0_12px_26px_-10px_rgba(37,99,235,0.7)] hover:from-blue-700 hover:to-cyan-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                >
+                  Learn About This Site <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Link>
+                <a
+                  href={siteConfig.officialTorontoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-white hover:border-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" /> View Official City Sources
+                </a>
+              </div>
+            </div>
+
+            {/* Feature highlights */}
+            <div className="lg:col-span-5">
+              <div className="rounded-2xl border border-gray-100 bg-white/70 backdrop-blur-sm p-3 sm:p-4 flex flex-col gap-1.5">
+                {[
+                  { icon: BookOpen, title: "Plain-language summaries", text: "Complex Toronto bylaws explained in everyday terms." },
+                  { icon: CheckSquare, title: "Source-backed answers", text: "Grounded in the Municipal Code and official City sources." },
+                  { icon: ExternalLink, title: "Always verifiable", text: "Every topic links back to the right official City resource." },
+                ].map(({ icon: Icon, title, text }) => (
+                  <div key={title} className="flex items-start gap-3.5 rounded-xl p-3 transition-colors hover:bg-blue-50/50">
+                    <span className="mt-0.5 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 ring-1 ring-inset ring-blue-600/10">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{title}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

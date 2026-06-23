@@ -101,7 +101,81 @@ index automatically.
 - If retrieval returns nothing, the page shows the no-result state — do not add
   fallback "best guess" answers.
 
-## 9. Feedback
+## 9. Photo Review bylaw matching map
+
+Photo Review automatically maps an uploaded photo to bylaw chapters/sections
+(no manual issue selection). It has two layers:
+
+- **Section index (primary, source-backed):** real sections extracted from the
+  Municipal Code Markdown in `data/extracted-bylaws/` →
+  `data/rag/bylaw-section-index.json` (built by
+  `npm run build:bylaw-section-index`). The retriever
+  (`lib/photo-review/bylaw-section-retriever.ts`) attaches the best-matching
+  sections, each with a source excerpt and `verified` status. To improve section
+  matching, fix the Markdown source and rebuild — do **not** hand-edit the JSON.
+- **Curated map (fallback):** `data/photo-review-bylaw-map.ts` +
+  `lib/photo-review/bylaw-matcher.ts` provide the issue category, confidence,
+  pool gating, evidence checklist, and "needs-verification" sections when the
+  index has no clear match. Same golden rule applies: source-based and cautious.
+- **Accuracy controls (V6.4)** live in `data/photo-review/`:
+  `issue-taxonomy.ts` (the controlled category list the AI may use),
+  `category-visual-criteria.ts` (required clues + negative-killers that prevent
+  overmatching, e.g. no Pool Fence without a pool), and
+  `category-source-routing.ts` (which chapters each category searches first).
+  Keep all three keyed by the same curated id. The AI never picks the section —
+  it only describes the image and reports negative findings.
+- **Property Standards section precision (V6.5):**
+  `data/photo-review/property-standards-keywords.ts` holds per-section keyword
+  groups for Chapter 629 (visual / resident / technical / section-term keywords +
+  negative-keywords), and `lib/photo-review/property-standards-selector.ts` uses
+  them to pick the specific § 629 section (e.g. § 629-27 Walls and ceilings) with
+  a verified excerpt from the index. To improve a Property Standards result, add
+  keywords to the relevant group — keep `section` to a real § 629 number from the
+  MD, never invent one. Use `negativeKeywords` to push an issue toward the more
+  specific chapter (447/485/489/548) when that one really applies.
+
+To add or update a photo-review category:
+
+1. Add/edit a `BylawMatchCategory` in `data/photo-review-bylaw-map.ts`:
+   - `id` — kebab-case (mirror a `photoReviewIssues` value where one exists).
+   - `triggerKeywords` — lowercase phrases the AI/description may contain.
+   - `aiLabels` — must be drawn from the controlled vocabulary in the photo
+     prompt (`lib/ai/prompts.ts → PHOTO_REVIEW_SYSTEM`). If you add a new label,
+     add it to that vocabulary too, or the AI will never emit it.
+   - `relatedSections` + `sectionStatus` — use **only verified** references, or
+     set `sectionStatus: "needs-verification"` and use the
+     `NEEDS_VERIFICATION(...)` helper. Never invent a section number.
+   - `internalUrl` / `chapterSlug` — must resolve to a real page (a
+     `/tmc-chapters/<slug>` chapter or a guide page).
+   - `officialSources` — official `toronto.ca` / Municipal Code links only.
+2. Run `npx tsc --noEmit`, then test on `/photo-review` (the matcher runs
+   client-side too, so a typed description is enough to verify without a key).
+3. Keep wording cautious ("possible", "may relate to", "appears to"). Never
+   output "confirmed violation".
+
+**Pool vs fence:** the Pool Fence category is `poolOnly` — it only surfaces when
+a pool/pool-gate signal is present, so a plain fence photo never shows it.
+**Noise** stays a Coming Soon placeholder (the `comingSoon` map entry).
+
+## 10. Ask BylawGuide accuracy (V6.7)
+
+Ask answers are now grounded in section-level source chunks, not just the
+knowledge index. To keep them accurate and source-based:
+
+- **Synonyms:** add resident phrasings to `data/ask/synonyms.ts` so everyday
+  wording ("no heat", "paved yard", "leaking ceiling") maps to the canonical
+  bylaw vocabulary. This only adds search terms — never section numbers.
+- **Routing/topics:** Ask reuses the photo-review category map + routing
+  (`data/photo-review-bylaw-map.ts`, `data/photo-review/category-source-routing.ts`).
+- **Section source of truth:** the Markdown index (`data/extracted-bylaws/` →
+  `npm run build:bylaw-section-index`). Ask never invents a section; if none is
+  found it shows "Section reference needs verification" / defers to the knowledge
+  index. The knowledge index (this file's domain) still answers topics not in the
+  Markdown corpus (Zoning, Landscaping, Dust) — keep those items source-based.
+- **Tests:** add high-value questions to `data/ask/ask-evaluation-cases.ts` and
+  run `npm run eval:ask` (must stay green) after content changes.
+
+## 11. Feedback
 
 - Ask answers have a "Was this answer helpful?" control posting to
   `app/api/ask-feedback/route.ts`. It writes to the existing `Feedback` model when

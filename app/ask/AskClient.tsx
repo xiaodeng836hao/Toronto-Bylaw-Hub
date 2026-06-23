@@ -8,6 +8,7 @@ import {
   Link2, Compass, AlertTriangle,
 } from "lucide-react";
 import { answerQuestion, type AskResult, type AskConfidence } from "@/lib/ask";
+import { askBylawGuide } from "@/lib/ask/client";
 import type { KnowledgeItem } from "@/data/knowledge-index";
 import type { RagChunkRef, AskAnswerAI } from "@/lib/ai/types";
 import AnswerDisclaimer from "@/components/AnswerDisclaimer";
@@ -70,6 +71,10 @@ export default function AskClient() {
     [urlQuery]
   );
 
+  // A "Strong source match" = a high-confidence local answer. When present it is
+  // promoted above the AI card so the clearest source-backed result leads.
+  const strongLocal = !!result && result.status === "answer" && result.confidence === "high";
+
   // On submit/navigation, fetch a RAG-grounded answer. When AI is configured the
   // server returns an "ai-rag" answer + source snippets; otherwise it returns a
   // local-fallback and we keep the instant local answer above. Only runs on a
@@ -86,13 +91,8 @@ export default function AskClient() {
     const q = urlQuery.trim();
     if (!q) return;
     let cancelled = false;
-    fetch("/api/ai/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: q }),
-    })
-      .then((r) => r.json())
-      .then((data: RagResponse) => { if (!cancelled) setRag(data); })
+    askBylawGuide(q)
+      .then((data) => { if (!cancelled) setRag(data as RagResponse); })
       .catch(() => { /* keep local answer */ });
     return () => { cancelled = true; };
   }, [urlQuery]);
@@ -161,14 +161,20 @@ export default function AskClient() {
         ))}
       </div>
 
+      {/* Empty / intro state */}
+      {!result && <EmptyIntro onPick={runQuery} />}
+
+      {/* A "Strong source match" (high-confidence) local answer leads, so the
+          most direct, source-backed result is shown first. */}
+      {strongLocal && result && <AnswerView result={result} onPick={runQuery} />}
+
       {/* AI source-grounded (RAG) answer — only when AI is configured server-side */}
       {rag?.mode === "ai-rag" && rag.answer && (
         <RagAnswerCard answer={rag.answer} sources={rag.sources ?? []} />
       )}
 
-      {/* Results (local source-based answer) */}
-      {!result && <EmptyIntro onPick={runQuery} />}
-      {result && <AnswerView result={result} onPick={runQuery} />}
+      {/* Local source-based answer (when it did not already lead above) */}
+      {result && !strongLocal && <AnswerView result={result} onPick={runQuery} />}
 
       {/* Standing notice */}
       <div className="mt-10 p-4 rounded-xl border border-blue-100 bg-blue-50/60 flex gap-3">

@@ -1146,7 +1146,7 @@ const staticSearchEntries: SearchEntry[] = [
     title: "Photo Review Helper",
     type: "Photo Review",
     summary:
-      "Upload a photo and select an issue type to see a preliminary reference match to a likely bylaw chapter, with an evidence checklist.",
+      "Upload a photo to automatically match possible bylaw-related issues to the most relevant Toronto bylaw chapters and sections, with an evidence checklist.",
     href: "/photo-review",
     actionLabel: "Open Photo Review",
     keywords: ["photo", "review", "upload", "violation", "helper", "evidence"],

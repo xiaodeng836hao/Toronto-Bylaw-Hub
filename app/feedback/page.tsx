@@ -8,24 +8,29 @@ const featureOptions = [
   "Home", "TMC Chapters", "Fences", "Pool Fence Guide", "Zoning",
   "Prohibited Plants", "Photo Review", "Search", "Feedback", "Other",
 ];
-const MAX_MESSAGE = 1000;
+const MAX_MESSAGE = 3000;
+const MAX_NAME = 100;
+const MAX_SUBJECT = 150;
 
 type FormState = {
+  name: string;
   email: string;
   userType: string;
   feedbackType: string;
   feature: string;
+  subject: string;
   message: string;
   canContact: boolean;
   /** Honeypot — must stay empty; bots tend to fill every field. */
   website: string;
 };
 
-const EMPTY: FormState = { email: "", userType: "", feedbackType: "", feature: "", message: "", canContact: false, website: "" };
+const EMPTY: FormState = { name: "", email: "", userType: "", feedbackType: "", feature: "", subject: "", message: "", canContact: false, website: "" };
 
 export default function FeedbackPage() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitted, setSubmitted] = useState(false);
+  const [emailSent, setEmailSent] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -62,18 +67,25 @@ export default function FeedbackPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name: form.name,
           email: form.email,
           userType: form.userType,
           feedbackType: form.feedbackType,
+          category: form.feedbackType,
           feature: form.feature,
+          subject: form.subject,
           message: form.message,
           canContact: form.canContact && !!form.email,
+          pageUrl: typeof document !== "undefined" ? document.referrer || window.location.href : "",
+          website: form.website,
         }),
       });
-      if (!res.ok) throw new Error("Submission failed");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Submission failed");
+      setEmailSent(data?.emailSent !== false);
       setSubmitted(true);
     } catch {
-      setError("Something went wrong submitting your feedback. Please try again.");
+      setError("We could not submit your feedback right now. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -85,12 +97,14 @@ export default function FeedbackPage() {
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-8 h-8 text-green-600" aria-hidden="true" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank you!</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-3">Thank you for your feedback.</h1>
         <p className="text-gray-600 max-w-md mx-auto">
-          Your feedback has been received. Your input helps improve this public bylaw reference tool.
+          {emailSent
+            ? "Your message has been sent. Your input helps improve this public bylaw reference tool."
+            : "Your feedback was received, but the email notification could not be sent at this time. Your input still helps improve this public bylaw reference tool."}
         </p>
         <button
-          onClick={() => { setSubmitted(false); setForm(EMPTY); }}
+          onClick={() => { setSubmitted(false); setEmailSent(true); setForm(EMPTY); }}
           className="btn-primary mt-6 px-5 py-2.5 font-medium rounded-xl text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           Submit another
@@ -133,6 +147,23 @@ export default function FeedbackPage() {
             autoComplete="off"
             value={form.website}
             onChange={(e) => update("website", e.target.value)}
+          />
+        </div>
+
+        {/* Name */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
+            Name <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            value={form.name}
+            maxLength={MAX_NAME}
+            onChange={(e) => update("name", e.target.value)}
+            placeholder="Your name"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-400 transition-colors"
           />
         </div>
 
@@ -235,6 +266,23 @@ export default function FeedbackPage() {
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" aria-hidden="true" />
           </div>
+        </div>
+
+        {/* Subject */}
+        <div>
+          <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1.5">
+            Subject <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <input
+            id="subject"
+            type="text"
+            name="subject"
+            value={form.subject}
+            maxLength={MAX_SUBJECT}
+            onChange={(e) => update("subject", e.target.value)}
+            placeholder="A short summary"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:border-blue-400 transition-colors"
+          />
         </div>
 
         {/* Message */}
