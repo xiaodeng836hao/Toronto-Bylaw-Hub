@@ -15,6 +15,8 @@ import DisclaimerBanner from "@/components/DisclaimerBanner";
 import BetaNotice from "@/components/BetaNotice";
 import BackToTop from "@/components/BackToTop";
 import FloatingAskWidget from "@/components/ask/FloatingAskWidget";
+import HideOnRoutes from "@/components/layout/HideOnRoutes";
+import AdminPreviewBanner from "@/components/admin/AdminPreviewBanner";
 import { SITE_URL, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -89,15 +91,22 @@ export default function RootLayout({
         />
         {/* Site-wide atmospheric backdrop (subtle grid + soft glows) */}
         <div aria-hidden className="site-backdrop pointer-events-none fixed inset-0 -z-10" />
-        <Navbar />
+        {/* Site chrome is hidden on the maintenance / admin-login pages. The admin
+            preview banner self-hides unless an admin is logged in while closed. */}
+        <HideOnRoutes>
+          <AdminPreviewBanner />
+          <Navbar />
+        </HideOnRoutes>
         <main id="main-content" className="flex-1">
           {children}
         </main>
-        <DisclaimerBanner />
-        <BetaNotice />
-        <Footer />
-        <BackToTop />
-        <FloatingAskWidget />
+        <HideOnRoutes>
+          <DisclaimerBanner />
+          <BetaNotice />
+          <Footer />
+          <BackToTop />
+          <FloatingAskWidget />
+        </HideOnRoutes>
       </body>
     </html>
   );
