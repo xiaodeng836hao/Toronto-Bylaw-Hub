@@ -395,6 +395,8 @@ function ZoningTopicCard({
   onSearch: (q: string) => void;
 }) {
   const detail = getZoningTopicDetail(topic.id);
+  // Parking has a dedicated guide — the expanded card is condensed to a pointer.
+  const isParkingPointer = topic.id === "front-yard-parking";
   return (
     <div id={`topic-${topic.id}`} className={`bg-white rounded-2xl border transition-all scroll-mt-24 ${isExpanded ? "border-emerald-200 subtle-shadow" : "border-gray-100 hover:border-gray-200"}`}>
       <button
@@ -418,6 +420,13 @@ function ZoningTopicCard({
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">What It Means</p>
             <p className="text-sm text-gray-700 leading-relaxed">{topic.plainExplanation}</p>
           </div>
+
+          {isParkingPointer && detail && (
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Why this matters</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{detail.whyItMatters}</p>
+            </div>
+          )}
 
           {topic.id === "landscaping" && (
             <div className="rounded-xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 flex flex-col sm:flex-row sm:items-center gap-3">
@@ -446,9 +455,7 @@ function ZoningTopicCard({
                   <Car className="w-5 h-5 text-blue-600" aria-hidden="true" />
                 </div>
                 <p className="text-sm text-blue-900 leading-relaxed">
-                  Parking rules may depend on where the vehicle is parked, the zoning category, the yard area involved,
-                  vehicle type, and whether the use is residential, commercial, or recreational. Open the Parking Guide
-                  for front yard, side yard, rear yard, commercial, and recreational vehicle parking topics.
+                  Front, side, rear, commercial, and recreational vehicle parking — with source-based by-law references.
                 </p>
               </div>
               <Link
@@ -460,6 +467,8 @@ function ZoningTopicCard({
             </div>
           )}
 
+          {!isParkingPointer && (
+          <>
           {detail ? (
             <>
               {/* Applicable zones */}
@@ -619,6 +628,8 @@ function ZoningTopicCard({
               </a>
             )}
           </div>
+          </>
+          )}
         </div>
       )}
     </div>
