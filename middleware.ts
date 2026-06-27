@@ -20,6 +20,9 @@ const ALLOWED_EXACT = new Set<string>([
   "/admin-login",
   "/api/admin-login",
   "/api/admin-logout",
+  // Invasive Plant Check mobile app proxy — the app is a separate client and must
+  // keep working even when the public website is in maintenance mode.
+  "/api/plant-identify",
   "/robots.txt",
   "/sitemap.xml",
   "/favicon.ico",
@@ -27,7 +30,16 @@ const ALLOWED_EXACT = new Set<string>([
 ]);
 
 // Path prefixes that are always allowed (Next internals + public asset folders).
-const ALLOWED_PREFIX = ["/_next/", "/images/", "/assets/", "/design-reference/"];
+// The Invasive Plant Check app pages (overview + privacy policy) stay public even
+// while the rest of the site is in maintenance, so the mobile app's store /
+// privacy-policy links keep working.
+const ALLOWED_PREFIX = [
+  "/_next/",
+  "/images/",
+  "/assets/",
+  "/design-reference/",
+  "/invasive-plant-check",
+];
 
 function isAlwaysAllowed(pathname: string): boolean {
   if (ALLOWED_EXACT.has(pathname)) return true;
