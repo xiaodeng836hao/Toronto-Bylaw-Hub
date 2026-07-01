@@ -13,7 +13,15 @@ type NavItem = { href: string; label: string } | { label: string; children: NavC
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/photo-review", label: "Photo Review" },
-  { href: "/tmc-chapters", label: "Bylaw Chapters" },
+  {
+    label: "Bylaw Chapters",
+    children: [
+      { href: "/tmc-chapters", label: "All Bylaw Chapters" },
+      { href: "/tmc-chapters/485", label: "Graffiti" },
+      { href: "/tmc-chapters/548", label: "Littering & Dumping" },
+      { href: "/tmc-chapters/489", label: "Turfgrass & Prohibited Plants" },
+    ],
+  },
   { href: "/pool-fence-guide", label: "Pool Fence" },
   {
     label: "Zoning",
@@ -24,7 +32,13 @@ const navItems: NavItem[] = [
       { href: "/zoning/former-north-york", label: "Former North York Zoning" },
     ],
   },
-  { href: "/prohibited-plants", label: "Prohibited Plants" },
+  {
+    label: "Prohibited Plants",
+    children: [
+      { href: "/prohibited-plants", label: "Prohibited Plants Guide" },
+      { href: "/invasive-plant-check", label: "Invasive Plant Check App" },
+    ],
+  },
   { href: "/about", label: "About" },
 ];
 

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import {
   bylawChapters, getChapterBySlug, OFFICIAL_311_URL,
 } from "@/lib/mock-data";
-import { getChapterContent, type ComplexityLevel, type RelatedTopic } from "@/lib/chapter-content";
+import { getChapterContent, type ComplexityLevel } from "@/lib/chapter-content";
 import SourceBadge from "@/components/SourceBadge";
 import {
   FENCE_HEIGHT_TABLE, FENCE_HEIGHT_MEASUREMENT_NOTE, FENCE_SCHOOL_NOTE,
@@ -12,10 +12,16 @@ import {
 } from "@/lib/fence-447";
 import FenceHeightHelper from "./FenceHeightHelper";
 import {
-  ArrowLeft, ArrowRight, ExternalLink, Download, FileText, ListChecks,
+  CHAPTER_548_PDF, PROHIBITED_WASTE, PROHIBITED_WASTE_INTRO,
+  PROHIBITED_WASTE_NOTE, LITTERING_PENALTIES,
+  type WasteIconKey, type WasteToneKey,
+} from "@/lib/littering-548";
+import {
+  ArrowLeft, ArrowRight, ExternalLink, Download, FileText,
   HelpCircle, AlertCircle, Users, Tag, BookOpen, ChevronRight, Info, Phone,
-  ClipboardCheck, Wrench, AlertTriangle, CheckCircle2, XCircle, Layers, Compass, Hash,
+  ClipboardCheck, Wrench, AlertTriangle, CheckCircle2, XCircle, Layers, Hash,
   Ruler, Waves, Car, SquareStack, Ban,
+  FlaskConical, SprayCan, Syringe, HardHat, Leaf, Disc3, Building2,
 } from "lucide-react";
 
 export function generateStaticParams() {
@@ -56,23 +62,28 @@ const COMPLEXITY: Record<ComplexityLevel, { label: string; notice: string; box: 
   },
 };
 
-function RelatedTopicLink({ topic }: { topic: RelatedTopic }) {
-  const inner = (
-    <>
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors">{topic.label}</p>
-        {topic.description && <p className="text-xs text-gray-500 mt-0.5">{topic.description}</p>}
-      </div>
-      {topic.external
-        ? <ExternalLink className="w-4 h-4 text-gray-300 group-hover:text-blue-400 flex-shrink-0" aria-hidden="true" />
-        : <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-blue-400 flex-shrink-0" aria-hidden="true" />}
-    </>
-  );
-  const cls = "group flex items-center justify-between gap-3 p-3.5 rounded-xl border border-gray-100 bg-white hover:border-blue-200 subtle-shadow transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500";
-  return topic.external
-    ? <a href={topic.href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
-    : <Link href={topic.href} className={cls}>{inner}</Link>;
-}
+// Prohibited-waste (Chapter 548) icon + tone lookups.
+const WASTE_ICON: Record<WasteIconKey, typeof Ban> = {
+  chemical: FlaskConical,
+  household: SprayCan,
+  automotive: Car,
+  medical: Syringe,
+  construction: HardHat,
+  yard: Leaf,
+  tire: Disc3,
+  business: Building2,
+};
+
+const WASTE_TONE: Record<WasteToneKey, string> = {
+  rose: "bg-rose-50 text-rose-600",
+  amber: "bg-amber-50 text-amber-600",
+  orange: "bg-orange-50 text-orange-600",
+  violet: "bg-violet-50 text-violet-600",
+  slate: "bg-slate-100 text-slate-600",
+  emerald: "bg-emerald-50 text-emerald-600",
+  blue: "bg-blue-50 text-blue-600",
+  gray: "bg-gray-100 text-gray-600",
+};
 
 export default async function ChapterDetailPage(
   { params }: { params: Promise<{ chapter: string }> }
@@ -88,9 +99,10 @@ export default async function ChapterDetailPage(
 
   const badge = /^[\d-]+$/.test(ch.chapterNumber) ? `Chapter ${ch.chapterNumber}` : ch.chapterNumber;
   const isFence = ch.slug === "447";
+  const isLittering = ch.slug === "548";
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6">
         <Link
@@ -151,17 +163,30 @@ export default async function ChapterDetailPage(
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Main column */}
         <div className="lg:col-span-2 flex flex-col gap-5">
-          {/* Simple Overview */}
-          {content && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-3">
-                <BookOpen className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                Simple Overview
-              </h2>
+          {/* Overview + what this chapter covers (combined, concise) */}
+          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+            <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-3">
+              <BookOpen className="w-5 h-5 text-blue-500" aria-hidden="true" />
+              Overview
+            </h2>
+            {content && (
               <p className="text-sm text-gray-700 leading-relaxed">{content.plainLanguageOverview}</p>
-              <p className="text-xs text-gray-500 mt-3"><span className="font-medium">Who it applies to:</span> {ch.whoItApplies}</p>
-            </section>
-          )}
+            )}
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 mt-4 mb-2">
+              What this chapter covers
+            </p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-2">
+              {ch.whatThisCovers.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100">
+              <span className="font-medium">Who it applies to:</span> {ch.whoItApplies}
+            </p>
+          </section>
 
           {/* Pool Fence redirect (447 only) */}
           {isFence && (
@@ -378,6 +403,72 @@ export default async function ChapterDetailPage(
             </section>
           )}
 
+          {/* Prohibited Waste — Schedule B (548 only) */}
+          {isLittering && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1.5">
+                <Ban className="w-5 h-5 text-rose-500" aria-hidden="true" />
+                Prohibited Waste — what can’t go in the garbage
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">
+                {PROHIBITED_WASTE_INTRO}
+              </p>
+
+              {/* Category cards — 2-up on wider screens, condensed for scanning */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {PROHIBITED_WASTE.map((c) => {
+                  const Icon = WASTE_ICON[c.icon];
+                  return (
+                    <div key={c.category} className="flex flex-col rounded-xl border border-gray-100 p-4">
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <span className={`inline-flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0 ${WASTE_TONE[c.tone]}`}>
+                          <Icon className="w-4 h-4" aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 leading-tight">{c.category}</p>
+                          <p className="text-[10px] uppercase tracking-wide text-gray-400 mt-0.5">{c.scheduleRefs}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-600 leading-relaxed mb-2.5">{c.examples}</p>
+                      <div className="mt-auto flex items-start gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-2">
+                        <ArrowRight className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                        <p className="text-[11px] text-emerald-900 leading-snug">{c.disposeInstead}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Penalties — compact 3-up */}
+              <div className="mt-5">
+                <h3 className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-2.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-500" aria-hidden="true" />
+                  Penalties (§ 548-9)
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {LITTERING_PENALTIES.map((p) => (
+                    <div key={p.offence} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                      <p className="text-sm font-bold text-rose-600 leading-tight">{p.maxFine}</p>
+                      <p className="text-xs text-gray-600 leading-snug mt-1">{p.offence}</p>
+                      <p className="text-[10px] font-mono text-gray-400 mt-1">{p.reference}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Note + official source */}
+              <div className="mt-4 p-3 rounded-xl border border-gray-200 bg-gray-50 flex gap-2.5">
+                <Info className="w-4 h-4 text-gray-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  {PROHIBITED_WASTE_NOTE}{" "}
+                  <a href={CHAPTER_548_PDF} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-blue-600 hover:underline">
+                    Official Chapter 548 PDF<ExternalLink className="w-3 h-3" aria-hidden="true" />
+                  </a>
+                </p>
+              </div>
+            </section>
+          )}
+
           {/* Practical Compliance Guide */}
           {content && content.practicalComplianceSteps.length > 0 && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
@@ -456,52 +547,7 @@ export default async function ChapterDetailPage(
             </section>
           )}
 
-          {/* What this covers */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-            <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
-              <ListChecks className="w-5 h-5 text-blue-500" aria-hidden="true" />
-              What This Chapter Generally Covers
-            </h2>
-            <ul className="flex flex-col gap-2.5">
-              {ch.whatThisCovers.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </section>
 
-          {/* Common examples */}
-          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-            <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
-              <AlertCircle className="w-5 h-5 text-orange-500" aria-hidden="true" />
-              {isFence ? "Common Non-Compliance Examples" : "Common Examples"}
-            </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {ch.commonExamples.map((ex) => (
-                <li key={ex} className="flex items-start gap-2.5 text-sm text-gray-700">
-                  <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
-                  {ex}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Related Topics */}
-          {content && content.relatedTopics.length > 0 && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
-                <Compass className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                Related Topics
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {content.relatedTopics.map((t) => (
-                  <RelatedTopicLink key={t.label} topic={t} />
-                ))}
-              </div>
-            </section>
-          )}
         </div>
 
         {/* Sidebar */}
@@ -513,6 +559,22 @@ export default async function ChapterDetailPage(
               Who It Applies To
             </h2>
             <p className="text-sm text-gray-600">{ch.whoItApplies}</p>
+          </section>
+
+          {/* Common examples */}
+          <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+            <h2 className="flex items-center gap-2 font-semibold text-gray-800 text-sm mb-3">
+              <AlertCircle className="w-4 h-4 text-orange-500" aria-hidden="true" />
+              {isFence ? "Common Non-Compliance Examples" : "Common Examples"}
+            </h2>
+            <ul className="flex flex-col gap-2">
+              {ch.commonExamples.map((ex) => (
+                <li key={ex} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-1.5 flex-shrink-0" aria-hidden="true" />
+                  {ex}
+                </li>
+              ))}
+            </ul>
           </section>
 
           {/* Related issue types */}

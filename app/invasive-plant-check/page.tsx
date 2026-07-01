@@ -96,7 +96,8 @@ export default function InvasivePlantCheckPage() {
                 <Smartphone className="w-5 h-5 text-emerald-600" aria-hidden="true" /> Get the app
               </h2>
               <p className="text-sm text-emerald-900/80 leading-relaxed">
-                App Store and Google Play links will be added when the app is ready for release.
+                Coming soon to Google Play (Android). The download link will be
+                added here once the app completes review.
               </p>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { OFFICIAL_311_URL, bylawChapters, zoningTopics } from "@/lib/mock-data";
 import { prohibitedPlants } from "@/lib/prohibited-plants";
 import { siteConfig } from "@/lib/site-config";
 import {
-  Camera, Waves, MapPin, MessageSquare, Phone, Leaf,
+  Camera, Waves, MapPin, MessageSquare, Leaf,
   ArrowRight, BookOpen, FileText, AlertTriangle, CheckSquare,
   ExternalLink, ChevronRight, Clock, Sparkles,
 } from "lucide-react";
@@ -283,36 +283,34 @@ export default function Home() {
             );
           })}
 
-          {/* External: Report to Toronto 311 */}
-          <a
-            href={OFFICIAL_311_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 ring-1 ring-inset ring-white/10 subtle-shadow card-hover flex flex-col gap-4 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
+          {/* Featured: Invasive Plant Check mobile app */}
+          <Link
+            href="/invasive-plant-check"
+            className="group relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 ring-1 ring-inset ring-white/10 subtle-shadow card-hover flex flex-col gap-4 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2"
           >
             <div aria-hidden className="pointer-events-none absolute inset-0">
               <div className="absolute inset-x-0 -top-1/3 h-2/3" style={{ background: "radial-gradient(80% 100% at 50% 0%, rgba(255,255,255,0.16), transparent 70%)" }} />
-              <div className="absolute -bottom-10 -right-8 h-36 w-36 rounded-full bg-cyan-300/25 blur-2xl" />
+              <div className="absolute -bottom-10 -right-8 h-36 w-36 rounded-full bg-lime-300/25 blur-2xl" />
             </div>
             <div className="relative flex items-start justify-between">
               <div className="w-11 h-11 bg-white/15 rounded-xl flex items-center justify-center ring-1 ring-inset ring-white/10">
-                <Phone className="w-5 h-5 text-white" aria-hidden="true" />
+                <Leaf className="w-5 h-5 text-white" aria-hidden="true" />
               </div>
-              <span className="kicker text-blue-100/90 pt-1">
-                Official City Service
+              <span className="kicker text-emerald-100/90 pt-1">
+                Mobile App
               </span>
             </div>
             <div className="relative">
-              <h3 className="font-semibold mb-1.5">Report to Toronto 311</h3>
-              <p className="text-sm text-blue-50 leading-relaxed">
-                Use the official City of Toronto 311 service request page to submit complaints or service requests.
+              <h3 className="font-semibold mb-1.5">Invasive Plant Check</h3>
+              <p className="text-sm text-emerald-50 leading-relaxed">
+                Our AI-assisted mobile app — scan or upload a plant photo to check it against the City of Toronto prohibited plants guide and learn safer next steps.
               </p>
             </div>
             <div className="relative flex items-center gap-1 text-sm font-medium mt-auto">
-              Visit Toronto 311
-              <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              Explore the app
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </div>
-          </a>
+          </Link>
         </div>
 
         {/* Noise — Coming Soon */}
