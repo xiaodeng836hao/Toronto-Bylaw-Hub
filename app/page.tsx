@@ -4,10 +4,60 @@ import { OFFICIAL_311_URL, bylawChapters, zoningTopics } from "@/lib/mock-data";
 import { prohibitedPlants } from "@/lib/prohibited-plants";
 import { siteConfig } from "@/lib/site-config";
 import {
-  Camera, Waves, MapPin, MessageSquare, Leaf,
+  Camera, MapPin, MessageSquare, Leaf,
   ArrowRight, BookOpen, FileText, AlertTriangle, CheckSquare,
   ExternalLink, ChevronRight, Clock, Sparkles,
+  ListChecks, Search, Waves, Calculator,
 } from "lucide-react";
+
+// Hands-on reference tools — the quick-access shortcuts shown near the top.
+const referenceTools = [
+  {
+    href: "/photo-review",
+    icon: Camera,
+    title: "Photo Review Helper",
+    desc: "Upload a photo to find a likely bylaw match.",
+    chip: "from-violet-50 to-violet-100",
+    ring: "ring-violet-600/10",
+    iconColor: "text-violet-600",
+  },
+  {
+    href: "/prohibited-plants",
+    icon: Leaf,
+    title: "Prohibited Plants Identifier",
+    desc: "Identify Toronto's prohibited plants and safe removal.",
+    chip: "from-green-50 to-green-100",
+    ring: "ring-green-600/10",
+    iconColor: "text-green-600",
+  },
+  {
+    href: "/landscaping#calculator",
+    icon: Calculator,
+    title: "Soft Landscaping Calculator",
+    desc: "Check a Residential Zone yard against the soft-landscaping minimum.",
+    chip: "from-amber-50 to-amber-100",
+    ring: "ring-amber-600/10",
+    iconColor: "text-amber-600",
+  },
+  {
+    href: "/pool-fence-guide#checklist",
+    icon: ListChecks,
+    title: "Pool Compliance Checklist",
+    desc: "Printable pool enclosure inspection checklist.",
+    chip: "from-cyan-50 to-cyan-100",
+    ring: "ring-cyan-600/10",
+    iconColor: "text-cyan-600",
+  },
+  {
+    href: "/tmc-chapters/447#fence-helper",
+    icon: Search,
+    title: "Find the Relevant Fence Height Rule",
+    desc: "Answer a few questions to get your fence's limit.",
+    chip: "from-sky-50 to-sky-100",
+    ring: "ring-sky-600/10",
+    iconColor: "text-sky-600",
+  },
+];
 
 const featureCards = [
   {
@@ -22,16 +72,6 @@ const featureCards = [
     cta: "Ask a question",
   },
   {
-    href: "/photo-review",
-    icon: Camera,
-    title: "Photo Review Helper",
-    description: "Upload a photo to automatically match possible bylaw-related issues to the most relevant Toronto bylaw chapters and sections, with an evidence checklist.",
-    color: "from-violet-50 to-violet-100",
-    ring: "ring-violet-600/10",
-    iconColor: "text-violet-600",
-    badge: "Preliminary Helper",
-  },
-  {
     href: "/tmc-chapters",
     icon: BookOpen,
     title: "Toronto Municipal Code Chapters",
@@ -42,46 +82,25 @@ const featureCards = [
     badge: "Bylaw Search",
   },
   {
-    href: "/pool-fence-guide",
-    icon: Waves,
-    title: "Pool Fence & Enclosure Guide",
-    description: "Understand pool enclosure permits, fence height, and gate rules — with a printable inspection checklist.",
-    color: "from-cyan-50 to-cyan-100",
-    ring: "ring-cyan-600/10",
-    iconColor: "text-cyan-600",
-    badge: "Chapter 447",
-  },
-  {
     href: "/zoning",
     icon: MapPin,
     title: "Zoning Guide",
-    description: "Simple answers to common zoning questions: parking, setbacks, accessory structures, landscaping, and more.",
+    description: "Simple answers to common zoning and landscaping questions: parking, setbacks, accessory structures, and more.",
     color: "from-emerald-50 to-emerald-100",
     ring: "ring-emerald-600/10",
     iconColor: "text-emerald-600",
     badge: "By-law 569-2013",
   },
   {
-    href: "/landscaping",
-    icon: Leaf,
-    title: "Landscaping Guide",
-    description: "Soft landscaping requirements for front yards, side yards, and rear yards in Toronto residential zones — plus the minor variance / Committee of Adjustment path.",
-    color: "from-amber-50 to-amber-100",
-    ring: "ring-amber-600/10",
-    iconColor: "text-amber-600",
-    badge: "Chapter 10.5",
-    cta: "Open Landscaping Guide",
-  },
-  {
-    href: "/prohibited-plants",
-    icon: Leaf,
-    title: "Prohibited Plants Identifier",
-    description: "Explore Toronto's prohibited plants, compare their seasonal appearance, and learn safe, resident-friendly removal methods.",
-    color: "from-green-50 to-green-100",
-    ring: "ring-green-600/10",
-    iconColor: "text-green-600",
-    badge: "Chapter 489",
-    cta: "Explore Prohibited Plants",
+    href: "/pool-fence-guide",
+    icon: Waves,
+    title: "Pool Fence Guide",
+    description: "Pool enclosure and gate requirements under Chapter 447 — fence height, self-closing gates, and a printable compliance checklist.",
+    color: "from-cyan-50 to-cyan-100",
+    ring: "ring-cyan-600/10",
+    iconColor: "text-cyan-600",
+    badge: "Chapter 447",
+    cta: "Open Pool Fence Guide",
   },
   {
     href: "/feedback",
@@ -242,12 +261,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Reference Tools — quick access shortcuts */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14" aria-label="Reference tools">
+        <div className="mb-6">
+          <p className="kicker text-blue-600 mb-2.5">Reference Tools</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Jump straight to a tool</h2>
+          <p className="text-gray-500">Hands-on helpers and checklists for the most common questions.</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {referenceTools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="group bg-white rounded-2xl p-4 border border-gray-100 subtle-shadow card-hover flex flex-col gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              >
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br ${tool.chip} ring-1 ring-inset ${tool.ring} shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]`}>
+                  <Icon className={`w-5 h-5 ${tool.iconColor}`} aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold text-gray-900 leading-snug group-hover:text-blue-700 transition-colors">{tool.title}</h3>
+                  <p className="text-xs text-gray-500 leading-relaxed mt-1">{tool.desc}</p>
+                </div>
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 mt-auto">
+                  Open <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Feature Cards Bento Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16">
         <div className="mb-10">
-          <p className="kicker text-blue-600 mb-2.5">Tools &amp; Guides</p>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">What would you like to do?</h2>
-          <p className="text-gray-500">Choose a tool below, or search across everything from the box above.</p>
+          <p className="kicker text-blue-600 mb-2.5">More Guides</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Explore the guides</h2>
+          <p className="text-gray-500">Plain-language guides and reference across Toronto&apos;s bylaws.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

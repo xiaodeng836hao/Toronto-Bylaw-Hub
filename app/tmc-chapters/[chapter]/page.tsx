@@ -505,7 +505,7 @@ export default async function ChapterDetailPage(
 
           {/* Fence Height Requirements table (447 only) */}
           {isFence && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+            <section id="fence-height" className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5 scroll-mt-24">
               <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
                 <Ruler className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Fence Height Requirements
@@ -592,7 +592,11 @@ export default async function ChapterDetailPage(
           )}
 
           {/* Fence Height Helper (447 only) */}
-          {isFence && <FenceHeightHelper />}
+          {isFence && (
+            <div id="fence-helper" className="scroll-mt-24">
+              <FenceHeightHelper />
+            </div>
+          )}
 
           {/* General Fence Restrictions (447 only) */}
           {isFence && (

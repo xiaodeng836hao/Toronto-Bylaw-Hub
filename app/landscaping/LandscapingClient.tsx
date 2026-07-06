@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronUp, HelpCircle, ClipboardList, Scale, Map,
   AlertTriangle, ArrowLeft, Ruler, Home,
   ChevronLeft, ChevronRight, Maximize2, ZoomIn, ZoomOut, X,
+  Calculator, CheckCircle2, XCircle, RotateCcw,
 } from "lucide-react";
 import SourceBadge from "@/components/SourceBadge";
 import RelatedQuestions from "@/components/RelatedQuestions";
@@ -27,6 +28,7 @@ const yardIcons: Record<string, React.ElementType> = {
 const PAGE_SECTIONS = [
   { id: "soft-landscaping", label: "What is soft landscaping?" },
   { id: "visual", label: "Soft vs. Hard" },
+  { id: "calculator", label: "Compliance Calculator" },
   { id: "front-yard", label: "Front Yard" },
   { id: "side-yard", label: "Side Yard" },
   { id: "rear-yard", label: "Rear Yard" },
@@ -222,6 +224,11 @@ export default function LandscapingClient() {
 
         {/* Visual guide carousel */}
         <LandscapingVisualCarousel />
+      </section>
+
+      {/* ── Soft landscaping compliance calculator ─────────────────────────── */}
+      <section id="calculator" aria-labelledby="calc-heading" className="mb-10 scroll-mt-32">
+        <SoftLandscapingCalculator />
       </section>
 
       {/* ── Yard sections ──────────────────────────────────────────────────── */}
@@ -439,6 +446,532 @@ function FaqRow({ item, index }: { item: { question: string; answer: string }; i
           <p className="text-sm text-gray-600 leading-relaxed">{item.answer}</p>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Soft landscaping compliance calculator ─────────────────────────────────
+// All thresholds below come directly from By-law 569-2013, Clause 10.5.50.10,
+// as documented in data/zoning/landscaping-guide.ts. For yards that carry an
+// overall landscaping requirement (any front yard, and the street-facing side
+// yard of a corner lot) the tool also asks for the driveway / parking-pad area —
+// which is NOT landscaping — and checks BOTH the overall landscaping minimum and
+// the soft-landscaping minimum. Under 6.0 m of frontage the landscaping
+// requirement is the whole front yard except the driveway, and the soft minimum
+// is 75% of that. It is a simplified educational estimate, not a legal
+// determination.
+type YardKey = "front" | "side-corner" | "side-interior" | "rear";
+
+const YARD_OPTIONS: { key: YardKey; label: string; hint: string; needsFrontage: boolean }[] = [
+  { key: "front", label: "Front yard", hint: "Front wall of the house to the front lot line", needsFrontage: true },
+  { key: "side-corner", label: "Side yard — corner lot (street-facing)", hint: "The side yard that faces a flanking street", needsFrontage: false },
+  { key: "side-interior", label: "Side yard — interior", hint: "Between houses — no set soft % in the source", needsFrontage: false },
+  { key: "rear", label: "Rear yard", hint: "Rear wall of the house to the rear lot line", needsFrontage: true },
+];
+
+interface Requirement {
+  computable: boolean;
+  needsFrontage?: boolean; // true when frontage is required but missing
+  // ── Landscaping requirement (front yard + corner side yard). Driveways/parking
+  //    pads are excluded from landscaping. Exactly one applies per computable yard: ──
+  landscapingPct: number | null;          // fixed % of the yard that must be landscaping (50 / 60)
+  landscapingWholeMinusDriveway: boolean; // <6.0 m front yard: whole yard except the driveway must be landscaping
+  // ── Soft requirement: ──
+  softShareOfLandscaping: number | null;  // soft must be this % OF THE REQUIRED LANDSCAPING (75 for front + corner side)
+  softPctOfYard: number | null;           // rear yard: soft must be this % of the whole yard (50 / 25)
+  bandLabel: string;
+  section: string;
+  note: string;
+}
+
+function resolveRequirement(yard: YardKey, frontage: number | null): Requirement {
+  const frontageMissing = frontage === null || Number.isNaN(frontage) || frontage <= 0;
+  const base = { landscapingPct: null, landscapingWholeMinusDriveway: false, softShareOfLandscaping: null, softPctOfYard: null };
+  switch (yard) {
+    case "front": {
+      if (frontageMissing)
+        return { computable: false, ...base, bandLabel: "", section: "10.5.50.10(1) & (1)(D)", note: "", needsFrontage: true };
+      if (frontage! < 6.0)
+        return {
+          computable: true, ...base, landscapingWholeMinusDriveway: true, softShareOfLandscaping: 75,
+          bandLabel: "Frontage under 6.0 m", section: "10.5.50.10(1)(A) & (1)(D)",
+          note: "On lots under 6.0 m, the whole front yard — except a permitted driveway or parking pad — must be landscaping, and at least 75% of that landscaping must be soft. The driveway or parking pad you enter is excluded first; the soft minimum is then 75% of what remains.",
+        };
+      if (frontage! < 15.0)
+        return {
+          computable: true, ...base, landscapingPct: 50, softShareOfLandscaping: 75,
+          bandLabel: "Frontage 6.0 m to under 15.0 m", section: "10.5.50.10(1)(B) & (1)(D)",
+          note: "At least 50% of the front yard must be landscaping, and at least 75% of that required landscaping must be soft (37.5% of the front yard). A driveway or parking pad is not landscaping, so it is excluded before the percentages are checked.",
+        };
+      return {
+        computable: true, ...base, landscapingPct: 60, softShareOfLandscaping: 75,
+        bandLabel: "Frontage 15.0 m or wider", section: "10.5.50.10(1)(C) & (1)(D)",
+        note: "At least 60% of the front yard must be landscaping, and at least 75% of that required landscaping must be soft (45% of the front yard). A driveway or parking pad is not landscaping, so it is excluded before the percentages are checked.",
+      };
+    }
+    case "side-corner":
+      return {
+        computable: true, ...base, landscapingPct: 60, softShareOfLandscaping: 75,
+        bandLabel: "Corner lot — street-facing side yard", section: "10.5.50.10(2)",
+        note: "On a corner lot, at least 60% of the street-facing side yard must be landscaping, and at least 75% of that must be soft (45% of the side yard). A driveway or parking pad is not landscaping, so it is excluded before the percentages are checked.",
+      };
+    case "side-interior":
+      return {
+        computable: false, ...base, bandLabel: "Interior side yard", section: "Needs source verification",
+        note: "The source does not set a specific soft-landscaping percentage for an interior (non-street-facing) side yard. Setbacks, permitted encroachments, drainage, and parking rules govern instead — confirm against the official by-law for your zone.",
+      };
+    case "rear": {
+      if (frontageMissing)
+        return { computable: false, ...base, bandLabel: "", section: "10.5.50.10(3)", note: "", needsFrontage: true };
+      if (frontage! > 6.0)
+        return {
+          computable: true, ...base, softPctOfYard: 50,
+          bandLabel: "Frontage greater than 6.0 m", section: "10.5.50.10(3)",
+          note: "For a residential building other than an apartment building, at least 50% of the rear yard must be soft landscaping. The water surface of an outdoor pool counts as soft landscaping (10.5.50.10(7)).",
+        };
+      return {
+        computable: true, ...base, softPctOfYard: 25,
+        bandLabel: "Frontage 6.0 m or less", section: "10.5.50.10(3)",
+        note: "For a residential building other than an apartment building, at least 25% of the rear yard must be soft landscaping. The water surface of an outdoor pool counts as soft landscaping (10.5.50.10(7)).",
+      };
+    }
+  }
+}
+
+// Trim trailing zeros for tidy display, keeping up to 2 decimals.
+function fmt(n: number): string {
+  return Number(n.toFixed(2)).toLocaleString("en-CA");
+}
+
+function SoftLandscapingCalculator() {
+  const [yard, setYard] = useState<YardKey | "">("");
+  const [frontage, setFrontage] = useState("");
+  const [unit, setUnit] = useState<"m²" | "ft²">("m²");
+  const [entryMode, setEntryMode] = useState<"soft" | "hard">("soft");
+  const [total, setTotal] = useState("");
+  const [entryValue, setEntryValue] = useState("");
+  const [driveway, setDriveway] = useState("");
+  const [encroachment, setEncroachment] = useState("");
+
+  const reset = () => {
+    setYard(""); setFrontage(""); setEntryMode("soft"); setTotal(""); setEntryValue(""); setDriveway(""); setEncroachment("");
+  };
+
+  const selectedYard = YARD_OPTIONS.find((o) => o.key === yard) ?? null;
+  const needsFrontage = selectedYard?.needsFrontage ?? false;
+  const frontageNum = frontage.trim() === "" ? null : Number(frontage);
+  const totalNum = total.trim() === "" ? NaN : Number(total);
+  const entryNum = entryValue.trim() === "" ? NaN : Number(entryValue);
+  const drivewayNum = driveway.trim() === "" ? NaN : Number(driveway);
+  // Permitted encroachment is optional — a blank field means none (0).
+  const encroachmentNum = encroachment.trim() === "" ? 0 : Number(encroachment);
+
+  const req = yard ? resolveRequirement(yard, frontageNum) : null;
+
+  // Yards with a landscaping requirement (front yard + corner side yard) exclude
+  // the driveway / parking pad — which is not landscaping — so it is entered too.
+  const hasLandscapingReq = !!(req?.computable && (req.landscapingPct !== null || req.landscapingWholeMinusDriveway));
+  const needsDriveway = hasLandscapingReq;
+
+  // Per 10.5.50.10(6), a permitted encroachment is excluded from the calculation,
+  // so every percentage is measured against total − encroachment.
+  const effectiveTotal = Number.isFinite(totalNum) && Number.isFinite(encroachmentNum) ? totalNum - encroachmentNum : NaN;
+
+  // Only the front yard offers the "hard area" shortcut; side and rear yards take
+  // the soft landscaping area directly.
+  const allowHardEntry = yard === "front";
+  const effectiveEntryMode = allowHardEntry ? entryMode : "soft";
+
+  // Derive the soft area from whichever field the user filled in (of the effective area).
+  const softNum = effectiveEntryMode === "soft" ? entryNum : (Number.isFinite(effectiveTotal) && Number.isFinite(entryNum) ? effectiveTotal - entryNum : NaN);
+  // Landscaping = the effective area except the driveway / parking pad.
+  const landscapingNum = needsDriveway && Number.isFinite(effectiveTotal) && Number.isFinite(drivewayNum) ? effectiveTotal - drivewayNum : NaN;
+
+  // Validation.
+  let error: string | null = null;
+  if (yard && needsFrontage && (frontageNum === null || Number.isNaN(frontageNum) || frontageNum <= 0))
+    error = "Enter your lot frontage (in metres) so the right threshold applies.";
+  else if (yard && (Number.isNaN(totalNum) || totalNum <= 0))
+    error = "Enter the total area of this yard (a number greater than 0).";
+  else if (yard && (Number.isNaN(encroachmentNum) || encroachmentNum < 0))
+    error = "Permitted encroachment area cannot be negative.";
+  else if (yard && encroachmentNum >= totalNum)
+    error = "Permitted encroachment must be less than the total area.";
+  else if (yard && Number.isNaN(entryNum))
+    error = effectiveEntryMode === "soft" ? "Enter the soft landscaping area." : "Enter the hard surface area.";
+  else if (yard && entryNum < 0)
+    error = "Area cannot be negative.";
+  else if (yard && Number.isFinite(entryNum) && entryNum > effectiveTotal)
+    error = effectiveEntryMode === "soft" ? "Soft landscaping area cannot exceed the area used (total − encroachment)." : "Hard surface area cannot exceed the area used (total − encroachment).";
+  else if (needsDriveway && Number.isNaN(drivewayNum))
+    error = "Enter the driveway or parking pad area (enter 0 if there is none).";
+  else if (needsDriveway && drivewayNum < 0)
+    error = "Driveway or parking pad area cannot be negative.";
+  else if (needsDriveway && drivewayNum > effectiveTotal)
+    error = "Driveway or parking pad area cannot exceed the area used (total − encroachment).";
+  else if (needsDriveway && Number.isFinite(softNum) && softNum + drivewayNum > effectiveTotal + 1e-9)
+    error = "Soft area plus driveway/parking area cannot exceed the area used (total − encroachment).";
+
+  const canCompute = !!(yard && req?.computable && !error && Number.isFinite(effectiveTotal) && effectiveTotal > 0 && Number.isFinite(softNum));
+  const hasEncroachment = canCompute && encroachmentNum > 0;
+
+  // Overall landscaping check (front yard + corner side yard). For a <6.0 m front
+  // yard the requirement is the effective area minus the driveway; otherwise a fixed %.
+  const requiredLandscapingArea = !canCompute || !needsDriveway ? NaN
+    : req!.landscapingWholeMinusDriveway ? effectiveTotal - drivewayNum
+    : (req!.landscapingPct! / 100) * effectiveTotal;
+  const landscapingPctProvided = canCompute && needsDriveway ? (landscapingNum / effectiveTotal) * 100 : NaN;
+  const landscapingReqPct = canCompute && needsDriveway ? (requiredLandscapingArea / effectiveTotal) * 100 : NaN;
+  const landscapingPass = canCompute && needsDriveway ? landscapingNum + 1e-9 >= requiredLandscapingArea : true;
+  const landscapingDiff = canCompute && needsDriveway ? landscapingNum - requiredLandscapingArea : NaN;
+
+  // Soft-landscaping check. For landscaping-based yards it is a share (75%) of the
+  // REQUIRED landscaping; for the rear yard it is a direct % of the effective area.
+  const requiredSoftArea = !canCompute ? NaN
+    : hasLandscapingReq ? (req!.softShareOfLandscaping! / 100) * requiredLandscapingArea
+    : req!.softPctOfYard !== null ? (req!.softPctOfYard / 100) * effectiveTotal
+    : NaN;
+  const softPctProvided = canCompute ? (softNum / effectiveTotal) * 100 : NaN;
+  const softReqPct = canCompute ? (requiredSoftArea / effectiveTotal) * 100 : NaN;
+  const softPass = canCompute ? softNum + 1e-9 >= requiredSoftArea : false;
+  const softDiff = canCompute ? softNum - requiredSoftArea : NaN;
+
+  const overallPass = canCompute && softPass && landscapingPass;
+  // Human-readable list of any shortfalls, shown in the verdict.
+  const deficiencies: string[] = [];
+  if (canCompute && needsDriveway && !landscapingPass) deficiencies.push(`Overall landscaping is about ${fmt(Math.abs(landscapingDiff))} ${unit} short of the ${fmt(requiredLandscapingArea)} ${unit} required.`);
+  if (canCompute && !softPass) deficiencies.push(`Soft landscaping is about ${fmt(Math.abs(softDiff))} ${unit} short of the ${fmt(requiredSoftArea)} ${unit} required.`);
+
+  const inputBase =
+    "w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-200";
+
+  // Step numbers adapt to which optional fields (frontage, driveway) are shown.
+  const stepUnit = needsFrontage ? 3 : 2;
+  const stepTotal = stepUnit + 1;
+  const stepDriveway = needsDriveway ? stepTotal + 1 : null;
+  const stepEncroach = (stepDriveway ?? stepTotal) + 1;
+  const stepEntry = stepEncroach + 1;
+
+  return (
+    <div className="rounded-2xl border-2 border-amber-200 bg-gradient-to-br from-amber-50/70 to-white p-6 md:p-8">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-700 mb-4">
+        <Calculator className="w-3.5 h-3.5" aria-hidden="true" />
+        <span className="kicker">Soft Landscaping Calculator</span>
+      </div>
+      <h2 id="calc-heading" className="text-2xl font-bold text-gray-900 mb-2">
+        Soft Landscaping Calculator for Residential Zones
+      </h2>
+      <p className="text-gray-600 leading-relaxed mb-4 max-w-3xl">
+        Pick which yard you are measuring and enter its total area — plus your lot frontage for a front or rear yard,
+        since it sets which percentage applies. For a front yard or a corner-lot side yard, also enter the driveway or
+        parking-pad area (not landscaping, so it is excluded first), and you can optionally exclude a permitted
+        encroachment under 10.5.40.60. Then enter the soft landscaping area — front yards can enter the hard area
+        instead. The calculator applies the matching Chapter&nbsp;10.5 requirement and flags any
+        <strong> landscaping or soft-landscaping shortfall</strong>. Use the same unit for every field.
+      </p>
+      <div className="mb-6 max-w-3xl p-3.5 rounded-xl border border-amber-100 bg-amber-50/60 flex gap-2.5">
+        <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <p className="text-xs text-amber-900 leading-relaxed">
+          Use this calculator for the <strong>Residential Zone category only</strong>, such as a detached house,
+          semi-detached house, duplex, triplex, fourplex or townhouse.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* ── Inputs ────────────────────────────────────────────────────── */}
+        <div className="flex flex-col gap-5">
+          {/* Yard location */}
+          <div>
+            <label htmlFor="calc-yard" className="block text-sm font-semibold text-gray-800 mb-1.5">1. Where is the area you are measuring?</label>
+            <select
+              id="calc-yard"
+              value={yard}
+              onChange={(e) => setYard(e.target.value as YardKey | "")}
+              className={inputBase}
+            >
+              <option value="">Select a yard…</option>
+              {YARD_OPTIONS.map((o) => (
+                <option key={o.key} value={o.key}>{o.label}</option>
+              ))}
+            </select>
+            {selectedYard && <p className="mt-1.5 text-xs text-gray-500">{selectedYard.hint}</p>}
+          </div>
+
+          {/* Frontage (only for front / rear) */}
+          {yard && needsFrontage && (
+            <div>
+              <label htmlFor="calc-frontage" className="block text-sm font-semibold text-gray-800 mb-1.5">2. Lot frontage (width at the front lot line)</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="calc-frontage"
+                  inputMode="decimal"
+                  value={frontage}
+                  onChange={(e) => setFrontage(e.target.value)}
+                  placeholder="e.g. 12.5"
+                  className={inputBase}
+                />
+                <span className="text-sm text-gray-500 flex-shrink-0">metres</span>
+              </div>
+              <p className="mt-1.5 text-xs text-gray-500">Frontage decides which percentage applies.</p>
+            </div>
+          )}
+
+          {/* Unit toggle */}
+          <div>
+            <span className="block text-sm font-semibold text-gray-800 mb-1.5">{stepUnit}. Area unit</span>
+            <div className="inline-flex rounded-lg border border-gray-200 bg-white p-0.5">
+              {(["m²", "ft²"] as const).map((u) => (
+                <button
+                  key={u}
+                  type="button"
+                  onClick={() => setUnit(u)}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${unit === u ? "bg-amber-600 text-white" : "text-gray-600 hover:bg-amber-50"}`}
+                >
+                  {u}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Total area */}
+          <div>
+            <label htmlFor="calc-total" className="block text-sm font-semibold text-gray-800 mb-1.5">{stepTotal}. Total area of this yard</label>
+            <div className="flex items-center gap-2">
+              <input
+                id="calc-total"
+                inputMode="decimal"
+                value={total}
+                onChange={(e) => setTotal(e.target.value)}
+                placeholder="e.g. 60"
+                className={inputBase}
+              />
+              <span className="text-sm text-gray-500 flex-shrink-0">{unit}</span>
+            </div>
+          </div>
+
+          {/* Driveway / parking pad (only for yards with an overall landscaping %) */}
+          {needsDriveway && (
+            <div>
+              <label htmlFor="calc-driveway" className="block text-sm font-semibold text-gray-800 mb-1.5">{stepDriveway}. Driveway or parking pad area</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="calc-driveway"
+                  inputMode="decimal"
+                  value={driveway}
+                  onChange={(e) => setDriveway(e.target.value)}
+                  placeholder="0 if there is none"
+                  className={inputBase}
+                />
+                <span className="text-sm text-gray-500 flex-shrink-0">{unit}</span>
+              </div>
+              <p className="mt-1.5 text-xs text-gray-500">A driveway or parking pad is not landscaping, so it is subtracted before the landscaping percentage is checked.</p>
+            </div>
+          )}
+
+          {/* Permitted encroachment (optional) — excluded from the calculation */}
+          <div>
+            <label htmlFor="calc-encroach" className="block text-sm font-semibold text-gray-800 mb-1.5">
+              {stepEncroach}. Permitted encroachment <span className="font-normal text-gray-400">(optional)</span>
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                id="calc-encroach"
+                inputMode="decimal"
+                value={encroachment}
+                onChange={(e) => setEncroachment(e.target.value)}
+                placeholder="0 if none"
+                className={inputBase}
+              />
+              <span className="text-sm text-gray-500 flex-shrink-0">{unit}</span>
+            </div>
+            <p className="mt-1.5 text-xs text-gray-500">Area of a structure permitted to encroach under 10.5.40.60 (e.g. certain porches or steps). It is excluded, so all percentages use total − encroachment.</p>
+          </div>
+
+          {/* Entry mode + value */}
+          <div>
+            <label htmlFor="calc-entry" className="block text-sm font-semibold text-gray-800 mb-1.5">
+              {stepEntry}. {allowHardEntry ? "Enter one of the two" : "Soft landscaping area"}
+            </label>
+            {allowHardEntry && (
+              <div className="inline-flex rounded-lg border border-gray-200 bg-white p-0.5 mb-2">
+                {([["soft", "Soft area"], ["hard", "Hard area"]] as const).map(([mode, label]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => { setEntryMode(mode); setEntryValue(""); }}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${entryMode === mode ? "bg-amber-600 text-white" : "text-gray-600 hover:bg-amber-50"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <input
+                id="calc-entry"
+                inputMode="decimal"
+                value={entryValue}
+                onChange={(e) => setEntryValue(e.target.value)}
+                placeholder={effectiveEntryMode === "soft" ? "Soft landscaping area" : "Hard surface area"}
+                className={inputBase}
+              />
+              <span className="text-sm text-gray-500 flex-shrink-0">{unit}</span>
+            </div>
+            {allowHardEntry && (
+              <p className="mt-1.5 text-xs text-gray-500">
+                {entryMode === "hard"
+                  ? "Soft area is worked out as total − hard surface area."
+                  : "Or switch to “Hard area” to enter the paved/built area instead."}
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={reset}
+            className="inline-flex items-center gap-1.5 self-start text-sm font-medium text-gray-500 hover:text-amber-700 transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" /> Reset
+          </button>
+        </div>
+
+        {/* ── Result ────────────────────────────────────────────────────── */}
+        <div className="rounded-xl border border-gray-100 bg-white p-5 subtle-shadow flex flex-col">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            <Ruler className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" /> Result
+          </p>
+
+          {!yard && (
+            <p className="text-sm text-gray-500 my-auto text-center py-8">Select a yard and enter your measurements to see an estimate.</p>
+          )}
+
+          {yard && req && !req.computable && !req.needsFrontage && (
+            <div className="my-auto p-4 rounded-lg border border-blue-100 bg-blue-50/70 flex gap-2.5">
+              <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-sm text-blue-900 leading-relaxed">{req.note}</p>
+            </div>
+          )}
+
+          {yard && req?.computable && error && (
+            <div className="my-auto p-4 rounded-lg border border-amber-200 bg-amber-50 flex gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-sm text-amber-800 leading-relaxed">{error}</p>
+            </div>
+          )}
+
+          {canCompute && (
+            <div className="flex flex-col gap-4" aria-live="polite">
+              {/* Verdict banner */}
+              <div className={`rounded-xl border-2 p-4 flex items-start gap-3 ${overallPass ? "border-green-300 bg-green-50" : "border-red-300 bg-red-50"}`}>
+                {overallPass
+                  ? <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" aria-hidden="true" />
+                  : <XCircle className="w-6 h-6 text-red-600 flex-shrink-0" aria-hidden="true" />}
+                <div>
+                  <p className={`font-bold ${overallPass ? "text-green-800" : "text-red-800"}`}>
+                    {overallPass
+                      ? (needsDriveway ? "Likely meets the landscaping requirements" : "Likely meets the soft-landscaping minimum")
+                      : "Likely has a landscaping shortfall"}
+                  </p>
+                  {overallPass ? (
+                    <p className="text-sm mt-0.5 text-green-700">
+                      {req!.landscapingWholeMinusDriveway
+                        ? `The whole yard except the driveway is landscaping; soft landscaping is about ${fmt(softDiff)} ${unit} above the minimum.`
+                        : needsDriveway
+                        ? `Landscaping is about ${fmt(landscapingDiff)} ${unit} and soft landscaping about ${fmt(softDiff)} ${unit} above the minimums.`
+                        : `About ${fmt(softDiff)} ${unit} above the minimum.`}
+                    </p>
+                  ) : (
+                    <ul className="text-sm mt-1 text-red-700 flex flex-col gap-1">
+                      {deficiencies.map((d) => (
+                        <li key={d} className="flex items-start gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0 mt-1.5" aria-hidden="true" /> {d}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              {/* Effective area note (only when a permitted encroachment is entered) */}
+              {hasEncroachment && (
+                <p className="text-xs text-gray-500 -mt-1">
+                  Area used: <span className="font-semibold text-gray-700">{fmt(effectiveTotal)} {unit}</span> (total {fmt(totalNum)} − encroachment {fmt(encroachmentNum)}). All percentages below are of this area.
+                </p>
+              )}
+
+              {/* Overall landscaping check (only when a driveway/parking pad applies) */}
+              {needsDriveway && (
+                <div className="rounded-lg border border-gray-100 p-3">
+                  <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 mb-2">
+                    {landscapingPass
+                      ? <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" aria-hidden="true" />
+                      : <XCircle className="w-4 h-4 text-red-600 flex-shrink-0" aria-hidden="true" />}
+                    Overall landscaping
+                  </p>
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <dt className="text-gray-500">Required minimum</dt>
+                    <dd className="text-right font-semibold text-gray-900">
+                      {req!.landscapingWholeMinusDriveway
+                        ? `Whole yard − driveway = ${fmt(requiredLandscapingArea)} ${unit}`
+                        : `${fmt(landscapingReqPct)}% = ${fmt(requiredLandscapingArea)} ${unit}`}
+                    </dd>
+                    <dt className="text-gray-500">Your landscaping</dt>
+                    <dd className="text-right font-semibold text-gray-900">{fmt(landscapingNum)} {unit} <span className="font-normal text-gray-400">({fmt(landscapingPctProvided)}%)</span></dd>
+                    <dt className="text-gray-500">Driveway / parking excluded</dt>
+                    <dd className="text-right text-gray-700">{fmt(drivewayNum)} {unit}</dd>
+                  </dl>
+                </div>
+              )}
+
+              {/* Soft landscaping check */}
+              <div className="rounded-lg border border-gray-100 p-3">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 mb-2">
+                  {softPass
+                    ? <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" aria-hidden="true" />
+                    : <XCircle className="w-4 h-4 text-red-600 flex-shrink-0" aria-hidden="true" />}
+                  Soft landscaping
+                </p>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <dt className="text-gray-500">Required minimum</dt>
+                  <dd className="text-right font-semibold text-gray-900">
+                    {hasLandscapingReq
+                      ? `${req!.softShareOfLandscaping}% of required landscaping = ${fmt(requiredSoftArea)} ${unit}`
+                      : `${fmt(softReqPct)}% of the yard = ${fmt(requiredSoftArea)} ${unit}`}
+                  </dd>
+                  <dt className="text-gray-500">Your soft area</dt>
+                  <dd className="text-right font-semibold text-gray-900">{fmt(softNum)} {unit} <span className="font-normal text-gray-400">({fmt(softPctProvided)}%)</span></dd>
+                  {effectiveEntryMode === "hard" && (
+                    <>
+                      <dt className="text-gray-500">Hard surface entered</dt>
+                      <dd className="text-right text-gray-700">{fmt(entryNum)} {unit}</dd>
+                    </>
+                  )}
+                </dl>
+              </div>
+
+              {/* Applied rule */}
+              <div className="rounded-lg bg-gray-50 border border-gray-100 p-3">
+                <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                  <FileText className="w-3 h-3" aria-hidden="true" /> Rule applied · <span className="font-mono">{req!.section}</span>
+                </p>
+                <p className="text-xs text-gray-600 leading-relaxed">{req!.bandLabel}. {req!.note}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="mt-6 p-4 rounded-xl border border-red-200 bg-red-50 flex gap-3">
+        <Info className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+        <p className="text-xs text-red-800 leading-relaxed">
+          This calculator is a simplified educational estimate. It excludes the driveway/parking pad and any permitted
+          encroachment you enter, but it relies on your measurements and does not decide whether an encroachment is
+          actually permitted, nor does it account for apartment buildings, your specific zone, or site conditions. It is
+          not a legal determination of compliance. Always verify with the official Zoning By-law, the Zoning Map Viewer,
+          or City staff.
+        </p>
+      </div>
     </div>
   );
 }
