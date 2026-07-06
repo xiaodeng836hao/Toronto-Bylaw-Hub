@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   bylawChapters, getChapterBySlug, OFFICIAL_311_URL,
@@ -17,11 +18,22 @@ import {
   type WasteIconKey, type WasteToneKey,
 } from "@/lib/littering-548";
 import {
+  PREVENTION_INTRO, PREVENTION_MEASURES, type PreventionIconKey,
+  DIFFERENCE_INTRO, DIFFERENCE_TAGS, DIFFERENCE_MURAL, type DifferencePoint,
+  GRAFFITI_PENALTIES, GRAFFITI_PENALTIES_NOTE,
+  EXEMPTION_INTRO, EXEMPTION_CHECKLIST,
+  EXEMPTION_CHECKLIST_NOTE, EXEMPTION_KEEP_COPIES_NOTE,
+  SAMPLE_EMAIL_SUBJECT, SAMPLE_EMAIL_BODY, SAMPLE_EMAIL_NOTE,
+  EXEMPTION_DISCLAIMER, GRAFFITI_EXEMPTION_EMAIL, GRAFFITI_OFFICIAL_LINKS,
+  STREETARTORONTO_PAGE,
+} from "@/lib/graffiti-485";
+import {
   ArrowLeft, ArrowRight, ExternalLink, Download, FileText,
   HelpCircle, AlertCircle, Users, Tag, BookOpen, ChevronRight, Info, Phone,
   ClipboardCheck, Wrench, AlertTriangle, CheckCircle2, XCircle, Layers, Hash,
   Ruler, Waves, Car, SquareStack, Ban,
   FlaskConical, SprayCan, Syringe, HardHat, Leaf, Disc3, Building2,
+  Lightbulb, Camera, Lock, Paintbrush, Palette, Mail, ListChecks, ShieldCheck,
 } from "lucide-react";
 
 export function generateStaticParams() {
@@ -72,6 +84,26 @@ const WASTE_ICON: Record<WasteIconKey, typeof Ban> = {
   yard: Leaf,
   tire: Disc3,
   business: Building2,
+};
+
+// Graffiti-prevention (Chapter 485) icon lookup.
+const PREVENTION_ICON: Record<PreventionIconKey, typeof Lightbulb> = {
+  light: Lightbulb,
+  camera: Camera,
+  lock: Lock,
+  leaf: Leaf,
+  paint: Paintbrush,
+  mural: Palette,
+};
+
+// Graffiti tags vs. mural (Chapter 485) comparison icon lookup.
+const DIFFERENCE_ICON: Record<DifferencePoint["icon"], typeof Lightbulb> = {
+  cross: XCircle,
+  spray: SprayCan,
+  notice: ClipboardCheck,
+  check: CheckCircle2,
+  brush: Paintbrush,
+  shield: ShieldCheck,
 };
 
 const WASTE_TONE: Record<WasteToneKey, string> = {
@@ -239,6 +271,234 @@ export default async function ChapterDetailPage(
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+
+          {/* Penalties & Enforcement (485 only) */}
+          {ch.slug === "485" && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <AlertTriangle className="w-5 h-5 text-amber-500" aria-hidden="true" />
+                Penalties &amp; Enforcement
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">
+                What can happen if graffiti vandalism is not addressed. From Chapter 485, § 485-7 and § 485-8.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {GRAFFITI_PENALTIES.map((p) => (
+                  <div key={p.reference + p.offence} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                    <p className="text-sm font-bold text-rose-600 leading-tight">{p.maxFine}</p>
+                    <p className="text-xs text-gray-600 leading-snug mt-1">{p.offence}</p>
+                    <p className="text-[10px] font-mono text-gray-400 mt-1">{p.reference}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 p-3 rounded-xl border border-amber-200 bg-amber-50 flex gap-2.5">
+                <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-xs text-amber-800 leading-relaxed">{GRAFFITI_PENALTIES_NOTE}</p>
+              </div>
+            </section>
+          )}
+
+          {/* Know the Difference: tags vs. mural (485 only) */}
+          {ch.slug === "485" && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <Palette className="w-5 h-5 text-blue-500" aria-hidden="true" />
+                Know the Difference
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">{DIFFERENCE_INTRO}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Graffiti tags */}
+                <div className="rounded-xl border-2 border-rose-200 bg-gradient-to-b from-rose-50/70 to-white overflow-hidden">
+                  <div className="bg-rose-50 border-b border-rose-100 px-4 py-3 text-center">
+                    <p className="text-sm font-bold uppercase tracking-wide text-rose-700">{DIFFERENCE_TAGS.title}</p>
+                    <p className="text-xs text-rose-900/70 mt-0.5">{DIFFERENCE_TAGS.subtitle}</p>
+                  </div>
+                  <div className="relative aspect-[16/10] border-b border-rose-100 bg-gray-100">
+                    <Image
+                      src={DIFFERENCE_TAGS.image.src}
+                      alt={DIFFERENCE_TAGS.image.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 420px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <ul className="p-4 flex flex-col gap-3">
+                    {DIFFERENCE_TAGS.points.map((p) => {
+                      const Icon = DIFFERENCE_ICON[p.icon];
+                      return (
+                        <li key={p.label} className="flex items-start gap-2.5">
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex-shrink-0">
+                            <Icon className="w-3.5 h-3.5" aria-hidden="true" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 leading-snug">{p.label}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed mt-0.5">{p.detail}</p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                {/* Mural / graffiti art */}
+                <div className="rounded-xl border-2 border-blue-200 bg-gradient-to-b from-blue-50/70 to-white overflow-hidden">
+                  <div className="bg-blue-50 border-b border-blue-100 px-4 py-3 text-center">
+                    <p className="text-sm font-bold uppercase tracking-wide text-blue-700">{DIFFERENCE_MURAL.title}</p>
+                    <p className="text-xs text-blue-900/70 mt-0.5">{DIFFERENCE_MURAL.subtitle}</p>
+                  </div>
+                  <div className="relative aspect-[16/10] border-b border-blue-100 bg-gray-100">
+                    <Image
+                      src={DIFFERENCE_MURAL.image.src}
+                      alt={DIFFERENCE_MURAL.image.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 420px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <ul className="p-4 flex flex-col gap-3">
+                    {DIFFERENCE_MURAL.points.map((p) => {
+                      const Icon = DIFFERENCE_ICON[p.icon];
+                      return (
+                        <li key={p.label} className="flex items-start gap-2.5">
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
+                            <Icon className="w-3.5 h-3.5" aria-hidden="true" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 leading-snug">{p.label}</p>
+                            <p className="text-xs text-gray-600 leading-relaxed mt-0.5">{p.detail}</p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+              <p className="mt-3 text-xs text-gray-500">
+                Whether specific markings are graffiti vandalism or approved art is determined against Chapter 485 —
+                see the exemption section below, and confirm with official City sources.
+              </p>
+            </section>
+          )}
+
+          {/* Preventing Graffiti Vandalism (485 only) */}
+          {ch.slug === "485" && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <ShieldCheck className="w-5 h-5 text-emerald-600" aria-hidden="true" />
+                Preventing Graffiti Vandalism
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4">{PREVENTION_INTRO}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {PREVENTION_MEASURES.map((m) => {
+                  const Icon = PREVENTION_ICON[m.icon];
+                  return (
+                    <div key={m.title} className="rounded-xl border border-gray-100 p-4 flex items-start gap-3">
+                      <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex-shrink-0">
+                        <Icon className="w-4 h-4" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-900">{m.title}</p>
+                        <p className="text-xs text-gray-600 leading-relaxed mt-1">{m.description}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 p-3 rounded-xl border border-emerald-100 bg-emerald-50/60 flex gap-2.5">
+                <Info className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-xs text-emerald-900 leading-relaxed">
+                  Funding or support may be available through StreetARToronto programs. Check the official{" "}
+                  <a href={STREETARTORONTO_PAGE} target="_blank" rel="noopener noreferrer" className="font-medium underline hover:text-emerald-700">
+                    StreetARToronto page
+                  </a>{" "}
+                  for current application status, eligibility, and deadlines — funding is not guaranteed.
+                </p>
+              </div>
+            </section>
+          )}
+
+          {/* Applying for a Graffiti Art / Mural Exemption (485 only) */}
+          {ch.slug === "485" && (
+            <section className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50/70 to-white p-5">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+                <SprayCan className="w-5 h-5 text-violet-600" aria-hidden="true" />
+                Applying for a Graffiti Art / Mural Exemption
+              </h2>
+              <p className="text-sm text-gray-500 mb-3">
+                If approved art or a mural has been mistaken for graffiti vandalism, an exemption may be requested.
+              </p>
+              <p className="text-sm text-gray-700 leading-relaxed mb-4">{EXEMPTION_INTRO}</p>
+
+              {/* Where to send */}
+              <div className="rounded-xl border border-violet-200 bg-white p-4 mb-4">
+                <p className="text-[11px] font-semibold text-violet-700 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5" aria-hidden="true" /> Send the exemption request by email to
+                </p>
+                <a href={`mailto:${GRAFFITI_EXEMPTION_EMAIL}`} className="text-sm font-semibold text-violet-700 hover:underline break-all">
+                  {GRAFFITI_EXEMPTION_EMAIL}
+                </a>
+              </div>
+
+              {/* Checklist card — what to include in the email */}
+              <div className="rounded-xl border border-gray-100 bg-white p-4 mb-4">
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 mb-3">
+                  <ListChecks className="w-4 h-4 text-violet-600" aria-hidden="true" /> What to include in the exemption email
+                </p>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
+                  {EXEMPTION_CHECKLIST.map((c) => (
+                    <li key={c.label} className="flex items-start gap-2.5 rounded-lg border border-gray-100 bg-gray-50/60 p-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-violet-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 leading-snug">{c.label}</p>
+                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{c.detail}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gray-500">{EXEMPTION_CHECKLIST_NOTE}</p>
+              </div>
+
+              {/* Sample email (collapsible) */}
+              <details className="group rounded-xl border border-gray-100 bg-white overflow-hidden mb-4">
+                <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between gap-3 text-sm font-medium text-gray-900 hover:bg-gray-50">
+                  Sample exemption email format
+                  <ChevronRight className="w-4 h-4 text-gray-400 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true" />
+                </summary>
+                <div className="px-4 pb-4 pt-0">
+                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Subject</p>
+                  <p className="text-sm text-gray-800 font-medium mb-3">{SAMPLE_EMAIL_SUBJECT}</p>
+                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1">Body</p>
+                  <pre className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap font-sans bg-gray-50 border border-gray-100 rounded-lg p-3">{SAMPLE_EMAIL_BODY}</pre>
+                  <p className="mt-2 text-xs text-gray-500">{SAMPLE_EMAIL_NOTE}</p>
+                </div>
+              </details>
+
+              <p className="inline-flex items-start gap-1.5 text-xs text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5 mb-4">
+                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-600" aria-hidden="true" />
+                {EXEMPTION_KEEP_COPIES_NOTE}
+              </p>
+
+              {/* Official source buttons */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {GRAFFITI_OFFICIAL_LINKS.map((l) => (
+                  <a
+                    key={l.href + l.label}
+                    href={l.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-violet-200 text-violet-700 text-xs font-medium rounded-lg hover:bg-violet-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" aria-hidden="true" /> {l.label}
+                  </a>
+                ))}
+              </div>
+
+              {/* Disclaimer */}
+              <div className="p-3.5 rounded-xl border border-red-200 bg-red-50 flex gap-2.5">
+                <Info className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-xs text-red-800 leading-relaxed">{EXEMPTION_DISCLAIMER}</p>
               </div>
             </section>
           )}

@@ -59,6 +59,8 @@ export const askSynonyms: SynonymRule[] = [
   { triggers: ["garbage bags outside", "bins overflowing", "garbage room", "dumpster"], expand: ["garbage storage", "waste collection"] },
   { triggers: ["mattress outside", "dumped furniture", "illegal dumping", "construction debris"], expand: ["littering and dumping", "waste"] },
   { triggers: ["graffiti", "spray paint", "tagging"], expand: ["graffiti"] },
+  { triggers: ["prevent graffiti", "graffiti prevention", "anti graffiti", "anti-graffiti", "stop tagging", "keep getting tagged"], expand: ["graffiti prevention", "graffiti"] },
+  { triggers: ["mural exemption", "graffiti exemption", "graffiti art exemption", "mural mistaken", "legal mural", "streetartoronto", "street art toronto", "mural funding"], expand: ["mural exemption", "graffiti art exemption", "graffiti"] },
   { triggers: ["dust", "construction dust", "dirt cloud"], expand: ["dust"] },
 ];
 

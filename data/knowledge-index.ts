@@ -663,6 +663,71 @@ export const knowledgeItems: KnowledgeItem[] = [
     nextSteps: ["Open the Chapter 485 page.", "Report graffiti through a 311 service request."],
   },
   {
+    id: "graffiti-prevention",
+    title: "How can I prevent graffiti vandalism?",
+    type: "TMC Chapter",
+    topic: "Graffiti",
+    summary:
+      "Practical measures — lighting, cameras, restricted access, planting, anti-graffiti coatings, and commissioned legal murals — may help reduce repeat tagging.",
+    keywords: ["graffiti prevention", "prevent graffiti", "anti graffiti coating", "security camera graffiti", "lighting graffiti prevention", "legal mural", "mural funding", "graffiti funding", "streetartoronto"],
+    synonyms: ["stop graffiti", "repeat tagging", "anti-graffiti", "graffiti deterrent", "mural to prevent graffiti", "street art toronto", "support mural program"],
+    relatedQuestions: [
+      "How can I prevent graffiti vandalism?",
+      "Is funding available for a mural to prevent graffiti?",
+      "What is StreetARToronto?",
+    ],
+    sourceText:
+      "Common prevention options include improved lighting, visible security cameras, limiting access with fences or gates, planting vines or shrubs against blank walls, darker paint or anti-graffiti coatings, and commissioning a legal mural. StreetARToronto is the City program supporting street art and murals; funding or support may be available depending on current program status.",
+    plainLanguageAnswer:
+      "Property owners can consider improved lighting, visible security cameras, limiting access with fences or gates, planting climbing vines or thorny shrubs against large blank walls, darker paint colours or an anti-graffiti coating, and commissioning a legal mural — which can also deter future tagging. Funding or support may be available through StreetARToronto programs; check the official StreetARToronto page for current application status, eligibility, and deadlines (funding is not guaranteed). See the Graffiti page for the full prevention list.",
+    relatedChapter: "Chapter 485 — Graffiti",
+    relatedSections: [],
+    officialSources: [
+      { title: "StreetARToronto", type: CITY, url: "https://www.toronto.ca/services-payments/streets-parking-transportation/enhancing-our-streets-and-public-realm/streetartoronto/" },
+      { title: "Graffiti & Postering Information", type: CITY, url: "https://www.toronto.ca/city-government/public-notices-bylaws/bylaw-enforcement/graffiti-postering-signs/" },
+    ],
+    internalUrl: "/tmc-chapters/485",
+    lastReviewed: REVIEWED,
+    cautionLevel: "verify-official-source",
+    nextSteps: [
+      "Open the Graffiti page for the prevention measures.",
+      "Check the official StreetARToronto page for current program status.",
+    ],
+  },
+  {
+    id: "graffiti-mural-exemption",
+    title: "Can I apply for a graffiti art / mural exemption?",
+    type: "TMC Chapter",
+    topic: "Graffiti",
+    summary:
+      "If approved art or a mural has been mistaken for vandalism after a Notice of Violation, the property owner may request a Graffiti Art / Mural exemption by email. Approval is not guaranteed.",
+    keywords: ["mural exemption", "graffiti art exemption", "graffiti exemption", "graffitiexemption", "notice of violation graffiti", "mural mistaken for vandalism", "property owner permission", "community character and standards"],
+    synonyms: ["exempt my mural", "mural notice of violation", "graffiti panel", "approved graffiti art", "regularize mural", "art mural exemption"],
+    relatedQuestions: [
+      "Can I apply for a graffiti mural exemption?",
+      "What should I include in a graffiti exemption email?",
+      "What if my mural was mistaken for vandalism?",
+    ],
+    sourceText:
+      "If graffiti art or an art mural has been mistaken for vandalism and the owner received a Notice of Violation, the owner may request a Graffiti Art / Mural exemption by email to GraffitiExemption@toronto.ca. The request should include the exact address and mural location, owner-permission acknowledgement, statements on aesthetic enhancement and community character and standards, photos of the whole mural, and the artist/company name if applicable.",
+    plainLanguageAnswer:
+      "Yes — if approved art or a mural was mistaken for vandalism and you received a Notice of Violation, the property owner may request a Graffiti Art / Mural exemption by emailing GraffitiExemption@toronto.ca. Include: the exact address and mural location (e.g. garage wall, fence, storefront shutter), an acknowledgement it was created with the owner's permission, a statement on why it aesthetically enhances the surface, a statement on community character and standards, clear photos of the whole mural, and the artist/company name if applicable. Approval is not guaranteed — the City may review whether the mural meets the applicable criteria. Keep copies of the Notice, photos, and everything you submit. See the Graffiti page for a checklist and sample email format.",
+    relatedChapter: "Chapter 485 — Graffiti",
+    relatedSections: ["§§ 485-1, 485-6"],
+    officialSources: [
+      { title: "Graffiti Art / Mural Exemption", type: CITY, url: "https://www.toronto.ca/city-government/public-notices-bylaws/bylaw-enforcement/graffiti-postering-signs/graffiti-art-in-the-city/" },
+      { title: "Chapter 485 (PDF)", type: CODE, url: "https://www.toronto.ca/legdocs/municode/1184_485.pdf" },
+    ],
+    internalUrl: "/tmc-chapters/485",
+    lastReviewed: REVIEWED,
+    cautionLevel: "verify-official-source",
+    nextSteps: [
+      "Open the Graffiti page for the exemption checklist and sample email.",
+      "Email the request to GraffitiExemption@toronto.ca with the required details.",
+      "Verify current requirements on the official City exemption page.",
+    ],
+  },
+  {
     id: "dust-construction",
     title: "What bylaw applies to dust from construction?",
     type: "TMC Chapter",
@@ -806,6 +871,9 @@ export const synonymGroups: string[][] = [
   ["giant hogweed", "hogweed"],
   ["prohibited plants", "invasive plants", "weeds", "noxious weeds", "invasive species"],
   ["graffiti", "tagging", "spray paint", "vandalism"],
+  ["graffiti prevention", "prevent graffiti", "anti graffiti coating", "graffiti deterrent", "legal mural"],
+  ["mural exemption", "graffiti art exemption", "graffiti exemption", "approved graffiti art", "regularize mural"],
+  ["streetartoronto", "street art toronto", "support mural program", "mural funding", "graffiti funding"],
   ["dust", "construction dust", "demolition dust", "particulate"],
   ["property standards", "repairs", "maintenance", "disrepair", "broken window", "unsafe stairs", "mould"],
   ["heat", "heating", "no heat", "vital services", "cold apartment"],
