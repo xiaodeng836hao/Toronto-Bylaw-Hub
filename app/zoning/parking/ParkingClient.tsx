@@ -90,16 +90,6 @@ export default function ParkingClient() {
         <SourceBadge className="mt-4" />
       </div>
 
-      {/* ── Disclaimer ─────────────────────────────────────────────────────── */}
-      <div className="mb-8 p-5 rounded-xl border border-red-200 bg-red-50 flex gap-3">
-        <Info className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
-        <p className="text-sm text-red-800 leading-relaxed">
-          Parking zoning rules are property-specific. This page summarizes selected parking-related zoning topics for
-          general reference only. It is not a legal interpretation and does not confirm whether a property complies.
-          Always verify using the official Zoning By-law, Zoning Map Viewer, Toronto Building, or City staff.
-        </p>
-      </div>
-
       {/* ── Mobile: horizontal jump nav (lg+ uses the left sidebar) ────────── */}
       <nav aria-label="On this page" className="sticky top-16 z-30 mb-8 lg:hidden">
         <div className="flex items-center gap-1.5 overflow-x-auto rounded-xl border border-gray-100 bg-white/85 px-1.5 py-1.5 backdrop-blur subtle-shadow">

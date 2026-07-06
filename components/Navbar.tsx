@@ -16,10 +16,12 @@ const navItems: NavItem[] = [
   {
     label: "Bylaw Chapters",
     children: [
-      { href: "/tmc-chapters", label: "All Bylaw Chapters" },
+      { href: "/tmc-chapters/447", label: "Fence" },
+      { href: "/tmc-chapters/629", label: "Property Standards" },
       { href: "/tmc-chapters/485", label: "Graffiti" },
       { href: "/tmc-chapters/548", label: "Littering & Dumping" },
       { href: "/tmc-chapters/489", label: "Turfgrass & Prohibited Plants" },
+      { href: "/tmc-chapters", label: "Other Bylaw Chapters" },
     ],
   },
   { href: "/pool-fence-guide", label: "Pool Fence" },
