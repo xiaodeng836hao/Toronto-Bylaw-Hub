@@ -23,6 +23,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Baked in at build time. Auto-deploys rebuild on every push, so this reflects
+  // the most recent deployment date shown as "Last updated on" in the footer.
+  env: {
+    NEXT_PUBLIC_BUILD_DATE: new Date().toISOString(),
+  },
   images: {
     // Serve images as-is from /public — no remote image domains are used, so
     // nothing depends on an external optimizer or remote host at runtime.

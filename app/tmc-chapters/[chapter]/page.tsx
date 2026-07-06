@@ -9,7 +9,7 @@ import { getChapterContent, type ComplexityLevel } from "@/lib/chapter-content";
 import SourceBadge from "@/components/SourceBadge";
 import {
   FENCE_HEIGHT_TABLE, FENCE_HEIGHT_MEASUREMENT_NOTE, FENCE_SCHOOL_NOTE,
-  FENCE_RESTRICTIONS, FENCE_DRIVEWAY_VISIBILITY, FENCE_DECK_RULES, POOL_FENCE_REDIRECT,
+  POOL_FENCE_REDIRECT,
 } from "@/lib/fence-447";
 import FenceHeightHelper from "./FenceHeightHelper";
 import {
@@ -601,65 +601,65 @@ export default async function ChapterDetailPage(
                 <Ban className="w-5 h-5 text-rose-500" aria-hidden="true" />
                 General Fence Restrictions
               </h2>
-              <div className="flex flex-col gap-3">
-                {FENCE_RESTRICTIONS.map((r) => (
-                  <div key={r.title} className="rounded-xl border border-gray-100 p-4">
-                    <div className="flex items-start justify-between gap-3 mb-1">
-                      <h3 className="font-semibold text-gray-900 text-sm">{r.title}</h3>
-                      <span className="inline-flex items-center gap-1 flex-shrink-0 text-[11px] font-mono text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
-                        <Hash className="w-3 h-3" aria-hidden="true" />{r.sectionReference}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 leading-relaxed">{r.text}</p>
-                  </div>
-                ))}
-              </div>
+              <figure>
+                <Image
+                  src="/images/fence/prohibited-fence-examples.png"
+                  alt="Illustrated examples of prohibited fences: barbed wire, chicken wire, or sharp material (allowed only above 2.5 m on 45° inward brackets); sheet metal and corrugated metal panels; electrified fences (except low-voltage livestock fencing on farmland); materials not meant for permanent fencing such as pallets, scrap boards, tarps; and temporary fences (except a snow fence from Nov 15 to Apr 15)."
+                  width={1055}
+                  height={1491}
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="h-auto w-full rounded-xl border border-gray-200"
+                />
+                <figcaption className="mt-2 text-xs text-gray-500 leading-relaxed">
+                  <span className="font-mono text-gray-400">Source: § 447-1.2A(2)–(6)</span> · Illustrated examples of prohibited fences and their exceptions (Chapter 447). Reference only — confirm details in the official chapter.
+                </figcaption>
+              </figure>
             </section>
           )}
 
           {/* Driveways and Visibility (447 only) */}
           {isFence && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <Car className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Driveways and Visibility
               </h2>
-              <p className="text-xs text-gray-500 mb-4">{FENCE_DRIVEWAY_VISIBILITY.sectionReference}</p>
-              <ul className="flex flex-col gap-2.5 mb-4">
-                {FENCE_DRIVEWAY_VISIBILITY.points.map((p) => (
-                  <li key={p} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3.5">
-                <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Practical example</p>
-                <p className="text-sm text-blue-900">{FENCE_DRIVEWAY_VISIBILITY.example}</p>
-              </div>
+              <figure>
+                <Image
+                  src="/images/fence/driveways-and-visibility.png"
+                  alt="Illustrated guide to fence rules near driveways: a fence within 2.4 m of where the driveway meets the lot line must be open (see-through) construction like chain-link so it does not block the view of the street; open construction gives drivers and pedestrians clear visibility, and parking-lot fences must stay open at corners; and required open fences must be kept clear of hedges, tall plants, or objects."
+                  width={1122}
+                  height={1402}
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="h-auto w-full rounded-xl border border-gray-200"
+                />
+                <figcaption className="mt-2 text-xs text-gray-500 leading-relaxed">
+                  <span className="font-mono text-gray-400">Source: § 447-1.2C, D</span> · How fence visibility rules apply near driveways and corners (Chapter 447). Reference only — confirm details in the official chapter.
+                </figcaption>
+              </figure>
             </section>
           )}
 
           {/* Fences on Unroofed Decks (447 only) */}
           {isFence && (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-1">
+              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
                 <SquareStack className="w-5 h-5 text-blue-500" aria-hidden="true" />
                 Fences on Unroofed Decks
               </h2>
-              <p className="text-xs text-gray-500 mb-4">{FENCE_DECK_RULES.sectionReference}</p>
-              <ul className="flex flex-col gap-2.5 mb-4">
-                {FENCE_DECK_RULES.points.map((p) => (
-                  <li key={p} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" aria-hidden="true" />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-              <div className="rounded-xl bg-blue-50 border border-blue-100 p-3.5">
-                <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Practical example</p>
-                <p className="text-sm text-blue-900">{FENCE_DECK_RULES.example}</p>
-              </div>
+              <figure>
+                <Image
+                  src="/images/fence/fences-on-unroofed-decks.png"
+                  alt="Illustrated height rules for fences on an attached, unroofed deck: a deck fence may be up to 2.0 m high, measured from the deck surface (not the ground), and only where the deck is not in a front yard and not within 2.4 m of a street-side lot line; a deck fence can therefore sit higher above the yard than a ground-level fence; and if the deck fence also acts as a guard it must also meet Chapter 629, with the stricter rule applying where Chapter 447 and Chapter 629 overlap."
+                  width={1122}
+                  height={1402}
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="h-auto w-full rounded-xl border border-gray-200"
+                />
+                <figcaption className="mt-2 text-xs text-gray-500 leading-relaxed">
+                  <span className="font-mono text-gray-400">Source: § 447-1.2B (Item 5); § 447-1.2E</span> · Fence height on an attached, unroofed deck, measured from the deck surface (Chapter 447). Reference only — confirm details in the official chapter.
+                </figcaption>
+              </figure>
             </section>
           )}
 
@@ -729,32 +729,6 @@ export default async function ChapterDetailPage(
             </section>
           )}
 
-          {/* Practical Compliance Guide */}
-          {content && content.practicalComplianceSteps.length > 0 && (
-            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
-              <h2 className="flex items-center gap-2 font-bold text-gray-900 mb-4">
-                <Wrench className="w-5 h-5 text-blue-500" aria-hidden="true" />
-                {ch.slug === "417" ? "How to Reduce or Eliminate Dust" : isFence ? "Before You Build or Replace a Fence" : "Practical Compliance Guide"}
-              </h2>
-              <ol className="flex flex-col gap-3">
-                {content.practicalComplianceSteps.map((s, i) => (
-                  <li key={s.title} className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold flex items-center justify-center mt-0.5">{i + 1}</span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{s.title}</p>
-                      <p className="text-sm text-gray-600">{s.description}</p>
-                      {s.caution && (
-                        <p className="mt-1 inline-flex items-start gap-1 text-xs text-amber-700">
-                          <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" /> {s.caution}
-                        </p>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          )}
-
           {/* Common Questions (answered) */}
           {content && content.commonQuestions.length > 0 ? (
             <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
@@ -812,6 +786,32 @@ export default async function ChapterDetailPage(
 
         {/* Sidebar */}
         <aside className="flex flex-col gap-5">
+          {/* Compliance steps — compact, moved from the main column */}
+          {content && content.practicalComplianceSteps.length > 0 && (
+            <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
+              <h2 className="flex items-center gap-2 font-semibold text-gray-800 text-sm mb-3">
+                <Wrench className="w-4 h-4 text-blue-500" aria-hidden="true" />
+                {ch.slug === "417" ? "How to Reduce or Eliminate Dust" : isFence ? "Before You Build or Replace a Fence" : "Practical Compliance Guide"}
+              </h2>
+              <ol className="flex flex-col gap-3">
+                {content.practicalComplianceSteps.map((s, i) => (
+                  <li key={s.title} className="flex gap-2.5">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-50 text-blue-600 text-[11px] font-semibold flex items-center justify-center mt-0.5">{i + 1}</span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 leading-snug">{s.title}</p>
+                      <p className="text-xs text-gray-600 leading-relaxed mt-0.5">{s.description}</p>
+                      {s.caution && (
+                        <p className="mt-1 inline-flex items-start gap-1 text-[11px] text-amber-700">
+                          <AlertTriangle className="w-3 h-3 flex-shrink-0 mt-0.5" aria-hidden="true" /> {s.caution}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
           {/* Who it applies to */}
           <section className="bg-white rounded-2xl border border-gray-100 subtle-shadow p-5">
             <h2 className="flex items-center gap-2 font-semibold text-gray-800 text-sm mb-2">
